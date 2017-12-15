@@ -25,12 +25,12 @@ import java.util.List;
 public class ActivityPersistenceService {
 
     @Autowired
-    private ActivityRepository activityModelRepository;
+    private ActivityRepository activityRepository;
     @Autowired
     private EntityManager em;
 
     public ActivityState getDbActivityState(long activityId) {
-        DbActivity db = activityModelRepository.findOne(activityId);
+        DbActivity db = activityRepository.findOne(activityId);
         return db.getState();
     }
 
@@ -53,7 +53,7 @@ public class ActivityPersistenceService {
 
         // Previous?
         if (previousId != null) {
-            final DbActivity previous = activityModelRepository.findOne(previousId);
+            final DbActivity previous = activityRepository.findOne(previousId);
             Assert.notNull(previous);
             Assert.isEqual(parent, previous.getParent());
             act.setPrevious(previous);
@@ -65,7 +65,7 @@ public class ActivityPersistenceService {
     public List<ActivityFacade> getChildren(long parentId) {
         List<ActivityFacade> activities = new ArrayList<ActivityFacade>();
 
-        final List<DbActivity> actis = activityModelRepository.findByParentId(parentId);
+        final List<DbActivity> actis = activityRepository.findByParentId(parentId);
         for (DbActivity a : actis) {
             activities.add(new ActivityFacade(a.getId(), this));
         }
@@ -73,18 +73,18 @@ public class ActivityPersistenceService {
     }
 
     public DbActivity getModel(long id) {
-        return activityModelRepository.findOne(id);
+        return activityRepository.findOne(id);
     }
 
-    public void putVariables(DbActivity aActivityModel, VariableMap vars) {
+    public void putVariables(DbActivity aDbActivity, VariableMap vars) {
         if (vars != null) {
             for (String key : vars.keySet()) {
-                putVariable(aActivityModel, key, vars.get(key));
+                putVariable(aDbActivity, key, vars.get(key));
             }
         }
     }
 
-    public void putVariable(DbActivity aActivityModel, String key, Object value) {
+    public void putVariable(DbActivity aDbActivity, String key, Object value) {
         Assert.notNull(key);
         Assert.notNull(value, "Missing value for key=" + key);
 
@@ -109,7 +109,7 @@ public class ActivityPersistenceService {
         } else {
             variable = new DbSerializableVariable(key, (Serializable) value, new BlobFactory((Session) em.getDelegate()));
         }
-        variable.setOwner(aActivityModel);
-        aActivityModel.putVariable(variable);
+        variable.setOwner(aDbActivity);
+        aDbActivity.putVariable(variable);
     }
 }

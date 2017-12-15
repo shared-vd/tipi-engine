@@ -1,5 +1,6 @@
 package ch.sharedvd.tipi.engine;
 
+import ch.sharedvd.tipi.engine.client.TipiFacade;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
@@ -31,14 +32,17 @@ public abstract class AbstractTipiPersistenceTest {
     protected ActivityPersistenceService activityPersistenceService;
 
     @Autowired
-    protected TopProcessRepository topProcessModelRepository;
+    protected TopProcessRepository topProcessRepository;
 
     @Autowired
-    protected ActivityRepository activityModelRepository;
+    protected ActivityRepository activityRepository;
 
     @Autowired
     protected TxTemplate txTemplate;
 
     @Autowired
     protected EntityManager em;
+
+    @Autowired
+    protected TipiFacade tipiFacade;
 }

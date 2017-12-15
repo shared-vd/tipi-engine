@@ -1,35 +1,37 @@
 package ch.sharedvd.tipi.engine.model;
 
-import ch.vd.registre.base.date.RegDate;
-import ch.vd.registre.tipi.client.TipiActivityInfos;
-import ch.vd.registre.tipi.client.VariableMap;
-import ch.vd.registre.tipi.common.TipiEngineTest;
-import ch.vd.registre.tipi.utils.InputStreamHolder;
+import ch.sharedvd.tipi.engine.AbstractTipiPersistenceTest;
+import ch.sharedvd.tipi.engine.client.VariableMap;
+import ch.sharedvd.tipi.engine.utils.InputStreamHolder;
 import org.junit.Test;
 
 import java.io.InputStream;
+import java.time.LocalDate;
 
-public class ActivityVariableTest extends TipiEngineTest {
+import static org.junit.Assert.fail;
 
-	@Test
-	public void putGetVariables() throws Exception {
+public class ActivityVariableTest extends AbstractTipiPersistenceTest {
 
-		final VariableMap vars = new VariableMap();
-		vars.put("int", 42);
-		vars.put("long", 24L);
-		vars.put("regdate", RegDate.get(2001, 2, 3));
-		vars.put("str", "Une string");
+    @Test
+    public void putGetVariables() throws Exception {
 
-		InputStream is = getResourceInCurrentPackage("inputStreamVariable.txt");
-		vars.put("file", new InputStreamHolder(is));
+        final VariableMap vars = new VariableMap();
+        vars.put("int", 42);
+        vars.put("long", 24L);
+        vars.put("regdate", LocalDate.of(2001, 2, 3));
+        vars.put("str", "Une string");
 
-		final long pid = tipiFacade.launch(ActivityVariableProcess.meta, vars);
-		while (tipiFacade.isRunning(pid)) {
-			Thread.sleep(100);
-		}
+        InputStream is = getClass().getResourceAsStream("inputStreamVariable.txt");
+        vars.put("file", new InputStreamHolder(is));
 
-		TipiActivityInfos infos = tipiFacade.getActivityInfos(pid);
-		assertEquals(ActivityState.FINISHED, infos.getState());
-	}
+        final long pid = tipiFacade.launch(ActivityVariableProcess.meta, vars);
+        while (tipiFacade.isRunning(pid)) {
+            Thread.sleep(100);
+        }
+
+        fail();
+        //TipiActivityInfos infos = tipiFacade.getActivityInfos(pid);
+        //assertEquals(ActivityState.FINISHED, infos.getState());
+    }
 
 }

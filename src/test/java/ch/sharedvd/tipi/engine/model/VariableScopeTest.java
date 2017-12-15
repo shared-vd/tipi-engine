@@ -5,129 +5,122 @@ import ch.sharedvd.tipi.engine.action.Activity;
 import ch.sharedvd.tipi.engine.action.ActivityFacade;
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;
+import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.transaction.TransactionStatus;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 public class VariableScopeTest extends AbstractTipiPersistenceTest {
 
-	@Test
-	public void scopeVariable() throws Exception {
+    @Test
+    public void scopeVariable() {
 
-		final ObjectHolder<Long> P1_ID = new ObjectHolder<Long>(0L);
-		final ObjectHolder<Long> P1_C1_ID = new ObjectHolder<Long>(0L);
+        final AtomicReference<Long> P1_ID = new AtomicReference<Long>(0L);
+        final AtomicReference<Long> P1_C1_ID = new AtomicReference<Long>(0L);
 
-		final ObjectHolder<Long> P2_ID = new ObjectHolder<Long>(0L);
-		final ObjectHolder<Long> P2_C1_ID = new ObjectHolder<Long>(0L);
-		final ObjectHolder<Long> P2_C2_ID = new ObjectHolder<Long>(0L);
-		final ObjectHolder<Long> P2_C3_ID = new ObjectHolder<Long>(0L);
+        final AtomicReference<Long> P2_ID = new AtomicReference<Long>(0L);
+        final AtomicReference<Long> P2_C1_ID = new AtomicReference<Long>(0L);
+        final AtomicReference<Long> P2_C2_ID = new AtomicReference<Long>(0L);
+        final AtomicReference<Long> P2_C3_ID = new AtomicReference<Long>(0L);
 
+        txTemplate.txWithout((s) -> {
+            // Parent 1
+            DbTopProcess parent1;
+            {
+                DbTopProcess parent = new DbTopProcess();
+                parent.setFqn("parent1");
+                activityRepository.save(parent);
+                activityPersistenceService.putVariable(parent, "parent", parent.getFqn());
+                activityPersistenceService.putVariable(parent, parent.getFqn(), parent.getFqn());
+                activityPersistenceService.putVariable(parent, "name", parent.getFqn());
+                P1_ID.set(parent.getId());
 
-		doInTransaction(new TxCallbackWithoutResult() {
-			@Override
-			public void execute(TransactionStatus status) throws Exception {
+                parent1 = parent;
+                {
+                    DbActivity child = new DbActivity();
+                    child.setFqn("p1_child1");
+                    child.setParent(parent);
+                    activityRepository.save(child);
+                    activityPersistenceService.putVariable(child, child.getFqn(), child.getFqn());
+                    activityPersistenceService.putVariable(child, "name", child.getFqn());
+                    P1_C1_ID.set(child.getId());
+                }
+            }
 
-				// Parent 1
-				TopProcessModel parent1;
-				{
-					TopProcessModel parent = new TopProcessModel();
-					parent.setFqn("parent1");
-					persist.attachWithPersist(parent);
-					activityPersistenceService.putVariable(parent, "parent", parent.getFqn());
-					activityPersistenceService.putVariable(parent, parent.getFqn(), parent.getFqn());
-					activityPersistenceService.putVariable(parent, "name", parent.getFqn());
-					P1_ID.set(parent.getId());
+            // Parent 2
+            {
+                DbTopProcess parent = new DbTopProcess();
+                parent.setFqn("parent2");
+                parent.setParent(parent1);
+                activityRepository.save(parent);
+                activityPersistenceService.putVariable(parent, "parent", parent.getFqn());
+                activityPersistenceService.putVariable(parent, parent.getFqn(), parent.getFqn());
+                activityPersistenceService.putVariable(parent, "name", parent.getFqn());
+                P2_ID.set(parent.getId());
 
-					parent1 = parent;
-					{
-						ActivityModel child = new ActivityModel();
-						child.setFqn("p1_child1");
-						child.setParent(parent);
-						persist.attachWithPersist(child);
-						activityPersistenceService.putVariable(child, child.getFqn(), child.getFqn());
-						activityPersistenceService.putVariable(child, "name", child.getFqn());
-						P1_C1_ID.set(child.getId());
-					}
-				}
+                {
+                    DbActivity child = new DbActivity();
+                    child.setFqn("p2_child1");
+                    child.setParent(parent);
+                    activityRepository.save(child);
+                    activityPersistenceService.putVariable(child, child.getFqn(), child.getFqn());
+                    activityPersistenceService.putVariable(child, "name", child.getFqn());
+                    P2_C1_ID.set(child.getId());
+                }
+                DbActivity child2;
+                {
+                    DbActivity child = new DbActivity();
+                    child.setFqn("p2_child2");
+                    child.setParent(parent);
+                    activityRepository.save(child);
+                    activityPersistenceService.putVariable(child, child.getFqn(), child.getFqn());
+                    activityPersistenceService.putVariable(child, "name", child.getFqn());
+                    P2_C2_ID.set(child.getId());
+                    child2 = child;
+                }
+                {
+                    DbActivity child = new DbActivity();
+                    child.setFqn("p2_child3");
+                    child.setParent(parent);
+                    child.setPrevious(child2);
+                    activityRepository.save(child);
+                    activityPersistenceService.putVariable(child, child.getFqn(), child.getFqn());
+                    activityPersistenceService.putVariable(child, "name", child.getFqn());
+                    P2_C3_ID.set(child.getId());
+                }
+            }
+        });
 
-				// Parent 2
-				{
-					TopProcessModel parent = new TopProcessModel();
-					parent.setFqn("parent2");
-					parent.setParent(parent1);
-					persist.attachWithPersist(parent);
-					activityPersistenceService.putVariable(parent, "parent", parent.getFqn());
-					activityPersistenceService.putVariable(parent, parent.getFqn(), parent.getFqn());
-					activityPersistenceService.putVariable(parent, "name", parent.getFqn());
-					P2_ID.set(parent.getId());
+        txTemplate.txWithout((s) -> {
+            class VariableGetter extends Activity {
+                public VariableGetter(ActivityFacade facade) {
+                    super(facade);
+                }
 
-					{
-						ActivityModel child = new ActivityModel();
-						child.setFqn("p2_child1");
-						child.setParent(parent);
-						persist.attachWithPersist(child);
-						activityPersistenceService.putVariable(child, child.getFqn(), child.getFqn());
-						activityPersistenceService.putVariable(child, "name", child.getFqn());
-						P2_C1_ID.set(child.getId());
-					}
-					ActivityModel child2;
-					{
-						ActivityModel child = new ActivityModel();
-						child.setFqn("p2_child2");
-						child.setParent(parent);
-						persist.attachWithPersist(child);
-						activityPersistenceService.putVariable(child, child.getFqn(), child.getFqn());
-						activityPersistenceService.putVariable(child, "name", child.getFqn());
-						P2_C2_ID.set(child.getId());
-						child2 = child;
-					}
-					{
-						ActivityModel child = new ActivityModel();
-						child.setFqn("p2_child3");
-						child.setParent(parent);
-						child.setPrevious(child2);
-						persist.attachWithPersist(child);
-						activityPersistenceService.putVariable(child, child.getFqn(), child.getFqn());
-						activityPersistenceService.putVariable(child, "name", child.getFqn());
-						P2_C3_ID.set(child.getId());
-					}
-				}
-			}
-		});
+                @Override
+                public ActivityResultContext execute() throws Exception {
+                    // Us
+                    Assert.assertEquals("p2_child3", this.getStringVariable("name"));
+                    Assert.assertEquals("p2_child3", this.getStringVariable("p2_child3"));
+                    // Previous
+                    Assert.assertEquals("p2_child2", this.getStringVariable("p2_child2"));
+                    // Parent
+                    Assert.assertEquals("parent2", this.getStringVariable("parent"));
+                    // Parent 1+2
+                    Assert.assertEquals("parent2", this.getStringVariable("parent2"));
+                    Assert.assertEquals("parent1", this.getStringVariable("parent1"));
+                    // Siblings
+                    Assert.assertNull(this.getStringVariable("p2_child1"));
+                    Assert.assertNull(this.getStringVariable("p1_child1"));
 
-		doInTransaction(new TxCallbackWithoutResult() {
-			@Override
-			public void execute(TransactionStatus status) throws Exception {
+                    return new FinishedActivityResultContext();
+                }
+            }
 
-				class VariableGetter extends Activity {
-					public VariableGetter(ActivityFacade facade) {
-						super(facade);
-					}
-					@Override
-					public ActivityResultContext execute() throws Exception {
-						// Us
-						assertEquals("p2_child3", this.getStringVariable("name"));
-						assertEquals("p2_child3", this.getStringVariable("p2_child3"));
-						// Previous
-						assertEquals("p2_child2", this.getStringVariable("p2_child2"));
-						// Parent
-						assertEquals("parent2", this.getStringVariable("parent"));
-						// Parent 1+2
-						assertEquals("parent2", this.getStringVariable("parent2"));
-						assertEquals("parent1", this.getStringVariable("parent1"));
-						// Siblings
-						assertNull(this.getStringVariable("p2_child1"));
-						assertNull(this.getStringVariable("p1_child1"));
+            DbActivity child3 = activityRepository.findOne(P2_C3_ID.get());
 
-						return new FinishedActivityResultContext();
-					}
-				}
-
-				ActivityModel child3 = persist.get(ActivityModel.class, P2_C3_ID.get());
-
-				VariableGetter getter = new VariableGetter(new ActivityFacade(child3.getId(), activityPersistenceService));
-				getter.execute();
-			}
-		});
-	}
-
+            VariableGetter getter = new VariableGetter(new ActivityFacade(child3.getId(), activityPersistenceService));
+            getter.execute();
+        });
+    }
 }

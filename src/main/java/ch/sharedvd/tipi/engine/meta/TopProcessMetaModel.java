@@ -22,7 +22,9 @@ public class TopProcessMetaModel extends SubProcessMetaModel {
         this(clazz, priority, Integer.MAX_VALUE, nbMaxConcurrent, descr);
     }
 
-    public TopProcessMetaModel(Class<?> clazz, int priority, int nbMaxTopConcurrent, int nbMaxConcurrent, String descr) {
+    public TopProcessMetaModel(Class<?> clazz, int priority,
+                               int nbMaxTopConcurrent,
+                               int nbMaxConcurrent, String descr) {
         super(clazz, null, descr);
         this.priority = priority;
         this.nbMaxTopConcurrent = nbMaxTopConcurrent;

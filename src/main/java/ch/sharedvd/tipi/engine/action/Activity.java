@@ -103,7 +103,7 @@ public abstract class Activity {
         return facade.getVariable(name);
     }
 
-    protected LocalDate getRegDateVariable(String name) {
+    protected LocalDate getLocalDateVariable(String name) {
         Integer i = (Integer) facade.getVariable(name);
         if (i != null) {
             Assert.fail("Bla");
