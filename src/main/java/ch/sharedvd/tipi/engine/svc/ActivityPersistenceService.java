@@ -17,6 +17,7 @@ import javax.persistence.EntityManager;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,29 +91,23 @@ public class ActivityPersistenceService {
         final DbVariable<?> variable;
         if (value instanceof String) {
             variable = new DbStringVariable(key, (String) value);
-        }
-        else if (value instanceof LocalDate) {
-            Assert.fail("");
-            variable = null;
-            //variable = new DbIntegerVariable(key, ((LocalDate) value).index());
-        }
-        else if (value instanceof Integer) {
+        } else if (value instanceof LocalDate) {
+            final LocalDate date = (LocalDate) value;
+            final String str = DateTimeFormatter.ofPattern("YYYYMMdd").format(date);
+            Integer i = Integer.parseInt(str);
+            variable = new DbIntegerVariable(key, i);
+        } else if (value instanceof Integer) {
             variable = new DbIntegerVariable(key, (Integer) value);
-        }
-        else if (value instanceof Long) {
+        } else if (value instanceof Long) {
             variable = new DbLongVariable(key, (Long) value);
-        }
-        else if (value instanceof Boolean) {
+        } else if (value instanceof Boolean) {
             variable = new DbBooleanVariable(key, (Boolean) value);
-        }
-        else if (value instanceof Timestamp) {
+        } else if (value instanceof Timestamp) {
             variable = new DbTimestampVariable(key, (Timestamp) value);
-        }
-        else if (value instanceof InputStreamHolder) {
-            variable = new DbInputStreamVariable(key, (InputStreamHolder) value, new BlobFactory((Session)em.getDelegate()));
-        }
-        else {
-            variable = new DbSerializableVariable(key, (Serializable) value, new BlobFactory((Session)em.getDelegate()));
+        } else if (value instanceof InputStreamHolder) {
+            variable = new DbInputStreamVariable(key, (InputStreamHolder) value, new BlobFactory((Session) em.getDelegate()));
+        } else {
+            variable = new DbSerializableVariable(key, (Serializable) value, new BlobFactory((Session) em.getDelegate()));
         }
         variable.setOwner(aActivityModel);
         aActivityModel.putVariable(variable);

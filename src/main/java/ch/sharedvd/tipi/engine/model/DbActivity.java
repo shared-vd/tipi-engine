@@ -1,6 +1,5 @@
 package ch.sharedvd.tipi.engine.model;
 
-import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -10,14 +9,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Entity
-@Table(name = "TP_ACTIVITY")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "DTYPE", discriminatorType = DiscriminatorType.STRING)
-@DiscriminatorValue("activity")
-@org.hibernate.annotations.Table(appliesTo = "TP_ACTIVITY", indexes = {
-        @Index(name = "TP_ACT_REQEND_STATE_IDX", columnNames = {"STATE", "REQUEST_END_EXECUTION"}),
-        @Index(name = "TP_ACT_DTYPE_IDX", columnNames = "DTYPE")
+@Table(name = "TP_ACTIVITY", indexes = {
+        @Index(name = "TP_ACT_REQEND_STATE_IDX", columnList = "STATE,REQUEST_END_EXECUTION"),
+        @Index(name = "TP_ACT_DTYPE_IDX", columnList = "DTYPE"),
+        @Index(name = "TP_ACT_PARENT_FK_IDX", columnList = "PARENT_FK"),
+        @Index(name = "TP_ACT_PROCESS_FK_IDX", columnList = "PROCESS_FK"),
+        @Index(name = "TP_ACT_PROCESS_NAME_IDX", columnList = "PROCESS_NAME"),
+        @Index(name = "TP_ACTIVITY_CORRELATION_IDX", columnList = "CORRELATION_ID"),
+        @Index(name = "TP_ACTIVITY_STATE_IDX", columnList = "STATE"),
+        @Index(name = "TP_ACTIVITY_NAME_IDX", columnList = "NAME"),
+        @Index(name = "TP_ACTIVITY_REQUEST_END_EXEC", columnList = "REQUEST_END_EXECUTION"),
+        @Index(name = "TP_ACT_PREVIOUS_FK_IDX", columnList = "PREVIOUS_FK")
 })
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn
+@DiscriminatorValue("activity")
 public class DbActivity extends DbBaseEntity {
 
     private static final long serialVersionUID = -1L;
@@ -49,7 +55,6 @@ public class DbActivity extends DbBaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PROCESS_FK", nullable = true)
-    @Index(name = "TP_ACT_PROCESS_FK_IDX")
     @OnDelete(action = OnDeleteAction.CASCADE)
     public DbTopProcess getProcess() {
         return process;
@@ -73,7 +78,6 @@ public class DbActivity extends DbBaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_FK", nullable = true)
-    @Index(name = "TP_ACT_PARENT_FK_IDX")
     @OnDelete(action = OnDeleteAction.CASCADE)
     public DbSubProcess getParent() {
         return parent;
@@ -84,7 +88,6 @@ public class DbActivity extends DbBaseEntity {
     }
 
     @Column(name = "PROCESS_NAME")
-    @Index(name = "TP_ACT_PROCESS_NAME_IDX")
     public String getProcessName() {
         if (this instanceof DbTopProcess) {
             // Si on n'a pas de process, on EST le process.
@@ -99,7 +102,6 @@ public class DbActivity extends DbBaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PREVIOUS_FK", nullable = true)
-    @Index(name = "TP_ACT_PREVIOUS_FK_IDX")
     @OnDelete(action = OnDeleteAction.CASCADE)
     public DbActivity getPrevious() {
         return previous;
@@ -110,7 +112,6 @@ public class DbActivity extends DbBaseEntity {
     }
 
     @Column(name = "REQUEST_END_EXECUTION")
-    @Index(name = "TP_ACTIVITY_REQUEST_END_EXEC")
     public boolean isRequestEndExecution() {
         return requestEndExecution;
     }
@@ -129,7 +130,6 @@ public class DbActivity extends DbBaseEntity {
     }
 
     @Column(name = "NAME", nullable = false)
-    @Index(name = "TP_ACTIVITY_NAME_IDX")
     public String getFqn() {
         return fqn;
     }
@@ -185,7 +185,6 @@ public class DbActivity extends DbBaseEntity {
 
     @Column(name = "STATE", nullable = false)
     @Enumerated(EnumType.STRING)
-    @Index(name = "TP_ACTIVITY_STATE_IDX")
     public ActivityState getState() {
         return state;
     }
@@ -195,7 +194,6 @@ public class DbActivity extends DbBaseEntity {
     }
 
     @Column(name = "CORRELATION_ID")
-    @Index(name = "TP_ACTIVITY_CORRELATION_IDX")
     public String getCorrelationId() {
         return correlationId;
     }
