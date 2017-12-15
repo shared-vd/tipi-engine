@@ -2,42 +2,48 @@ package ch.sharedvd.tipi.engine.engine;
 
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
+import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 public class ProcessDeleter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDeleter.class);
+    private static final Logger log = LoggerFactory.getLogger(ProcessDeleter.class);
 
     private DbTopProcess process;
-    private HqlBuilderService hqlBuilder;
-    private PersistenceContextService persist;
+    private EntityManager em;
+    private TopProcessRepository topProcessRepository;
 
-    public ProcessDeleter(DbTopProcess process, HqlBuilderService hqlBuilder, PersistenceContextService persist) {
+    public ProcessDeleter(DbTopProcess process, EntityManager em, TopProcessRepository r) {
         this.process = process;
-        this.hqlBuilder = hqlBuilder;
-        this.persist = persist;
+        this.em = em;
+        topProcessRepository = r;
     }
 
     public boolean delete() {
         final long pid = process.getId();
 
-        DbActivityCriteria crit = new DbActivityCriteria();
-        crit.addAndExpression(Expr.or(crit.id().eq(pid), crit.process__Id().eq(pid)));
-        //Permet de ne pas supprimer les process non terminés
-        crit.addAndExpression(crit.state().eq(ActivityState.EXECUTING));
-        crit.activateRowCount();
-        Long nbActiInExec = (Long) hqlBuilder.getSingleResult(crit);
+        final String hql =
+                "select count(*) from DbActivity a " +
+                        "where (a.process.id = :pid or a.id = :pid)" +
+                        "and a.state = :state";
+        final Query q = em.createQuery(hql);
+        q.setParameter("pid", pid);
+        q.setParameter("state", ActivityState.EXECUTING);
+        int nbActiInExec = q.getFirstResult();
         if (nbActiInExec > 0) {
             // Impossible d'effacer ce processus
-            AppLog.error(LOGGER, "Impossible d'effacer le processus " + process + ". Il y a des activités EXECUTING");
+            log.error("Impossible d'effacer le processus " + process + ". Il y a des activités EXECUTING");
             return false;
         }
 
         // Delete du process en cascade
-        DbTopProcess p = hqlBuilder.getById(DbTopProcess.class, pid);
-        AppLog.info(LOGGER, "Suppression du precessus " + p.getProcessName() + " [id:" + pid + "]");
-        persist.remove(p);
+        DbTopProcess p = topProcessRepository.findOne(pid);
+        log.info("Suppression du precessus " + p.getProcessName() + " [id:" + pid + "]");
+        topProcessRepository.delete(p);
 
         return true;
     }

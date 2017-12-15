@@ -4,23 +4,26 @@ import ch.sharedvd.tipi.engine.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.utils.ArrayLong;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
-@EnableAutoConfiguration
 public class PersistenceTest extends AbstractTipiPersistenceTest {
 
+    @Override
+    public void onSetUp() {
+        super.onSetUp();
+    }
+
     @Test
-    public void processName_is_helpful_in_ui() throws Exception {
+    public void processName_is_helpful_in_ui() {
 
-        final AtomicReference<Long> TOP_PROCESS = new AtomicReference<Long>(0L);
-        final AtomicReference<Long> ACT_1 = new AtomicReference<Long>(0L);
-        final AtomicReference<Long> ACT_2 = new AtomicReference<Long>(0L);
+        final AtomicReference<Long> TOP_PROCESS = new AtomicReference<>(0L);
+        final AtomicReference<Long> ACT_1 = new AtomicReference<>(0L);
+        final AtomicReference<Long> ACT_2 = new AtomicReference<>(0L);
 
-        txTemplate.doWithout(() -> {
+        txTemplate.txWithout((s) -> {
             DbTopProcess parent = new DbTopProcess();
             parent.setFqn("Process1");
             em.persist(parent);
@@ -46,7 +49,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             }
         });
 
-        txTemplate.doWithout(() -> {
+        txTemplate.txWithout((s) -> {
             DbActivity activite1 = activityRepository.findOne(ACT_1.get());
             Assert.assertEquals("Process1", activite1.getProcessName());
 
@@ -58,11 +61,10 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         });
     }
 
-
     @Test
-    public void callstack_2000() throws Exception {
+    public void callstack_2000() {
 
-        final AtomicReference<Long> ID = new AtomicReference<Long>(0L);
+        final AtomicReference<Long> ID = new AtomicReference<>(0L);
 
         // 2000 chars
         final StringBuilder callstack = new StringBuilder();
@@ -70,7 +72,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             callstack.append('C');
         }
 
-        txTemplate.doWithout(() -> {
+        txTemplate.txWithout((s) -> {
             DbActivity act = new DbActivity();
             act.setFqn("Bla");
             em.persist(act);
@@ -79,7 +81,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             act.setCallstack(callstack.toString());
         });
 
-        txTemplate.doWithout(() -> {
+        txTemplate.txWithout((s) -> {
             DbActivity activite1 = activityRepository.findOne(ID.get());
 
             Assert.assertEquals(callstack.length(), activite1.getCallstack().length());
@@ -98,7 +100,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             callstack.append('C');
         }
 
-        txTemplate.doWithout(() -> {
+        txTemplate.txWithout((s) -> {
             DbActivity act = new DbActivity();
             act.setFqn("Bla");
             em.persist(act);
@@ -108,7 +110,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             act.setCallstack(callstack.toString());
         });
 
-        txTemplate.doWithout(() -> {
+        txTemplate.txWithout((s) -> {
             DbActivity activite1 = activityRepository.findOne(ID.get());
 
             Assert.assertEquals(2000, activite1.getCallstack().length());
@@ -124,7 +126,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         final AtomicReference<Long> P2_ID = new AtomicReference<Long>(0L);
         final AtomicReference<Long> C2_1_ID = new AtomicReference<Long>(0L);
 
-        txTemplate.doWithout(() -> {
+        txTemplate.txWithout((s) -> {
             DbTopProcess parent = new DbTopProcess();
             parent.setFqn("Process1");
             em.persist(parent);
@@ -169,7 +171,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             }
         });
 
-        txTemplate.doWithout(() -> {
+        txTemplate.txWithout((s) -> {
             DbTopProcess parent = topProcessRepository.findOne(P_ID.get());
             DbActivity child1 = activityRepository.findOne(C1_ID.get());
             DbActivity child2 = activityRepository.findOne(C2_ID.get());
@@ -208,7 +210,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         final AtomicReference<Long> ID = new AtomicReference<Long>(-1L);
         final Date DATE = new Date();
 
-        txTemplate.doWithout(() -> {
+        txTemplate.txWithout((s) -> {
             DbActivity act = new DbActivity();
             act.setFqn("Bla");
             em.persist(act);
@@ -224,7 +226,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             activityPersistenceService.putVariable(act, "UNE_CLE_BOOLEAN", Boolean.TRUE);
         });
 
-        txTemplate.doWithout(() -> {
+        txTemplate.txWithout((s) -> {
             DbActivity activite1 = activityRepository.findOne(ID.get());
 
             // RegDate
@@ -265,7 +267,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         final AtomicReference<Long> P_ID = new AtomicReference<Long>(0L);
         final AtomicReference<Long> A_ID = new AtomicReference<Long>(0L);
 
-        txTemplate.doWithout(() -> {
+        txTemplate.txWithout((s) -> {
             DbTopProcess p = new DbTopProcess();
             p.setFqn("Process1");
             em.persist(p);
@@ -298,7 +300,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         });
 
         // re-get vars
-        txTemplate.doWithout(() -> {
+        txTemplate.txWithout((s) -> {
             DbTopProcess p = topProcessRepository.findOne(P_ID.get());
             Assert.assertNotNull(p);
             Assert.assertEquals(12L, p.getVariable("var1"));
@@ -316,7 +318,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         });
 
         // delete vars
-        txTemplate.doWithout(() -> {
+        txTemplate.txWithout((s) -> {
             DbTopProcess p = topProcessRepository.findOne(P_ID.get());
             Assert.assertNotNull(p);
             p.removeVariable("var2");
@@ -327,7 +329,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         });
 
         // re-get vars
-        txTemplate.doWithout(() -> {
+        txTemplate.txWithout((s) -> {
             DbTopProcess p = topProcessRepository.findOne(P_ID.get());
             Assert.assertNotNull(p);
             Assert.assertEquals(12L, p.getVariable("var1"));
@@ -344,10 +346,10 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
     }
 
     @Test
-    public void persistProcess() throws Exception {
+    public void persistProcess() {
 
 
-        final long ID = txTemplate.doWith(() -> {
+        final long ID = txTemplate.txWith((s) -> {
             DbTopProcess p = new DbTopProcess();
             p.setFqn("Process1");
             em.persist(p);
@@ -370,7 +372,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             return p.getId();
         });
 
-        txTemplate.doWithout(() -> {
+        txTemplate.txWithout((s) -> {
             DbTopProcess p = topProcessRepository.findOne(ID);
             Assert.assertNotNull(p);
         });

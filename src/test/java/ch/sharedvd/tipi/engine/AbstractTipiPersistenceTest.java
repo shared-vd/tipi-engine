@@ -6,6 +6,7 @@ import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
 import ch.sharedvd.tipi.engine.svc.ActivityPersistenceService;
 import ch.sharedvd.tipi.engine.tx.TxTemplate;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -20,6 +21,7 @@ import javax.persistence.EntityManager;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {
+        TipiTestingApplication.class,
         TipiModelConfig.class,
         TipiUtDatabaseConfig.class
 }, webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -45,4 +47,9 @@ public abstract class AbstractTipiPersistenceTest {
 
     @Autowired
     protected TipiFacade tipiFacade;
+
+    @Before
+    public void onSetUp() {
+
+    }
 }

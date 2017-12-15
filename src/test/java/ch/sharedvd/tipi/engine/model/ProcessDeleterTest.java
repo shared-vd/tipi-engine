@@ -27,7 +27,7 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
 
         txTemplate.txWithout((s) -> {
             final DbTopProcess process = topProcessRepository.findOne(PID);
-            final ProcessDeleter deleter = new ProcessDeleter(process, hqlBuilder, persist);
+            final ProcessDeleter deleter = new ProcessDeleter(process, em, topProcessRepository);
             deleter.delete();
         });
 
@@ -54,7 +54,7 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
 
         txTemplate.txWithout((s) -> {
             final DbTopProcess process = topProcessRepository.findOne(PID);
-            final ProcessDeleter deleter = new ProcessDeleter(process, hqlBuilder, persist);
+            final ProcessDeleter deleter = new ProcessDeleter(process, em, topProcessRepository);
             deleter.delete();
         });
 
@@ -65,13 +65,13 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
         });
     }
 
-    private void loadProcess(boolean exec) throws Exception {
+    private void loadProcess(boolean exec) {
         DbTopProcess process = new DbTopProcess();
         {
             process.setFqn("Proc");
             addVars(process);
-            activityRepository.save(process);
-            PID = process.getId();
+            DbTopProcess p = activityRepository.save(process);
+            PID = p.getId();
         }
 
         DbActivity procAct1;
