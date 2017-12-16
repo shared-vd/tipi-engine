@@ -32,9 +32,7 @@ public class CommandConsumer implements Startable, Runnable {
     private PlatformTransactionManager txManager;
     private TxTemplate tt;
 
-    @Autowired
-    @Qualifier("tipiContext")
-    private String tipiContext;
+    private String tipiContext = "TBD";
 
     private boolean resumeTipiAtBoot = true;
 
