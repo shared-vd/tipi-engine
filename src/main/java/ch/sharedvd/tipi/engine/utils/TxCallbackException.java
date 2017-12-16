@@ -1,4 +1,4 @@
-package ch.sharedvd.tipi.engine.tx;
+package ch.sharedvd.tipi.engine.utils;
 
 public class TxCallbackException extends RuntimeException {
 

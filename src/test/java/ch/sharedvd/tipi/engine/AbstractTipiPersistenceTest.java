@@ -5,7 +5,7 @@ import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
 import ch.sharedvd.tipi.engine.svc.ActivityPersistenceService;
-import ch.sharedvd.tipi.engine.tx.TxTemplate;
+import ch.sharedvd.tipi.engine.utils.TxTemplate;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

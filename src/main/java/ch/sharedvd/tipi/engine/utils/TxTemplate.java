@@ -1,4 +1,4 @@
-package ch.sharedvd.tipi.engine.tx;
+package ch.sharedvd.tipi.engine.utils;
 
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
