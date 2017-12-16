@@ -1,14 +1,13 @@
 package ch.sharedvd.tipi.engine.engine;
 
-import ch.vd.registre.base.utils.Assert;
-import ch.vd.registre.tipi.AppLog;
-import ch.vd.registre.tipi.action.ActivityResultContext;
-import ch.vd.registre.tipi.action.ErrorActivityResultContext;
-import ch.vd.registre.tipi.action.FinishedActivityResultContext;
-import ch.vd.registre.tipi.action.SuspendedActivityResultContext;
-import ch.vd.registre.tipi.model.ActivityState;
-import ch.vd.registre.tipi.model.DbActivity;
-import ch.vd.registre.tipi.model.DbSubProcess;
+import ch.sharedvd.tipi.engine.action.ActivityResultContext;
+import ch.sharedvd.tipi.engine.action.ErrorActivityResultContext;
+import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;
+import ch.sharedvd.tipi.engine.action.SuspendedActivityResultContext;
+import ch.sharedvd.tipi.engine.model.ActivityState;
+import ch.sharedvd.tipi.engine.model.DbActivity;
+import ch.sharedvd.tipi.engine.model.DbSubProcess;
+import ch.sharedvd.tipi.engine.utils.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,13 +94,13 @@ public class ActivityStateChangeService {
 			aActivity.setState(ActivityState.SUSPENDED);
 		}
 		else if (aResultContext instanceof ErrorActivityResultContext) {
-			AppLog.error(LOGGER, "Activity in error: " + aActivity + " / " + ((ErrorActivityResultContext) aResultContext).getErrorMessage());
+			LOGGER.error("Activity in error: " + aActivity + " / " + ((ErrorActivityResultContext) aResultContext).getErrorMessage());
 
 			aActivity.setState(ActivityState.ERROR);
 		}
 		else {
 			String msg = "Contexte du résultat de l'activité inconnu: " + aResultContext.getClass().getName();
-			AppLog.error(LOGGER, msg);
+			LOGGER.error(msg);
 			throw new RuntimeException(msg);
 		}
 	}

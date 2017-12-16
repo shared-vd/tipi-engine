@@ -2,6 +2,7 @@ package ch.sharedvd.tipi.engine.registry;
 
 import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
+import ch.sharedvd.tipi.engine.utils.Assert;
 
 import java.util.*;
 
@@ -23,7 +24,7 @@ public class TipiRegistryImpl implements TipiRegistry {
             }
         } else {
             if (tp != existing) {
-                Assert.isSame(tp, existing); // Meme pointeur si meme nom
+                Assert.isTrue(tp == existing); // Meme pointeur si meme nom
             }
         }
 

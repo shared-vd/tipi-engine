@@ -1,8 +1,8 @@
 package ch.sharedvd.tipi.engine.engine;
 
-import ch.vd.registre.tipi.client.ActivityThreadInfos;
-import ch.vd.registre.tipi.command.MetaModelHelper;
-import ch.vd.registre.tipi.meta.TopProcessMetaModel;
+import ch.sharedvd.tipi.engine.command.MetaModelHelper;
+import ch.sharedvd.tipi.engine.infos.ActivityThreadInfos;
+import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.Assert;

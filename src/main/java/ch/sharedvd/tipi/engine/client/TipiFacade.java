@@ -116,7 +116,7 @@ public interface TipiFacade {
     //List<ActivityThreadInfos> getThreadsInfos();
 
     // Connections cup
-    //List<ConnectionCupInfos> getAllConnectionCupInfos();
+    //List<ConnectionCapInfos> getAllConnectionCupInfos();
 
     void setMaxConnections(String aConnectionType, int aNbMaxConnections);
 

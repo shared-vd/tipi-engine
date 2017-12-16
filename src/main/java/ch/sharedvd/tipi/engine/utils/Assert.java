@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Assert extends org.springframework.util.Assert {
 
-
     public static void isEqual(Object expected, Object actual) {
         isEqual(expected, actual, "");
     }

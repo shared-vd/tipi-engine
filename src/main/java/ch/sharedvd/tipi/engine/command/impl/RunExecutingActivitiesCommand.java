@@ -1,13 +1,12 @@
 package ch.sharedvd.tipi.engine.command.impl;
 
-import ch.vd.registre.tipi.AppLog;
-import ch.vd.registre.tipi.action.ActivityMetaModel;
-import ch.vd.registre.tipi.command.Command;
-import ch.vd.registre.tipi.command.MetaModelHelper;
-import ch.vd.registre.tipi.engine.TopProcessGroupLauncher;
-import ch.vd.registre.tipi.engine.TopProcessGroupManager.RunReason;
-import ch.vd.registre.tipi.meta.TopProcessMetaModel;
-import ch.vd.registre.tipi.model.DbActivity;
+import ch.sharedvd.tipi.engine.command.Command;
+import ch.sharedvd.tipi.engine.command.MetaModelHelper;
+import ch.sharedvd.tipi.engine.engine.TopProcessGroupLauncher;
+import ch.sharedvd.tipi.engine.engine.TopProcessGroupManager;
+import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
+import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
+import ch.sharedvd.tipi.engine.model.DbActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -41,8 +40,8 @@ public class RunExecutingActivitiesCommand extends Command {
 			final TopProcessMetaModel tp = MetaModelHelper.getTopProcessMeta(grpName);
 			Assert.notNull(tp, "Le process " + grpName + " n'a pas été trouvé");
 			// Seulement les groupes qui ont de la place
-			RunReason reason = groupManager.hasRoom(tp);
-			if (reason == RunReason.OK) {
+			TopProcessGroupManager.RunReason reason = groupManager.hasRoom(tp);
+			if (reason == TopProcessGroupManager.RunReason.OK) {
 				nbActivitiesStarted += launchForTopProcess(tp);
 				nbGroups++;
 			}
@@ -102,7 +101,7 @@ public class RunExecutingActivitiesCommand extends Command {
 					}
 				}
 				else {
-					AppLog.error(LOGGER, "Impossible de trouver le meta pour l'activité : " + act.getFqn());
+					LOGGER.error("Impossible de trouver le meta pour l'activité : " + act.getFqn());
 				}
 			}
 		}

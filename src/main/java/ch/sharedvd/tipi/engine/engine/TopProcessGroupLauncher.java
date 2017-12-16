@@ -1,10 +1,10 @@
 package ch.sharedvd.tipi.engine.engine;
 
-import ch.vd.registre.base.utils.Assert;
-import ch.vd.registre.tipi.client.ActivityThreadInfos;
-import ch.vd.registre.tipi.engine.stats.TipiThreadStats;
-import ch.vd.registre.tipi.meta.TopProcessMetaModel;
-import ch.vd.registre.tipi.model.DbActivity;
+import ch.sharedvd.tipi.engine.engine.stats.TipiThreadStats;
+import ch.sharedvd.tipi.engine.infos.ActivityThreadInfos;
+import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
+import ch.sharedvd.tipi.engine.model.DbActivity;
+import ch.sharedvd.tipi.engine.utils.Assert;
 import org.apache.log4j.Logger;
 
 import javax.transaction.Status;
@@ -225,7 +225,7 @@ public class TopProcessGroupLauncher {
 		boolean wasStarted = false;
 		if (isStarted()) {
 			synchronized (runningActivities) {
-				Assert.isFalse(runningActivities.contains(runner.getActivityId()));
+				Assert.isFalse(runningActivities.contains(runner.getActivityId()), "Error");
 				runningActivities.add(runner.getActivityId());
 				connectionsCup.add(runner.getActivityName(), runner.getActivityId());
 
