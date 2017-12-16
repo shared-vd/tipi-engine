@@ -30,7 +30,7 @@ public class DialectToSqlHelperTest {
     }
 
     @Test
-    public void isPotgresql() {
+    public void isPostgresql() {
         Assert.assertFalse(oracle.isPostgresql());
         Assert.assertTrue(pgsql.isPostgresql());
     }

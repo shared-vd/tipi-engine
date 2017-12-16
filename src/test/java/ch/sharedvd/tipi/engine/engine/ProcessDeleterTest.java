@@ -14,7 +14,7 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void deleteExecuting() throws Exception {
+    public void deleteExecuting() {
         txTemplate.txWithout((s) -> {
             loadProcess(true);
         });
@@ -81,7 +81,7 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
             procAct1.setProcess(process);
             procAct1.setParent(process);
             addVars(procAct1);
-            activityRepository.save(procAct1);
+            procAct1 = activityRepository.save(procAct1);
         }
         {
             DbActivity procAct2 = new DbActivity();
@@ -101,7 +101,7 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
                 sub.setProcess(process);
                 sub.setParent(process);
                 addVars(sub);
-                activityRepository.save(sub);
+                sub = activityRepository.save(sub);
             }
 
             // S1-Acti1
@@ -115,7 +115,7 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
                     subAct1.setState(ActivityState.EXECUTING);
                 }
                 addVars(subAct1);
-                activityRepository.save(subAct1);
+                subAct1 = activityRepository.save(subAct1);
             }
             // S1-Acti2
             {
@@ -146,7 +146,7 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
                 sub.setProcess(process);
                 sub.setParent(process);
                 addVars(sub);
-                activityRepository.save(sub);
+                sub = activityRepository.save(sub);
             }
 
             // S2-Acti1
@@ -157,7 +157,7 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
                 subAct1.setProcess(process);
                 subAct1.setParent(sub);
                 addVars(subAct1);
-                activityRepository.save(subAct1);
+                subAct1 = activityRepository.save(subAct1);
             }
             // S2-Acti2
             {
@@ -192,5 +192,4 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
         var2.setOwner(acti);
         acti.putVariable(var2);
     }
-
 }
