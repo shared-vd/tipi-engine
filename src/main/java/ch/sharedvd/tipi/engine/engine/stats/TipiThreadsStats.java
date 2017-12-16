@@ -1,6 +1,6 @@
 package ch.sharedvd.tipi.engine.engine.stats;
 
-import ch.vd.registre.base.utils.Assert;
+import ch.sharedvd.tipi.engine.utils.Assert;
 
 import java.util.HashMap;
 import java.util.Iterator;

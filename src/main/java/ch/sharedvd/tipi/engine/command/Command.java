@@ -59,13 +59,13 @@ public abstract class Command implements InitializingBean {
 		final boolean debugEnabled = LOGGER.isDebugEnabled();
         final boolean traceEnabled = LOGGER.isTraceEnabled();
 
-		final RunReason reason = groupManager.hasRoom(topProcess);
-		if (reason == RunReason.OK) {
+		final TopProcessGroupManager.RunReason reason = groupManager.hasRoom(topProcess);
+		if (reason == TopProcessGroupManager.RunReason.OK) {
 			if (connectionsCup.hasConnections(meta)) {
 				final TopProcessGroupLauncher launcher = getLauncher(topProcess);
 				if (!launcher.isRunning(id)) {
 					Assert.isEqual(ActivityState.EXECUTING, aActivity.getState());
-					ActivityRunner runner = new ActivityRunner(getContext(topProcess), id, meta, engineInterceptor);
+					ActivityRunner runner = new ActivityRunner(getContext(topProcess), id, meta);
 					launcher.startNewThread(runner);
 					wasRun = true;
 
@@ -85,19 +85,19 @@ public abstract class Command implements InitializingBean {
 				}
 			}
 		}
-		else if (reason == RunReason.NO_TOP_ROOM) {
+		else if (reason == TopProcessGroupManager.RunReason.NO_TOP_ROOM) {
 			if (debugEnabled) {
 				final String message = "Le top-process " + id +
 						" ne peut pas être démarré car le nombre maximal de top-process est atteint dans le groupe " + topProcess.getFQN();
 				LOGGER.debug(message);
 			}
 		}
-		else if (reason == RunReason.NO_ROOM) {
+		else if (reason == TopProcessGroupManager.RunReason.NO_ROOM) {
 			if (debugEnabled) {
 				LOGGER.debug("L'activité " + id + " ne peut pas être démarrée parce que plus de place dans le groupe " + topProcess.getFQN());
 			}
 		}
-		else if (reason == RunReason.EXCLUSIVE) {
+		else if (reason == TopProcessGroupManager.RunReason.EXCLUSIVE) {
 			if (debugEnabled) {
 				LOGGER.debug("L'activité " + id + " ne peut pas être démarrée parce qu'un groupe exclusif tourne deja");
 			}
@@ -122,7 +122,7 @@ public abstract class Command implements InitializingBean {
 		return new ActivityRunnerContext(activityRepository, commandHelperService, commandService, groupManager, txManager, getLauncher(topProcess));
 	}
 
-	public void setActivityRepository(PersistenceContextService activityRepository) {
+	public void setActivityRepository(ActivityRepository activityRepository) {
 		this.activityRepository = activityRepository;
 	}
 

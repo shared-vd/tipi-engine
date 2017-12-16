@@ -1,14 +1,12 @@
 package ch.sharedvd.tipi.engine.engine;
 
-import ch.vd.registre.tipi.AppLog;
-import ch.vd.registre.tipi.command.CommandConsumer;
+import ch.sharedvd.tipi.engine.command.CommandConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
@@ -26,9 +24,8 @@ public class TipiStarterImpl implements TipiStarter, Startable, InitializingBean
 	private CommandConsumer commandConsumer;
 	@Autowired
 	protected ConnectionCapManager connectionCapManager;
-	@Autowired
-	@Qualifier("tipiContext")
-	private String tipiContext;
+
+	private String tipiContext = "TBD";
 
 	private ApplicationContext applicationContext;
 
@@ -97,7 +94,7 @@ public class TipiStarterImpl implements TipiStarter, Startable, InitializingBean
 
 	@Override
 	public void destroy() throws Exception {
-		AppLog.info(LOGGER, "Destroy de TiPi - " + tipiContext);
+		LOGGER.info("Destroy de TiPi - " + tipiContext);
 		commandConsumer.destroy();
 		activityGroupManager.destroy();
 	}
@@ -113,14 +110,14 @@ public class TipiStarterImpl implements TipiStarter, Startable, InitializingBean
 	}
 
 	public void start(boolean pauseGroups) throws Exception {
-		AppLog.info(LOGGER, "Démarrage de TiPi - " + tipiContext);
+		LOGGER.info("Démarrage de TiPi - " + tipiContext);
 		activityGroupManager.start(pauseGroups);
 		commandConsumer.start();
 	}
 
 	@Override
 	public void stop() throws Exception {
-		AppLog.info(LOGGER, "Arret de TiPi - " + tipiContext);
+		LOGGER.info("Arret de TiPi - " + tipiContext);
 		activityGroupManager.stop();
 		commandConsumer.destroy();
 	}

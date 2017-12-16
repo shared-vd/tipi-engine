@@ -1,7 +1,7 @@
-package ch.sharedvd.tipi.engine.model;
+package ch.sharedvd.tipi.engine.engine;
 
 import ch.sharedvd.tipi.engine.AbstractTipiPersistenceTest;
-import ch.sharedvd.tipi.engine.ProcessDeleter;
+import ch.sharedvd.tipi.engine.model.*;
 import org.junit.Test;
 
 import java.util.List;

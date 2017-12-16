@@ -2,6 +2,7 @@ package ch.sharedvd.tipi.engine.command.impl;
 
 import ch.sharedvd.tipi.engine.command.Command;
 import ch.sharedvd.tipi.engine.command.MetaModelHelper;
+import ch.sharedvd.tipi.engine.engine.TopProcessGroupLauncher;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.DbActivity;

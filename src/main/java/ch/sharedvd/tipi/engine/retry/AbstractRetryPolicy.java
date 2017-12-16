@@ -1,6 +1,6 @@
 package ch.sharedvd.tipi.engine.retry;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public abstract class AbstractRetryPolicy implements RetryPolicy {
 	

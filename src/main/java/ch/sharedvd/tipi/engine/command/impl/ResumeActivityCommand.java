@@ -1,6 +1,7 @@
 package ch.sharedvd.tipi.engine.command.impl;
 
 import ch.sharedvd.tipi.engine.client.VariableMap;
+import ch.sharedvd.tipi.engine.engine.ActivityStateChangeService;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +28,11 @@ public class ResumeActivityCommand extends ActivityCommand {
 		boolean isRes = aActivity.isResumable();
 		if (isRes) {
 			ActivityStateChangeService.resuming(aActivity);
-			AppLog.info(LOGGER, "Resuming activity " + aActivity.getId() + " / " + aActivity.getFqn());
+			LOGGER.info("Resuming activity " + aActivity.getId() + " / " + aActivity.getFqn());
 			runActivity();
 		}
 		else {
-			AppLog.info(LOGGER, "Activity " + aActivity.getId() + " is not in a resumable state (" + aActivity.getState() + ")");
+			LOGGER.info("Activity " + aActivity.getId() + " is not in a resumable state (" + aActivity.getState() + ")");
 		}
 	}
 

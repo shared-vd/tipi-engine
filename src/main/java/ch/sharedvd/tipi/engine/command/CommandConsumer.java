@@ -1,6 +1,10 @@
 package ch.sharedvd.tipi.engine.command;
 
+import ch.sharedvd.tipi.engine.command.impl.ColdRestartCommand;
+import ch.sharedvd.tipi.engine.command.impl.RunExecutingActivitiesCommand;
+import ch.sharedvd.tipi.engine.command.impl.StopConsumerCommand;
 import ch.sharedvd.tipi.engine.utils.BeanAutowirer;
+import ch.sharedvd.tipi.engine.utils.QuantityFormatter;
 import ch.sharedvd.tipi.engine.utils.Startable;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -9,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.util.Assert;
 
 import java.util.Iterator;
@@ -19,275 +22,261 @@ import java.util.concurrent.TimeUnit;
 
 public class CommandConsumer implements Startable, Runnable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(CommandConsumer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandConsumer.class);
 
-	@Autowired
-	private BeanAutowirer autowirer;
+    @Autowired
+    private BeanAutowirer autowirer;
 
-	@Autowired
-	@Qualifier("tipiTransactionManager")
-	private PlatformTransactionManager txManager;
-	private TxTemplate tt;
+    @Autowired
+    @Qualifier("tipiTransactionManager")
+    private PlatformTransactionManager txManager;
+    private TxTemplate tt;
 
-	@Autowired
-	@Qualifier("tipiContext")
-	private String tipiContext;
+    @Autowired
+    @Qualifier("tipiContext")
+    private String tipiContext;
 
-	private boolean resumeTipiAtBoot = true;
+    private boolean resumeTipiAtBoot = true;
 
-	private boolean commandEnCours = false;
-	private BlockingQueue<CommandWrapper> queue;
-	private Thread consumationThread;
-	private boolean stopped = true; // par défaut, le commande consumer n'est *pas* démarré
+    private boolean commandEnCours = false;
+    private BlockingQueue<CommandWrapper> queue;
+    private Thread consumationThread;
+    private boolean stopped = true; // par défaut, le commande consumer n'est *pas* démarré
 
-	@Override
-	public void start() throws Exception {
-		LOGGER.info("Start called");
+    @Override
+    public void start() throws Exception {
+        LOGGER.info("Start called");
 
-		Assert.isTrue(stopped);
+        Assert.isTrue(stopped);
 
-		stopped = false;
-		tt = new TxTemplate(txManager);
+        stopped = false;
+        tt = new TxTemplate(txManager);
 
-		queue = new ArrayBlockingQueue<CommandWrapper>(100000);
+        queue = new ArrayBlockingQueue<CommandWrapper>(100000);
 
-		// Thread de consommation
-		this.consumationThread = new Thread(this);
-		consumationThread.setName("TiPi-Consumer-" + tipiContext);
-		consumationThread.setPriority(Thread.NORM_PRIORITY + 1);
-		LOGGER.info("Démarrage du Thread de CommandConsumer ...");
-		consumationThread.start();
+        // Thread de consommation
+        this.consumationThread = new Thread(this);
+        consumationThread.setName("TiPi-Consumer-" + tipiContext);
+        consumationThread.setPriority(Thread.NORM_PRIORITY + 1);
+        LOGGER.info("Démarrage du Thread de CommandConsumer ...");
+        consumationThread.start();
 
-		if (resumeTipiAtBoot) {
-			// Reveille les taches tout de suite
-			LOGGER.info("Cold restart TiPi ...");
-			addCommand(new ColdRestartCommand());
-		}
-		else {
-			LOGGER.info("Pas de Cold restart de TiPi");
-		}
-	}
+        if (resumeTipiAtBoot) {
+            // Reveille les taches tout de suite
+            LOGGER.info("Cold restart TiPi ...");
+            addCommand(new ColdRestartCommand());
+        } else {
+            LOGGER.info("Pas de Cold restart de TiPi");
+        }
+    }
 
-	@Override
-	public void stop() throws Exception {
-		stopped = true;
-	}
+    @Override
+    public void stop() throws Exception {
+        stopped = true;
+    }
 
-	@Override
-	public void destroy() throws Exception {
-		destroy(false);
-	}
-	public void destroy(boolean calledFromStart) throws Exception {
-		if (!stopped) {
-			if (calledFromStart) {
-				LOGGER.info(LOGGER, "Destroy called from Start");
-			}
-			else {
-				LOGGER.info(LOGGER, "Destroy called");
-			}
-		}
+    @Override
+    public void destroy() throws Exception {
+        destroy(false);
+    }
 
-		stopped = true;
+    public void destroy(boolean calledFromStart) throws Exception {
+        if (!stopped) {
+            if (calledFromStart) {
+                LOGGER.info("Destroy called from Start");
+            } else {
+                LOGGER.info("Destroy called");
+            }
+        }
 
-		if (consumationThread != null) {
-			addCommand(new StopConsumerCommand()); // Va débloquer le Thread de consommation
-			queue = null; // Ne permet plus de mettre des nouveaux trucs dedans
-			int cnt = 0;
-			while (consumationThread != null && cnt < 50) {
-				if (cnt == 2) {
-					LOGGER.debug("Waiting for the thread to stop (max 5 sec) ...");
-				}
-				Thread.sleep(100);
-				cnt++;
-			}
-			if (consumationThread != null && consumationThread.isAlive() && !consumationThread.isInterrupted()) {
-				LOGGER.info(LOGGER, "Thread not stopped by itself. Interrupting ...");
-				consumationThread.interrupt();
-				consumationThread.join();
-			}
-			Assert.isNull(consumationThread);
-		}
-		queue = null;
-	}
+        stopped = true;
 
-	public int getPendingCommandCount() {
-		if (queue != null) {
-			return queue.size();
-		}
-		return 0;
-	}
+        if (consumationThread != null) {
+            addCommand(new StopConsumerCommand()); // Va débloquer le Thread de consommation
+            queue = null; // Ne permet plus de mettre des nouveaux trucs dedans
+            int cnt = 0;
+            while (consumationThread != null && cnt < 50) {
+                if (cnt == 2) {
+                    LOGGER.debug("Waiting for the thread to stop (max 5 sec) ...");
+                }
+                Thread.sleep(100);
+                cnt++;
+            }
+            if (consumationThread != null && consumationThread.isAlive() && !consumationThread.isInterrupted()) {
+                LOGGER.info("Thread not stopped by itself. Interrupting ...");
+                consumationThread.interrupt();
+                consumationThread.join();
+            }
+            Assert.isNull(consumationThread);
+        }
+        queue = null;
+    }
 
-	public boolean hasCommandPending() {
-		if (queue != null) {
-			boolean has = (queue.size() > 0) || commandEnCours;
-			return has;
-		}
-		return commandEnCours;
-	}
+    public int getPendingCommandCount() {
+        if (queue != null) {
+            return queue.size();
+        }
+        return 0;
+    }
 
-	public void removeCommandOfClass(Class<? extends Command> clazz) {
-		removeCommandOfClass(clazz, false);
-	}
+    public boolean hasCommandPending() {
+        if (queue != null) {
+            boolean has = (queue.size() > 0) || commandEnCours;
+            return has;
+        }
+        return commandEnCours;
+    }
 
-	private void removeCommandOfClass(Class<? extends Command> clazz, boolean aNotTheFirst) {
-		Assert.notNull(clazz);
-		if (queue != null) {
-			int count = 0;
-			Iterator<CommandWrapper> iter = queue.iterator();
-			boolean first = aNotTheFirst;
-			while (iter.hasNext()) {
-				CommandWrapper c = iter.next();
-				if (c != null) {
-					Assert.notNull(c.getCommand());
-					if (clazz.isAssignableFrom(c.getCommand().getClass())) {
-						// On laisse la première, on supprime les suivantes (il ne doit en rester plus que une en queue)
-						if (!first) {
-							iter.remove();
-							count++;
-						}
-						first = false;
-					}
-				}
-			}
-			if (count > 0) {
-				LOGGER.debug("Suppression de " + count + " Command du type " + clazz.getSimpleName());
-			}
-		}
-	}
+    public void removeCommandOfClass(Class<? extends Command> clazz) {
+        removeCommandOfClass(clazz, false);
+    }
 
-	@Override
-	public void run() {
+    private void removeCommandOfClass(Class<? extends Command> clazz, boolean aNotTheFirst) {
+        Assert.notNull(clazz);
+        if (queue != null) {
+            int count = 0;
+            Iterator<CommandWrapper> iter = queue.iterator();
+            boolean first = aNotTheFirst;
+            while (iter.hasNext()) {
+                CommandWrapper c = iter.next();
+                if (c != null) {
+                    Assert.notNull(c.getCommand());
+                    if (clazz.isAssignableFrom(c.getCommand().getClass())) {
+                        // On laisse la première, on supprime les suivantes (il ne doit en rester plus que une en queue)
+                        if (!first) {
+                            iter.remove();
+                            count++;
+                        }
+                        first = false;
+                    }
+                }
+            }
+            if (count > 0) {
+                LOGGER.debug("Suppression de " + count + " Command du type " + clazz.getSimpleName());
+            }
+        }
+    }
 
-		boolean loopActive = true;
-		while (loopActive) {
-			try {
-				if (queue == null) {
-					// Est-ce seulement possible ?
-					loopActive = false;
-				}
-				else {
-					commandEnCours = false;
+    @Override
+    public void run() {
 
-					final CommandWrapper currentCommand = queue.take();
-					// currentCommand ne peut pas être null: il y a soit une commande soit une InterruptedException.
+        boolean loopActive = true;
+        while (loopActive) {
+            try {
+                if (queue == null) {
+                    // Est-ce seulement possible ?
+                    loopActive = false;
+                } else {
+                    commandEnCours = false;
 
-					commandEnCours = true;
+                    final CommandWrapper currentCommand = queue.take();
+                    // currentCommand ne peut pas être null: il y a soit une commande soit une InterruptedException.
 
-					// On peut être en destroy => faire le minimum (en tout cas pas l'autowire!)
-					if (currentCommand.getCommand() instanceof StopConsumerCommand) {
-						loopActive = false;
-					}
-					else {
+                    commandEnCours = true;
 
-						// On le fait très vite pour en profiter dans les logs...
-						autowirer.autowire(currentCommand.getCommand());
+                    // On peut être en destroy => faire le minimum (en tout cas pas l'autowire!)
+                    if (currentCommand.getCommand() instanceof StopConsumerCommand) {
+                        loopActive = false;
+                    } else {
 
-						if (LOGGER.isDebugEnabled()) {
-							LOGGER.debug("Begin command: " + currentCommand.getCommand());
-						}
+                        // On le fait très vite pour en profiter dans les logs...
+                        autowirer.autowire(currentCommand.getCommand());
 
-						// Temps d'attente de la commande
-						if (currentCommand.getElapsedTimeMillis() > 10000) {
-							LOGGER.warn(LOGGER, "The command: " + currentCommand.getCommand() + " waited for "+QuantityFormatter.formatMillis(currentCommand.getElapsedTimeMillis()));
-						}
-						else if (LOGGER.isDebugEnabled()) {
-							LOGGER.debug("The command: " + currentCommand.getCommand() + " waited for "+QuantityFormatter.formatMillis(currentCommand.getElapsedTimeMillis()));
-						}
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("Begin command: " + currentCommand.getCommand());
+                        }
 
-						// Lancement de la commande
-						final long begin = System.currentTimeMillis();
-						{
-							try {
-								if (currentCommand.getCommand().needTransaction()) {
-									tt.doInTransaction(new TxCallbackWithoutResult() {
-										@Override
-										public void execute(TransactionStatus status) throws Exception {
-											currentCommand.getCommand().execute();
-										}
-									});
-								}
-								else {
-									currentCommand.getCommand().execute();
-								}
-							}
-							catch (Exception e) {
-								LOGGER.error(LOGGER, "Exception pendant le traitement de la commande (retry=" + currentCommand.getNbRetry()
-										+ " command=" + currentCommand.getCommand() + ") : " + e, e);
+                        // Temps d'attente de la commande
+                        if (currentCommand.getElapsedTimeMillis() > 10000) {
+                            LOGGER.warn("The command: " + currentCommand.getCommand() + " waited for " + QuantityFormatter.formatMillis(currentCommand.getElapsedTimeMillis()));
+                        } else if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("The command: " + currentCommand.getCommand() + " waited for " + QuantityFormatter.formatMillis(currentCommand.getElapsedTimeMillis()));
+                        }
 
-								// Erreur -> ajoute la commande a la fin de la queue si on a pas deja essayé trop de fois
-								if (currentCommand.getNbRetry() <= 5) {
-									currentCommand.incNbRetry();
-									queue.add(currentCommand);
-									Thread.sleep(2000); // On attends un peu pour pas bourrer trop la base quand il y a une erreur
-								}
-							}
-						}
-						// Temps de processing de la command
-						final long diff = System.currentTimeMillis() - begin;
-						if (diff > 3000) {
-							LOGGER.warn(LOGGER, "The command: " + currentCommand.getCommand() + " has taken "+QuantityFormatter.formatMillis(diff));
-						}
-						else if (LOGGER.isDebugEnabled()) {
-							LOGGER.debug("The command: " + currentCommand.getCommand() + " has taken "+QuantityFormatter.formatMillis(diff));
-						}
+                        // Lancement de la commande
+                        final long begin = System.currentTimeMillis();
+                        {
+                            try {
+                                if (currentCommand.getCommand().needTransaction()) {
+                                    tt.txWithout((status) -> {
+                                        currentCommand.getCommand().execute();
+                                    });
+                                } else {
+                                    currentCommand.getCommand().execute();
+                                }
+                            } catch (Exception e) {
+                                LOGGER.error("Exception pendant le traitement de la commande (retry=" + currentCommand.getNbRetry()
+                                        + " command=" + currentCommand.getCommand() + ") : " + e, e);
 
-						if (LOGGER.isDebugEnabled()) {
-							LOGGER.debug("End command: " + currentCommand.getCommand());
-						}
+                                // Erreur -> ajoute la commande a la fin de la queue si on a pas deja essayé trop de fois
+                                if (currentCommand.getNbRetry() <= 5) {
+                                    currentCommand.incNbRetry();
+                                    queue.add(currentCommand);
+                                    Thread.sleep(2000); // On attends un peu pour pas bourrer trop la base quand il y a une erreur
+                                }
+                            }
+                        }
+                        // Temps de processing de la command
+                        final long diff = System.currentTimeMillis() - begin;
+                        if (diff > 3000) {
+                            LOGGER.warn("The command: " + currentCommand.getCommand() + " has taken " + QuantityFormatter.formatMillis(diff));
+                        } else if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("The command: " + currentCommand.getCommand() + " has taken " + QuantityFormatter.formatMillis(diff));
+                        }
 
-						// On calcule les stats après la command.
-						// On pénalise moins le système vu qu'on vient de démarrer plein d'activités
-						engineInterceptor.afterConsumerStartActivity();
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("End command: " + currentCommand.getCommand());
+                        }
 
-					}
-				}
-			}
-			catch (InterruptedException inter) {
-				// On ne fait rien
-				Assert.isTrue(stopped);
-				loopActive = false;
-			}
-			catch (Throwable e) {
-				LOGGER.error(ExceptionUtils.getStackTrace(e));
-				LOGGER.error(LOGGER, e.getMessage(), e);
-			}
-		}
-		LOGGER.info(LOGGER, "CommandConsumer thread (" + tipiContext + ") stopped");
-		commandEnCours = false;
-		consumationThread = null;
-	}
+                        // On calcule les stats après la command.
+                        // On pénalise moins le système vu qu'on vient de démarrer plein d'activités
+                        //engineInterceptor.afterConsumerStartActivity();
 
-	public void addCommand(Command c) {
-		if (queue != null) {
-			try {
-				boolean result = queue.offer(new CommandWrapper(c), 10, TimeUnit.SECONDS);
-				if (result) {
-					if (LOGGER.isDebugEnabled()) {
-						LOGGER.debug("Ajout de '" + c + "' Nombre de commandes dans la queue après: " + queue.size());
-					}
-				}
-				else {
-					LOGGER.error(LOGGER, "Impossible d'ajouter la commande '" + c + "' dans la queue! Size=" + queue.size() + " Command="+ c.getClass().getSimpleName());
-					for (CommandWrapper w : queue) {
-						LOGGER.error(LOGGER, w.toString());
-					}
-				}
-				// Supprime les commandes inutiles pour limiter la taille de la queue.
-				if (c instanceof RunExecutingActivitiesCommand) {
-					removeCommandOfClass(c.getClass(), true);
-				}
-			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
+                    }
+                }
+            } catch (InterruptedException inter) {
+                // On ne fait rien
+                Assert.isTrue(stopped);
+                loopActive = false;
+            } catch (Throwable e) {
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
+        LOGGER.info("CommandConsumer thread (" + tipiContext + ") stopped");
+        commandEnCours = false;
+        consumationThread = null;
+    }
 
-	public boolean isStopped() {
-		return stopped;
-	}
+    public void addCommand(Command c) {
+        if (queue != null) {
+            try {
+                boolean result = queue.offer(new CommandWrapper(c), 10, TimeUnit.SECONDS);
+                if (result) {
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Ajout de '" + c + "' Nombre de commandes dans la queue après: " + queue.size());
+                    }
+                } else {
+                    LOGGER.error("Impossible d'ajouter la commande '" + c + "' dans la queue! Size=" + queue.size() + " Command=" + c.getClass().getSimpleName());
+                    for (CommandWrapper w : queue) {
+                        LOGGER.error(w.toString());
+                    }
+                }
+                // Supprime les commandes inutiles pour limiter la taille de la queue.
+                if (c instanceof RunExecutingActivitiesCommand) {
+                    removeCommandOfClass(c.getClass(), true);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
-	public void setResumeTipiAtBoot(boolean startTipi) {
-		this.resumeTipiAtBoot = startTipi;
-	}
+    public boolean isStopped() {
+        return stopped;
+    }
+
+    public void setResumeTipiAtBoot(boolean startTipi) {
+        this.resumeTipiAtBoot = startTipi;
+    }
 }

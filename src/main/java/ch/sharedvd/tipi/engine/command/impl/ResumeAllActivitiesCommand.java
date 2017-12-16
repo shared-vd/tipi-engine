@@ -1,78 +1,86 @@
 package ch.sharedvd.tipi.engine.command.impl;
 
-import ch.vd.registre.tipi.command.Command;
-import ch.vd.registre.tipi.engine.ActivityStateChangeService;
-import ch.vd.registre.tipi.model.ActivityState;
-import ch.vd.registre.tipi.model.DbActivity;
-import ch.vd.shared.hibernate.sql.DialectToSqlHelper;
+import ch.sharedvd.tipi.engine.command.Command;
+import ch.sharedvd.tipi.engine.engine.ActivityStateChangeService;
+import ch.sharedvd.tipi.engine.model.ActivityState;
+import ch.sharedvd.tipi.engine.model.DbActivity;
+import ch.sharedvd.tipi.engine.utils.DialectToSqlHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 
 public class ResumeAllActivitiesCommand extends Command {
 
-	private static final Logger LOGGER = Logger.getLogger(ResumeAllActivitiesCommand.class);
+    private static final Logger LOGGER = Logger.getLogger(ResumeAllActivitiesCommand.class);
 
-	@Autowired
-	@Qualifier("hibernateDialect")
-	private String dialect;
+    @Autowired
+    @Qualifier("hibernateDialect")
+    private String dialect;
+    @Autowired
+    private EntityManager em;
 
-	private ActivityState state;
-	private String groupName;
+    private ActivityState state;
+    private String groupName;
 
-	public ResumeAllActivitiesCommand(ActivityState state) {
-		this.state = state;
-	}
-	public ResumeAllActivitiesCommand(ActivityState state, String gname) {
-		this.state = state;
-		this.groupName = gname;
-	}
+    public ResumeAllActivitiesCommand(ActivityState state) {
+        this.state = state;
+    }
 
-	@SuppressWarnings("unchecked")
-	public List<DbActivity> getActivities() {
+    public ResumeAllActivitiesCommand(ActivityState state, String gname) {
+        this.state = state;
+        this.groupName = gname;
+    }
 
-		final DialectToSqlHelper helper = new DialectToSqlHelper(dialect);
+    @SuppressWarnings("unchecked")
+    public List<DbActivity> getActivities() {
 
-		final Object[] params;
-		final String HQL;
-		if (StringUtils.isNotBlank(groupName)) {
-			HQL =
-					"select a from DbActivity a join a.process p " +
-					"where p.id in (select pi.id from DbTopProcess pi where pi.fqn = ?1) " +
-					"  and a.requestEndExecution = "+ helper.formatBoolean(false) +
-					"  and a.state = ?2";
-			params = new Object[] {groupName, state};
-		}
-		else {
-			HQL =
-					"select a from DbActivity a " +
-					"where a.requestEndExecution = "+ helper.formatBoolean(false) +
-					"  and a.state = ?1";
-			params = new Object[] {state};
-		}
-		final List<DbActivity> models = persist.list(HQL, params);
-		return models;
-	}
+        final DialectToSqlHelper helper = new DialectToSqlHelper(dialect);
 
-	@Override
-	public void execute() {
-		final List<DbActivity> models = getActivities();
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Trouvé " + models.size() + " activités a resumer");
-		}
-		for (DbActivity acti : models) {
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Resuming activity " + acti.getId() + " / " + acti.getFqn());
-			}
-			ActivityStateChangeService.resuming(acti);
-			runActivity(acti);
-		}
-	}
+        final String HQL;
+        final List<DbActivity> models;
+        if (StringUtils.isNotBlank(groupName)) {
+            HQL =
+                    "select a from DbActivity a join a.process p " +
+                            "where p.id in (select pi.id from DbTopProcess pi where pi.fqn = :group) " +
+                            "  and a.requestEndExecution = " + helper.formatBoolean(false) +
+                            "  and a.state = :state";
+            final Query q = em.createQuery(HQL);
+            q.setParameter("group", groupName);
+            q.setParameter("state", state);
+            models = q.getResultList();
+        } else {
+            HQL =
+                    "select a from DbActivity a " +
+                            "where a.requestEndExecution = " + helper.formatBoolean(false) +
+                            "  and a.state = ?1";
+            final Query q = em.createQuery(HQL);
+            q.setParameter("state", state);
+            models = q.getResultList();
+        }
+        return models;
+    }
 
-	public void setDialect(String dialect) {
-		this.dialect = dialect;
-	}
+    @Override
+    public void execute() {
+        final List<DbActivity> models = getActivities();
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Trouvé " + models.size() + " activités a resumer");
+        }
+        for (DbActivity acti : models) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Resuming activity " + acti.getId() + " / " + acti.getFqn());
+            }
+            ActivityStateChangeService.resuming(acti);
+            runActivity(acti);
+        }
+    }
+
+    public void setDialect(String dialect) {
+        this.dialect = dialect;
+    }
 }

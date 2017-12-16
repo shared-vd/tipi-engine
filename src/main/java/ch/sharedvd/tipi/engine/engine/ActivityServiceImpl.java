@@ -10,8 +10,6 @@ import ch.sharedvd.tipi.engine.command.impl.ResumeAllActivitiesCommand;
 import ch.sharedvd.tipi.engine.command.impl.RunExecutingActivitiesCommand;
 import ch.sharedvd.tipi.engine.infos.ActivityThreadInfos;
 import ch.sharedvd.tipi.engine.infos.ConnectionCapInfos;
-import ch.sharedvd.tipi.engine.infos.TipiActivityInfos;
-import ch.sharedvd.tipi.engine.infos.TipiTopProcessInfos;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
@@ -21,7 +19,6 @@ import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
 import ch.sharedvd.tipi.engine.svc.ActivityPersistenceService;
 import ch.sharedvd.tipi.engine.utils.Assert;
-import ch.sharedvd.tipi.engine.utils.ResultListWithCount;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -151,22 +148,6 @@ public class ActivityServiceImpl implements InitializingBean {
         commandService.sendCommand(new RunExecutingActivitiesCommand());
 
         return model.getId();
-    }
-
-    public ResultListWithCount<TipiTopProcessInfos> getAllProcesses(final int maxHits) {
-        return activityPersistenceService.getAllProcesses(maxHits);
-    }
-
-    public ResultListWithCount<TipiTopProcessInfos> getRunningProcesses(final int maxHits) {
-        return activityPersistenceService.getRunningProcesses(maxHits);
-    }
-
-    public TipiActivityInfos getActivityInfos(final long id, final boolean loadVariables) {
-        return activityPersistenceService.getActivityInfos(id, loadVariables);
-    }
-
-    public ResultListWithCount<TipiActivityInfos> searchActivities(final TipiCriteria criteria, final int maxHits) {
-        return activityPersistenceService.searchActivities(criteria, maxHits);
     }
 
     public void resumeAllError() {
