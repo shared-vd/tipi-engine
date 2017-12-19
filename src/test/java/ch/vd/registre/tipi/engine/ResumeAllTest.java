@@ -7,7 +7,6 @@ import ch.vd.registre.tipi.engine.resumeall.ResumeAllActivity;
 import ch.vd.registre.tipi.engine.resumeall.ResumeAllProcess;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.transaction.TransactionStatus;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,23 +43,20 @@ public class ResumeAllTest extends TipiEngineTest {
             boolean ready = false;
             while (!ready) {
                 Thread.sleep(20);
-                ready = doInTransaction(new TxCallback<Boolean>() {
-                    @Override
-                    public Boolean execute(TransactionStatus status) throws Exception {
-                        DbActivityCriteria crit = new DbActivityCriteria();
-                        crit.addAndExpression(crit.requestEndExecution().eq(false));
-                        List<DbActivity> actis = hqlBuilder.getResultList(crit);
-                        boolean wait = false;
-                        int suspErr = 0;
-                        for (DbActivity acti : actis) {
-                            if (ActivityState.WAIT_ON_CHILDREN == acti.getState()) {
-                                wait = true; // le top process
-                            } else if (stateToResume == acti.getState()) {
-                                suspErr++;
-                            }
+                ready = txTemplate.txWith(s -> {
+                    DbActivityCriteria crit = new DbActivityCriteria();
+                    crit.addAndExpression(crit.requestEndExecution().eq(false));
+                    List<DbActivity> actis = hqlBuilder.getResultList(crit);
+                    boolean wait = false;
+                    int suspErr = 0;
+                    for (DbActivity acti : actis) {
+                        if (ActivityState.WAIT_ON_CHILDREN == acti.getState()) {
+                            wait = true; // le top process
+                        } else if (stateToResume == acti.getState()) {
+                            suspErr++;
                         }
-                        return wait && suspErr == 2;
                     }
+                    return wait && suspErr == 2;
                 }).booleanValue();
             }
         }

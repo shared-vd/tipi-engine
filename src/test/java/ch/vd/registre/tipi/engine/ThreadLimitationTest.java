@@ -214,7 +214,7 @@ public class ThreadLimitationTest extends TipiEngineTest {
                         model = doInTransaction(new TxCallback<DbActivity>() {
                             @Override
                             public DbActivity execute(TransactionStatus aArg0) throws Exception {
-                                return persist.get(DbActivity.class, actId);
+                                return activityRepository.findOne(actId);
                             }
                         });
                     } while ((null != model)

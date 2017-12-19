@@ -101,7 +101,7 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
 
         txTemplate.txWithout(s -> {
             ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR, "bla");
-            cmd.setPersist(persist);
+            //cmd.set(persist);
             cmd.setDialect(hibernateDialect);
 
             List<DbActivity> actis = cmd.getActivities();

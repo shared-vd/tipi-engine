@@ -5,6 +5,7 @@ import ch.sharedvd.tipi.engine.client.TipiFacade;
 import ch.sharedvd.tipi.engine.query.TipiQueryFacade;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
+import ch.sharedvd.tipi.engine.runner.ActivityRunningService;
 import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
 import org.junit.Before;
@@ -25,10 +26,11 @@ public abstract class AbstractTipiPersistenceTest extends AbstractSpringBootTrun
 
     @Autowired
     protected ActivityPersisterService activityPersistenceService;
+    @Autowired
+    protected ActivityRunningService activityRunningService;
 
     @Autowired
     protected TopProcessRepository topProcessRepository;
-
     @Autowired
     protected ActivityRepository activityRepository;
 

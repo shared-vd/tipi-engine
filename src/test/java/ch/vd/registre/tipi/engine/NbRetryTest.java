@@ -24,7 +24,6 @@ public class NbRetryTest extends TipiEngineTest {
 
     @Test
     public void nbRetry() throws Exception {
-
         final Long pid = doWithLog4jBlocking("ch.vd.registre.tipi", new Log4jBlockingCallback<Long>() {
             @Override
             public Long execute() throws Exception {
@@ -37,7 +36,7 @@ public class NbRetryTest extends TipiEngineTest {
         });
 
         txTemplate.txWithout(s -> {
-            DbActivity model = persist.get(DbActivity.class, pid);
+            DbActivity model = activityRepository.findOne(pid);
             Assert.assertEquals(2, model.getNbRetryDone());
             Assert.assertEquals(ActivityState.ERROR, model.getState());
 

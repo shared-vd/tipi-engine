@@ -2,9 +2,9 @@ package ch.vd.registre.tipi.engine.coldStart;
 
 import ch.sharedvd.tipi.engine.command.impl.ColdRestartCommand;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
-import ch.sharedvd.tipi.engine.engine.TopProcessGroupLauncher;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
+import ch.sharedvd.tipi.engine.runner.TopProcessGroupLauncher;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class TipiColdStarterTest extends TipiEngineTest {
             while (!end) {
                 Thread.sleep(100);
                 end = txTemplate.txWith(s -> {
-                    DbActivity g1a1 = persist.get(DbActivity.class, ColdGroup1Activity1.id);
+                    DbActivity g1a1 = activityRepository.findOne(ColdGroup1Activity1.id);
                     if ((g1a1 != null)
                             &&
                             g1a1.getState() == ActivityState.FINISHED
@@ -59,7 +59,7 @@ public class TipiColdStarterTest extends TipiEngineTest {
             while (!end) {
                 Thread.sleep(100);
                 end = txTemplate.txWith(s -> {
-                        DbActivity g1a2 = persist.get(DbActivity.class, ColdGroup1Activity2.id);
+                    DbActivity g1a2 = activityRepository.findOne(ColdGroup1Activity2.id);
                         if ((g1a2 != null)
                                 &&
                                 g1a2.getState() == ActivityState.ERROR
@@ -87,11 +87,11 @@ public class TipiColdStarterTest extends TipiEngineTest {
 
         // On remet les activités a pas terminées
         txTemplate.txWithout(s -> {
-            final DbActivity g1a1 = persist.get(DbActivity.class, ColdGroup1Activity1.id);
+            final DbActivity g1a1 = activityRepository.findOne(ColdGroup1Activity1.id);
             g1a1.setState(ActivityState.FINISHED);
             g1a1.setRequestEndExecution(true);
 
-            final DbActivity g1a2 = persist.get(DbActivity.class, ColdGroup1Activity2.id);
+            final DbActivity g1a2 = activityRepository.findOne(ColdGroup1Activity2.id);
             g1a2.setState(ActivityState.EXECUTING);
             g1a2.setRequestEndExecution(false);
 
@@ -116,7 +116,7 @@ public class TipiColdStarterTest extends TipiEngineTest {
             boolean end = false;
             while (!end) {
                 persist.clear();
-                final DbActivity g1a1 = persist.get(DbActivity.class, ColdGroup1Activity1.id);
+                final DbActivity g1a1 = activityRepository.findOne(ColdGroup1Activity1.id);
                 end = !g1a1.isRequestEndExecution();
 
             }

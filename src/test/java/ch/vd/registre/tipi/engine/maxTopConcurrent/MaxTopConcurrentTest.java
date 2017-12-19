@@ -135,7 +135,7 @@ public class MaxTopConcurrentTest extends TipiEngineTest {
         Assert.assertTrue(tipiFacade.isRunning(id1)); // le premier process doit être démarré
         Assert.assertTrue(tipiFacade.isRunning(id2)); // le second process doit aussi être démarré (dans le sens : une demande de démarrage a été faite)
         Assert.assertTrue(tipiFacade.isProcessScheduled(id1)); // le premier process doit être en cours d'exécution
-        assertFalse(tipiFacade.isProcessScheduled(id2)); // le second process ne doit pas être en cours d'exécution
+        Assert.assertFalse(tipiFacade.isProcessScheduled(id2)); // le second process ne doit pas être en cours d'exécution
 
         // on libère le lock du premier process
         //noinspection SynchronizationOnLocalVariableOrMethodParameter

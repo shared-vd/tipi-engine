@@ -2,11 +2,11 @@ package ch.sharedvd.tipi.engine.command.impl;
 
 import ch.sharedvd.tipi.engine.command.Command;
 import ch.sharedvd.tipi.engine.command.MetaModelHelper;
-import ch.sharedvd.tipi.engine.engine.TopProcessGroupLauncher;
 import ch.sharedvd.tipi.engine.engine.TopProcessGroupManager;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.DbActivity;
+import ch.sharedvd.tipi.engine.runner.TopProcessGroupLauncher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;

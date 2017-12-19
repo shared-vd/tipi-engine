@@ -1,13 +1,11 @@
-package ch.vd.registre.tipi.engine;
+package ch.sharedvd.tipi.engine.runner;
 
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
-import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +14,8 @@ import java.util.List;
 
 public class ActivityServiceTest extends TipiEngineTest {
 
-    private static long ID1;
-    private static long ID2;
-
-    @Autowired
-    protected ActivityPersisterService activityService;
+    private static Long ID1;
+    private static Long ID2;
 
     @Test
     public void getExecutingActivities() throws Exception {
@@ -65,7 +60,7 @@ public class ActivityServiceTest extends TipiEngineTest {
             // On veut que ID2 soit en premier et ID1 en deuxième
             // ID1 a un retry count > ID2 donc passe après
 
-            List<DbActivity> ams = activityService.getExecutingActivities("abc", new ArrayList<Long>(), 10);
+            List<DbActivity> ams = activityRunningService.getExecutingActivities("abc", new ArrayList<>(), 10);
             Assert.assertEquals(ID2, ams.get(0).getId());
             Assert.assertEquals(ID1, ams.get(1).getId());
         });

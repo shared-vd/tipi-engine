@@ -19,6 +19,7 @@ import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.retry.DefaultRetryPolicy;
 import ch.sharedvd.tipi.engine.retry.RetryContext;
 import ch.sharedvd.tipi.engine.retry.RetryPolicy;
+import ch.sharedvd.tipi.engine.runner.TopProcessGroupLauncher;
 import ch.sharedvd.tipi.engine.utils.Assert;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
 import org.apache.commons.lang3.exception.ExceptionUtils;

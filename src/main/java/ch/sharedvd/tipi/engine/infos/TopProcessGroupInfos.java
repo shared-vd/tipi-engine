@@ -1,6 +1,6 @@
 package ch.sharedvd.tipi.engine.infos;
 
-import ch.sharedvd.tipi.engine.engine.TopProcessGroupLauncher;
+import ch.sharedvd.tipi.engine.runner.TopProcessGroupLauncher;
 
 import java.io.Serializable;
 

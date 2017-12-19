@@ -1,4 +1,4 @@
-package ch.sharedvd.tipi.engine.engine;
+package ch.sharedvd.tipi.engine.runner;
 
 import ch.sharedvd.tipi.engine.action.ActivityFacade;
 import ch.sharedvd.tipi.engine.action.TopProcess;
@@ -8,6 +8,10 @@ import ch.sharedvd.tipi.engine.command.MetaModelHelper;
 import ch.sharedvd.tipi.engine.command.impl.ResumeActivityCommand;
 import ch.sharedvd.tipi.engine.command.impl.ResumeAllActivitiesCommand;
 import ch.sharedvd.tipi.engine.command.impl.RunExecutingActivitiesCommand;
+import ch.sharedvd.tipi.engine.engine.ActivityStateChangeService;
+import ch.sharedvd.tipi.engine.engine.ConnectionCapManager;
+import ch.sharedvd.tipi.engine.engine.ProcessDeleter;
+import ch.sharedvd.tipi.engine.engine.TopProcessGroupManager;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
@@ -26,6 +30,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ActivityRunningService {
 
@@ -60,7 +65,9 @@ public class ActivityRunningService {
 
     // package
     List<DbActivity> getExecutingActivities(String aTopProcessName, Collection<Long> aRunningActivities, int max) {
-        return activityRepository.findExecutingActivities(aTopProcessName);
+        final List<DbActivity> execs = activityRepository.findExecutingActivities(aTopProcessName);
+        final List<DbActivity> execsNotRunning = execs.stream().filter(a -> !aRunningActivities.contains(a.getId())).collect(Collectors.toList());
+        return execsNotRunning;
     }
 
     public long launch(final ActivityMetaModel meta, final VariableMap vars) {

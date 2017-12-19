@@ -3,6 +3,8 @@ package ch.sharedvd.tipi.engine.engine;
 import ch.sharedvd.tipi.engine.command.MetaModelHelper;
 import ch.sharedvd.tipi.engine.infos.ActivityThreadInfos;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
+import ch.sharedvd.tipi.engine.runner.ActivityRunningService;
+import ch.sharedvd.tipi.engine.runner.TopProcessGroupLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 

@@ -12,6 +12,7 @@ import ch.sharedvd.tipi.engine.query.ActivityQueryService;
 import ch.sharedvd.tipi.engine.query.TipiQueryFacade;
 import ch.sharedvd.tipi.engine.query.TipiQueryFacadeImpl;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
+import ch.sharedvd.tipi.engine.runner.ActivityRunningService;
 import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import ch.sharedvd.tipi.engine.utils.BeanAutowirer;
 import org.springframework.boot.autoconfigure.domain.EntityScan;

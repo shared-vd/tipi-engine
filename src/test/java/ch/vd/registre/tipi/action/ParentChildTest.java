@@ -14,9 +14,6 @@ import java.util.List;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 
-;
-
-
 public class ParentChildTest extends TipiEngineTest {
 
     @Test
@@ -109,7 +106,7 @@ public class ParentChildTest extends TipiEngineTest {
         // Vérifie les pointeurs parent/process
         txTemplate.txWithout(s -> {
             // Process
-            DbTopProcess process = persist.get(DbTopProcess.class, pid);
+            DbTopProcess process = topProcessRepository.findOne(pid);
             assertNotNull(process);
             assertNull(process.getProcess());
             assertNull(process.getParent());

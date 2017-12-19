@@ -51,7 +51,7 @@ public class ResumingTest extends TipiEngineTest {
         Assert.assertEquals(1, ResumingProcess.value);
 
         txTemplate.txWithout(s -> {
-            DbActivity model = persist.get(DbActivity.class, pid);
+            DbActivity model = activityRepository.findOne(pid);
             Assert.assertEquals(ActivityState.SUSPENDED, model.getState());
             Assert.assertEquals("blabla", model.getCorrelationId());
 
@@ -73,7 +73,7 @@ public class ResumingTest extends TipiEngineTest {
         }
 
         txTemplate.txWithout(s -> {
-            DbActivity model = persist.get(DbActivity.class, pid);
+            DbActivity model = activityRepository.findOne(pid);
             Assert.assertEquals(ActivityState.FINISHED, model.getState());
             Assert.assertEquals("blabla", model.getCorrelationId());
             Assert.assertEquals(42, model.getVariable("correl"));

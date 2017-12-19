@@ -72,7 +72,7 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
         }
 
         txTemplate.txWithout(s -> {
-            DbTopProcess model = persist.get(DbTopProcess.class, pid);
+            DbTopProcess model = topProcessRepository.findOne(pid);
             Assert.assertEquals(ActivityState.FINISHED, model.getState());
             assertFalse(model.isRequestEndExecution());
             Assert.assertEquals(1, model.getNbRetryDone());
@@ -91,7 +91,7 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
         }
 
         txTemplate.txWithout(s -> {
-            DbTopProcess model = persist.get(DbTopProcess.class, pid);
+            DbTopProcess model = topProcessRepository.findOne(pid);
             Assert.assertEquals(ActivityState.ERROR, model.getState());
             assertFalse(model.isRequestEndExecution());
             Assert.assertEquals(0, model.getNbRetryDone());
@@ -111,7 +111,7 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
         }
 
         txTemplate.txWithout(s -> {
-            DbTopProcess model = persist.get(DbTopProcess.class, pid);
+            DbTopProcess model = topProcessRepository.findOne(pid);
             Assert.assertEquals(ActivityState.ERROR, model.getState());
             assertFalse(model.isRequestEndExecution());
             Assert.assertEquals(0, model.getNbRetryDone());
@@ -137,7 +137,7 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
         });
 
         txTemplate.txWithout(s -> {
-            DbTopProcess model = persist.get(DbTopProcess.class, pid);
+            DbTopProcess model = topProcessRepository.findOne(pid);
             Assert.assertEquals(ActivityState.FINISHED, model.getState());
             assertFalse(model.isRequestEndExecution());
             Assert.assertEquals(0, model.getNbRetryDone());

@@ -3,6 +3,7 @@ package ch.sharedvd.tipi.engine.engine;
 import ch.sharedvd.tipi.engine.command.CommandHelperService;
 import ch.sharedvd.tipi.engine.command.CommandService;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
+import ch.sharedvd.tipi.engine.runner.TopProcessGroupLauncher;
 import org.springframework.transaction.PlatformTransactionManager;
 
 public class ActivityRunnerContext {

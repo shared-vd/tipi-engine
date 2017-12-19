@@ -2,10 +2,10 @@ package ch.sharedvd.tipi.engine.command.impl;
 
 import ch.sharedvd.tipi.engine.command.Command;
 import ch.sharedvd.tipi.engine.command.MetaModelHelper;
-import ch.sharedvd.tipi.engine.engine.TopProcessGroupLauncher;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.DbActivity;
+import ch.sharedvd.tipi.engine.runner.TopProcessGroupLauncher;
 import ch.sharedvd.tipi.engine.utils.Assert;
 
 public abstract class ActivityCommand extends Command {

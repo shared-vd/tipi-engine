@@ -47,7 +47,7 @@ public class SessionClearTest extends TipiEngineTest {
         }
 
         txTemplate.txWithout(s -> {
-            DbActivity model = persist.get(DbActivity.class, pid);
+            DbActivity model = activityRepository.findOne(pid);
             Assert.assertEquals("bli", model.getVariable("bla"));
 
         });
