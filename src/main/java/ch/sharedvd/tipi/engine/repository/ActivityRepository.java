@@ -8,4 +8,7 @@ import java.util.List;
 public interface ActivityRepository extends JpaRepository<DbActivity, Long> {
 
     List<DbActivity> findByParentId(long parentId);
+
+    List<DbActivity> findByRequestEndExecutionOrderById(boolean state);
+
 }

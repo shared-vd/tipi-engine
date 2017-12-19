@@ -20,8 +20,6 @@ import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
 import ch.sharedvd.tipi.engine.svc.ActivityPersistenceService;
 import ch.sharedvd.tipi.engine.utils.Assert;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -49,9 +47,6 @@ public class ActivityServiceImpl implements InitializingBean {
 
     @Autowired
     private CommandService commandService;
-
-    @Autowired
-    private SessionFactory sessionFactory;
 
     @Autowired
     private ActivityRepository activityRepository;
@@ -104,7 +99,7 @@ public class ActivityServiceImpl implements InitializingBean {
         final long id = txTemplate.txWith((s) -> {
             Assert.notNull(meta);
             Assert.notNull(meta, "Meta not found: " + meta);
-            return launch(sessionFactory.getCurrentSession(), meta, vars);
+            return launch(activityRepository, meta, vars);
         });
         return id;
     }
@@ -116,7 +111,7 @@ public class ActivityServiceImpl implements InitializingBean {
             Assert.notNull(meta);
             Assert.notNull(meta, "Meta not found: " + meta);
 
-            return launch(sessionFactory.getCurrentSession(), meta, vars);
+            return launch(activityRepository, meta, vars);
 
         });
 
@@ -127,18 +122,18 @@ public class ActivityServiceImpl implements InitializingBean {
      * Prends une session en paramètre pour permettre de démarrer un process meme Si on n'a pas de session par défaut (Spring) ou qu'on est
      * dans le flush() ou le commit() (Démarrage de TaskProcess)
      *
-     * @param aSession
+     * @param activityRepository
      * @param meta
      * @param vars
      * @return
      */
-    public long launch(Session aSession, ActivityMetaModel meta, VariableMap vars) {
+    public long launch(ActivityRepository activityRepository, ActivityMetaModel meta, VariableMap vars) {
         // RCPERS-352 Workaround: just to have the connection at the beginning of the transaction...
-        aSession.get(DbActivity.class, 1L);
+        activityRepository.findOne(1L);
 
         Assert.notNull(meta);
         DbActivity model = MetaModelHelper.createModelFromMeta(meta, true, vars, activityPersistenceService);
-        aSession.persist(model);
+        model = activityRepository.save(model);
 
         // State
         ActivityStateChangeService.executingFirstActivity(model);

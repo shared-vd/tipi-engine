@@ -31,10 +31,10 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
             deleter.delete();
         });
 
-        // On vérifie qu'on n'a tjrs 1 activité
+        // On vérifie qu'on n'a plus d'activités
         txTemplate.txWithout((s) -> {
             List<DbActivity> actis = activityRepository.findAll();
-            assertEquals(11, actis.size());
+            assertEquals(0, actis.size());
         });
 
     }
@@ -69,9 +69,9 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
         DbTopProcess process = new DbTopProcess();
         {
             process.setFqn("Proc");
+            activityRepository.save(process);
             addVars(process);
-            DbTopProcess p = activityRepository.save(process);
-            PID = p.getId();
+            PID = process.getId();
         }
 
         DbActivity procAct1;
@@ -80,8 +80,8 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
             procAct1.setFqn("ProcAct1");
             procAct1.setProcess(process);
             procAct1.setParent(process);
+            activityRepository.save(procAct1);
             addVars(procAct1);
-            procAct1 = activityRepository.save(procAct1);
         }
         {
             DbActivity procAct2 = new DbActivity();
@@ -89,8 +89,8 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
             procAct2.setProcess(process);
             procAct2.setParent(process);
             procAct2.setPrevious(procAct1);
-            addVars(procAct2);
             activityRepository.save(procAct2);
+            addVars(procAct2);
         }
 
         // Sub-proc 1
@@ -100,8 +100,8 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
                 sub.setFqn("SubProc");
                 sub.setProcess(process);
                 sub.setParent(process);
+                activityRepository.save(sub);
                 addVars(sub);
-                sub = activityRepository.save(sub);
             }
 
             // S1-Acti1
@@ -114,8 +114,8 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
                 if (exec) {
                     subAct1.setState(ActivityState.EXECUTING);
                 }
+                activityRepository.save(subAct1);
                 addVars(subAct1);
-                subAct1 = activityRepository.save(subAct1);
             }
             // S1-Acti2
             {
@@ -124,8 +124,8 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
                 subAct2.setProcess(process);
                 subAct2.setParent(sub);
                 subAct2.setPrevious(subAct1);
-                addVars(subAct2);
                 activityRepository.save(subAct2);
+                addVars(subAct2);
             }
             // S1-Acti3
             {
@@ -133,8 +133,8 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
                 subAct3.setFqn("SubAct3");
                 subAct3.setProcess(process);
                 subAct3.setParent(sub);
-                addVars(subAct3);
                 activityRepository.save(subAct3);
+                addVars(subAct3);
             }
         } // Sub proc 1
 
@@ -145,8 +145,8 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
                 sub.setFqn("SubProc");
                 sub.setProcess(process);
                 sub.setParent(process);
+                activityRepository.save(sub);
                 addVars(sub);
-                sub = activityRepository.save(sub);
             }
 
             // S2-Acti1
@@ -156,8 +156,8 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
                 subAct1.setFqn("SubAct1");
                 subAct1.setProcess(process);
                 subAct1.setParent(sub);
+                activityRepository.save(subAct1);
                 addVars(subAct1);
-                subAct1 = activityRepository.save(subAct1);
             }
             // S2-Acti2
             {
@@ -169,8 +169,8 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
                 if (exec) {
                     subAct2.setState(ActivityState.EXECUTING);
                 }
-                addVars(subAct2);
                 activityRepository.save(subAct2);
+                addVars(subAct2);
             }
             // S2-Acti3
             {
@@ -178,8 +178,8 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
                 subAct3.setFqn("SubAct3");
                 subAct3.setProcess(process);
                 subAct3.setParent(sub);
-                addVars(subAct3);
                 activityRepository.save(subAct3);
+                addVars(subAct3);
             }
         } // Sub proc 2
     }

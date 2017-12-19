@@ -10,7 +10,6 @@ import ch.sharedvd.tipi.engine.utils.Assert;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.PlatformTransactionManager;
 
 public abstract class Command implements InitializingBean {
@@ -21,7 +20,6 @@ public abstract class Command implements InitializingBean {
 	protected ActivityRepository activityRepository;
 
 	@Autowired
-	@Qualifier("tipiTransactionManager")
 	protected PlatformTransactionManager txManager;
 
 	@Autowired

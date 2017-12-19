@@ -12,7 +12,7 @@ public class DbBaseEntity implements Serializable {
 	private static final long serialVersionUID = 6734035143688829890L;
 
 	private Long id;
-	private Integer version = 1;
+	private Integer version;
 	private Date creation;
 
 	public DbBaseEntity() {

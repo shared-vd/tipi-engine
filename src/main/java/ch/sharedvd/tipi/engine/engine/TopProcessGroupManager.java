@@ -4,7 +4,6 @@ import ch.sharedvd.tipi.engine.command.MetaModelHelper;
 import ch.sharedvd.tipi.engine.infos.ActivityThreadInfos;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.Assert;
 
 import javax.transaction.TransactionManager;
@@ -27,8 +26,7 @@ public class TopProcessGroupManager implements Startable {
     @Autowired
     protected ConnectionCapManager connectionsCup;
 
-    @Autowired
-    @Qualifier("tipiTransactionManager")
+    //@Autowired
     private TransactionManager txManager;
 
     private boolean stopped = false;
