@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface TopProcessRepository extends JpaRepository<DbTopProcess, Long> {
 
-    List<DbTopProcess> findProcessesByName(String processName);
+    List<DbTopProcess> findProcessesByFqn(String processName);
 
 }

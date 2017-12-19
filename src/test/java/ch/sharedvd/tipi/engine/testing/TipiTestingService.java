@@ -35,7 +35,7 @@ public class TipiTestingService {
         final List<TipiTopProcessInfos> list = new ArrayList<>();
 
         txTemplate.txWithout((s) -> {
-            final List<DbTopProcess> results = topProcessRepository.findProcessesByName(clazz.getName());
+            final List<DbTopProcess> results = topProcessRepository.findProcessesByFqn(clazz.getName());
             for (DbTopProcess am : results) {
                 final TipiTopProcessInfos infos = new TipiTopProcessInfos(am, false);
                 list.add(infos);

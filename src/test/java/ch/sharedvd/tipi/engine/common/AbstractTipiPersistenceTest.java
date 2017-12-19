@@ -9,7 +9,6 @@ import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
 import ch.sharedvd.tipi.engine.runner.ActivityRunningService;
 import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
-import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -53,7 +52,4 @@ public abstract class AbstractTipiPersistenceTest extends AbstractSpringBootTrun
         return txTemplate;
     }
 
-    @Before
-    public void onSetUp() throws Exception {
-    }
 }

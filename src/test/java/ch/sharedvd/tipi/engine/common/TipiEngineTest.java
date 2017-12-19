@@ -9,14 +9,7 @@ import ch.sharedvd.tipi.engine.runner.TopProcessGroupLauncher;
 import ch.sharedvd.tipi.engine.runner.TopProcessGroupManager;
 import ch.sharedvd.tipi.engine.testing.TipiTestingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
 
-
-@ContextConfiguration(locations = {
-        TipiTestingConstants.ENGINE,
-        TipiTestingConstants.UT_ENGINE,
-        TipiTestingConstants.TESTING
-})
 public abstract class TipiEngineTest extends AbstractTipiPersistenceTest {
 
     @Autowired
