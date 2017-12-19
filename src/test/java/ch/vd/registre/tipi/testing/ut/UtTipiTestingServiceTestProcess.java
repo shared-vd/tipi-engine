@@ -4,7 +4,7 @@ import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;
 import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.client.TipiTopProcess;
-import ch.vd.registre.base.utils.Assert;
+import ch.sharedvd.tipi.engine.utils.Assert;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

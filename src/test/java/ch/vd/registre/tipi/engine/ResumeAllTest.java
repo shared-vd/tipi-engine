@@ -1,12 +1,10 @@
 package ch.vd.registre.tipi.engine;
 
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
-import ch.sharedvd.tipi.engine.criteria.DbActivityCriteria;
-import ch.sharedvd.tipi.engine.engine.resumeall.ResumeAllActivity;
-import ch.sharedvd.tipi.engine.engine.resumeall.ResumeAllProcess;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
-import ch.vd.registre.base.tx.TxCallback;
+import ch.vd.registre.tipi.engine.resumeall.ResumeAllActivity;
+import ch.vd.registre.tipi.engine.resumeall.ResumeAllProcess;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.transaction.TransactionStatus;

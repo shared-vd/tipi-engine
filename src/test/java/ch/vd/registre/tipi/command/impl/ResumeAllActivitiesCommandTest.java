@@ -9,7 +9,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.transaction.TransactionStatus;
 
 import java.util.List;
 
@@ -83,57 +82,51 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
 
     @Test
     public void createCriteria_All() throws Exception {
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
-                ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR);
-                cmd.setPersist(persist);
-                cmd.setDialect(hibernateDialect);
+        txTemplate.txWithout(s -> {
+            ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR);
+            cmd.setPersist(persist);
+            cmd.setDialect(hibernateDialect);
 
-                List<DbActivity> actis = cmd.getActivities();
-                Assert.assertEquals(3, actis.size());
-                Assert.assertTrue(actis.get(0) instanceof DbActivity);
-                Assert.assertEquals(ActivityState.ERROR, actis.get(0).getState());
-                Assert.assertTrue("bla".equals(actis.get(0).getProcess().getFqn()) || "bli".equals(actis.get(0).getProcess().getFqn()));
-            }
+            List<DbActivity> actis = cmd.getActivities();
+            Assert.assertEquals(3, actis.size());
+            Assert.assertTrue(actis.get(0) instanceof DbActivity);
+            Assert.assertEquals(ActivityState.ERROR, actis.get(0).getState());
+            Assert.assertTrue("bla".equals(actis.get(0).getProcess().getFqn()) || "bli".equals(actis.get(0).getProcess().getFqn()));
+
         });
     }
 
     @Test
     public void createCriteria_Bla() throws Exception {
 
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
-                ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR, "bla");
-                cmd.setPersist(persist);
-                cmd.setDialect(hibernateDialect);
+        txTemplate.txWithout(s -> {
+            ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR, "bla");
+            cmd.setPersist(persist);
+            cmd.setDialect(hibernateDialect);
 
-                List<DbActivity> actis = cmd.getActivities();
-                Assert.assertEquals(1, actis.size());
-                Assert.assertTrue(actis.get(0) instanceof DbActivity);
-                Assert.assertEquals(ActivityState.ERROR, actis.get(0).getState());
-                Assert.assertEquals("bla", actis.get(0).getProcess().getFqn());
-            }
+            List<DbActivity> actis = cmd.getActivities();
+            Assert.assertEquals(1, actis.size());
+            Assert.assertTrue(actis.get(0) instanceof DbActivity);
+            Assert.assertEquals(ActivityState.ERROR, actis.get(0).getState());
+            Assert.assertEquals("bla", actis.get(0).getProcess().getFqn());
+
         });
     }
 
     @Test
     public void createCriteria_Bli() throws Exception {
 
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
-                ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR, "bli");
-                cmd.setPersist(persist);
-                cmd.setDialect(hibernateDialect);
+        txTemplate.txWithout(s -> {
+            ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR, "bli");
+            cmd.setPersist(persist);
+            cmd.setDialect(hibernateDialect);
 
-                List<DbActivity> actis = cmd.getActivities();
-                Assert.assertEquals(2, actis.size());
-                Assert.assertTrue(actis.get(0) instanceof DbActivity);
-                Assert.assertEquals(ActivityState.ERROR, actis.get(0).getState());
-                Assert.assertEquals("bli", actis.get(0).getProcess().getFqn());
-            }
+            List<DbActivity> actis = cmd.getActivities();
+            Assert.assertEquals(2, actis.size());
+            Assert.assertTrue(actis.get(0) instanceof DbActivity);
+            Assert.assertEquals(ActivityState.ERROR, actis.get(0).getState());
+            Assert.assertEquals("bli", actis.get(0).getProcess().getFqn());
+
         });
     }
 

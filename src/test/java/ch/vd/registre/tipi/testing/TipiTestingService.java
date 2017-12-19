@@ -60,7 +60,7 @@ public class TipiTestingService {
         boolean end = false;
         while (!end) {
             try {
-                // Assert que plus aucune activité n'est potentiellement démarrable.
+                // Assert.ue plus aucune activité n'est potentiellement démarrable.
                 DbActivityCriteria actCrit = new DbActivityCriteria();
                 actCrit.addAndExpression(Expr.or(actCrit.state().eq(ActivityState.EXECUTING), actCrit.requestEndExecution().eq(Boolean.TRUE)));
                 List<DbActivity> acts = hqlBuilder.getResultList(DbActivity.class, actCrit);
@@ -81,7 +81,7 @@ public class TipiTestingService {
             DbActivityCriteria actCrit = new DbActivityCriteria();
             List<DbActivity> acts = hqlBuilder.getResultList(DbActivity.class, actCrit);
             for (DbActivity am : acts) {
-                Assert.Assert.assertTrue("State: " + am.getState(), ActivityState.ERROR != am.getState());
+                Assert.assertTrue("State: " + am.getState(), ActivityState.ERROR != am.getState());
             }
         }
     }

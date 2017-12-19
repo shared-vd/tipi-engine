@@ -5,15 +5,12 @@ import ch.sharedvd.tipi.engine.engine.ActivityStateChangeService;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;
-import ch.vd.registre.testing.AssertableBaseTest;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 
-;
-
-public class ActivityStateChangeServiceTest extends AssertableBaseTest {
+public class ActivityStateChangeServiceTest {
 
     @Test
     public void executing() {

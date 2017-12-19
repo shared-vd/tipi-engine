@@ -1,28 +1,23 @@
 package ch.vd.registre.tipi.model;
 
-import ch.sharedvd.tipi.engine.AbstractTipiPersistenceTest;
+
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.TopProcess;
-import ch.sharedvd.tipi.engine.client.TipiActivityInfos;
-import ch.sharedvd.tipi.engine.client.TipiCriteria;
+import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
+import ch.sharedvd.tipi.engine.infos.TipiActivityInfos;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
-import ch.vd.registre.base.hqlbuilder.srv.ResultListWithCount;
-import ch.vd.registre.base.tx.TxCallbackWithoutResult;
+import ch.sharedvd.tipi.engine.query.TipiCriteria;
+import ch.sharedvd.tipi.engine.utils.ResultListWithCount;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.transaction.TransactionStatus;
-
-;
 
 public class SearchActivitiesTest extends AbstractTipiPersistenceTest {
 
     @Test
     public void searchByVariableName() throws Exception {
 
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
+        txTemplate.txWithout(s -> {
 
                 {
                     DbTopProcess model = new DbTopProcess();
@@ -37,7 +32,7 @@ public class SearchActivitiesTest extends AbstractTipiPersistenceTest {
                     activityPersistenceService.putVariable(model, "bla", "blo");
                     em.persist(model);
                 }
-            }
+
         });
 
         {

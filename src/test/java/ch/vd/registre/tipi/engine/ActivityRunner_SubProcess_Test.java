@@ -6,14 +6,12 @@ import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
-import ch.vd.registre.base.tx.TxCallbackWithoutResult;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.transaction.TransactionStatus;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-;
+import static org.junit.Assert.assertFalse;
 
 public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
 
@@ -73,15 +71,11 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
             Thread.sleep(10);
         }
 
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
-
-                DbTopProcess model = persist.get(DbTopProcess.class, pid);
-                Assert.assertEquals(ActivityState.FINISHED, model.getState());
-                assertFalse(model.isRequestEndExecution());
-                Assert.assertEquals(1, model.getNbRetryDone());
-            }
+        txTemplate.txWithout(s -> {
+            DbTopProcess model = persist.get(DbTopProcess.class, pid);
+            Assert.assertEquals(ActivityState.FINISHED, model.getState());
+            assertFalse(model.isRequestEndExecution());
+            Assert.assertEquals(1, model.getNbRetryDone());
         });
     }
 
@@ -96,15 +90,12 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
             Thread.sleep(10);
         }
 
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
+        txTemplate.txWithout(s -> {
+            DbTopProcess model = persist.get(DbTopProcess.class, pid);
+            Assert.assertEquals(ActivityState.ERROR, model.getState());
+            assertFalse(model.isRequestEndExecution());
+            Assert.assertEquals(0, model.getNbRetryDone());
 
-                DbTopProcess model = persist.get(DbTopProcess.class, pid);
-                Assert.assertEquals(ActivityState.ERROR, model.getState());
-                assertFalse(model.isRequestEndExecution());
-                Assert.assertEquals(0, model.getNbRetryDone());
-            }
         });
     }
 
@@ -119,15 +110,12 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
             Thread.sleep(10);
         }
 
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
+        txTemplate.txWithout(s -> {
+            DbTopProcess model = persist.get(DbTopProcess.class, pid);
+            Assert.assertEquals(ActivityState.ERROR, model.getState());
+            assertFalse(model.isRequestEndExecution());
+            Assert.assertEquals(0, model.getNbRetryDone());
 
-                DbTopProcess model = persist.get(DbTopProcess.class, pid);
-                Assert.assertEquals(ActivityState.ERROR, model.getState());
-                assertFalse(model.isRequestEndExecution());
-                Assert.assertEquals(0, model.getNbRetryDone());
-            }
         });
     }
 
@@ -148,15 +136,12 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
             }
         });
 
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
+        txTemplate.txWithout(s -> {
+            DbTopProcess model = persist.get(DbTopProcess.class, pid);
+            Assert.assertEquals(ActivityState.FINISHED, model.getState());
+            assertFalse(model.isRequestEndExecution());
+            Assert.assertEquals(0, model.getNbRetryDone());
 
-                DbTopProcess model = persist.get(DbTopProcess.class, pid);
-                Assert.assertEquals(ActivityState.FINISHED, model.getState());
-                assertFalse(model.isRequestEndExecution());
-                Assert.assertEquals(0, model.getNbRetryDone());
-            }
         });
     }
 

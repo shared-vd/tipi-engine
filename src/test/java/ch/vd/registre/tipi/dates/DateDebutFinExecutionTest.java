@@ -2,12 +2,8 @@ package ch.vd.registre.tipi.dates;
 
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
-import ch.vd.registre.base.tx.TxCallbackWithoutResult;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.transaction.TransactionStatus;
-
-;
 
 public class DateDebutFinExecutionTest extends TipiEngineTest {
 
@@ -19,13 +15,11 @@ public class DateDebutFinExecutionTest extends TipiEngineTest {
             Thread.sleep(2);
         }
 
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
-                DbTopProcess process = persist.get(DbTopProcess.class, pid);
-                long diff = process.getDateEndActivity().getTime() - process.getCreationDate().getTime();
-                Assert.assertTrue("Diff trop petit: " + diff, diff > 500);
-            }
+        txTemplate.txWithout(s -> {
+            DbTopProcess process = persist.get(DbTopProcess.class, pid);
+            long diff = process.getDateEndActivity().getTime() - process.getCreationDate().getTime();
+            Assert.assertTrue("Diff trop petit: " + diff, diff > 500);
+
         });
     }
 

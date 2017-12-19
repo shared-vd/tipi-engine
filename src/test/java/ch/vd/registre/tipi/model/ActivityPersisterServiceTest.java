@@ -31,11 +31,8 @@ public class ActivityPersisterServiceTest extends AbstractTipiPersistenceTest {
     @Test
     @Ignore("TODO(JEC) ce test peut pas passer et je sais pas comment corriger")
     public void searchActivities_Waiting() throws Exception {
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
-                loadProcess();
-            }
+        txTemplate.txWithout(s -> {
+            loadProcess();
         });
 
         final TipiCriteria criteria = new TipiCriteria();
@@ -48,11 +45,8 @@ public class ActivityPersisterServiceTest extends AbstractTipiPersistenceTest {
     @Ignore("TODO(JEC) ce test peut pas passer et je sais pas comment corriger")
     public void searchActivities_Groupe() throws Exception {
 
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
-                loadProcess();
-            }
+        txTemplate.txWithout(s -> {
+            loadProcess();
         });
 
         final TipiCriteria criteria = new TipiCriteria();
@@ -65,11 +59,8 @@ public class ActivityPersisterServiceTest extends AbstractTipiPersistenceTest {
     @SuppressWarnings("unchecked")
     public void countProcess() throws Exception {
 
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
-                loadProcess();
-            }
+        txTemplate.txWithout(s -> {
+            loadProcess();
         });
 
         // On vérifie qu'on a 1 process
@@ -84,7 +75,10 @@ public class ActivityPersisterServiceTest extends AbstractTipiPersistenceTest {
 
         ResultListWithCount<TipiTopProcessInfos> infos = service.getAllProcesses(50);
 
-        for (TipiTopProcessInfos ttpi : infos) {
+        for (
+                TipiTopProcessInfos ttpi : infos)
+
+        {
             Assert.assertEquals(11L, ttpi.getNbActivitesTotal());
             Assert.assertEquals(1L, ttpi.getNbActivitesError());
             Assert.assertEquals(2L, ttpi.getNbActivitesExecuting());
@@ -94,12 +88,8 @@ public class ActivityPersisterServiceTest extends AbstractTipiPersistenceTest {
     @Test
     public void searchActivities_inexistantClassShouldNotCrash() throws Exception {
 
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
-                loadProcessWithInexistantClassname();
-
-            }
+        txTemplate.txWithout(s -> {
+            loadProcessWithInexistantClassname();
         });
 
         final TipiCriteria criteria = new TipiCriteria();

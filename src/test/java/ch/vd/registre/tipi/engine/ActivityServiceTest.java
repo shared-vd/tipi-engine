@@ -58,7 +58,7 @@ public class ActivityServiceTest extends TipiEngineTest {
             }
         });
 
-        Assert.Assert.assertTrue(ID1 < ID2);
+        Assert.assertTrue(ID1 < ID2);
 
         // Vérifie l'ordre
         txTemplate.txWithout((s) -> {

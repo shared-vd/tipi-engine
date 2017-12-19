@@ -232,33 +232,33 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             DbActivity activite1 = activityRepository.findOne(ID.get());
 
             // RegDate
-            Assert.Assert.assertTrue(activite1.containsVariable("UNE_CLE_REGDATE"));
+            Assert.assertTrue(activite1.containsVariable("UNE_CLE_REGDATE"));
             Assert.assertEquals(20010203, activite1.getVariable("UNE_CLE_REGDATE"));
             // Array long
-            Assert.Assert.assertTrue(activite1.containsVariable("UNE_CLE_ARRAY_LONG"));
+            Assert.assertTrue(activite1.containsVariable("UNE_CLE_ARRAY_LONG"));
             ArrayLong al = (ArrayLong) activite1.getVariable("UNE_CLE_ARRAY_LONG");
             Assert.assertEquals(1L, al.get(0));
             Assert.assertEquals(2L, al.get(1));
             Assert.assertEquals(3L, al.get(2));
             //On vérifie la variable serialisée
-            Assert.Assert.assertTrue(activite1.containsVariable("UNE_CLE_SERIALIZABLE"));
+            Assert.assertTrue(activite1.containsVariable("UNE_CLE_SERIALIZABLE"));
             Exception exception = (Exception) activite1.getVariable("UNE_CLE_SERIALIZABLE");
             Assert.assertEquals("salut", exception.getMessage());
             //On vérifie la variable TimeStamp
-            Assert.Assert.assertTrue(activite1.containsVariable("UNE_CLE_TIMESTAMP"));
+            Assert.assertTrue(activite1.containsVariable("UNE_CLE_TIMESTAMP"));
             Assert.assertEquals(DATE, activite1.getVariable("UNE_CLE_TIMESTAMP"));
             //On vérifie la variable String
-            Assert.Assert.assertTrue(activite1.containsVariable("UNE_CLE_STRING"));
+            Assert.assertTrue(activite1.containsVariable("UNE_CLE_STRING"));
             Assert.assertEquals("UN STRING", activite1.getVariable("UNE_CLE_STRING"));
             //On vérifie la variable Long
-            Assert.Assert.assertTrue(activite1.containsVariable("UNE_CLE_LONG"));
+            Assert.assertTrue(activite1.containsVariable("UNE_CLE_LONG"));
             Assert.assertEquals(1L, activite1.getVariable("UNE_CLE_LONG"));
             //On vérifie la variable Int
-            Assert.Assert.assertTrue(activite1.containsVariable("UNE_CLE_INT"));
+            Assert.assertTrue(activite1.containsVariable("UNE_CLE_INT"));
             Assert.assertEquals(4, activite1.getVariable("UNE_CLE_INT"));
 
             //On vérifie la variable Boolean
-            Assert.Assert.assertTrue(activite1.containsVariable("UNE_CLE_BOOLEAN"));
+            Assert.assertTrue(activite1.containsVariable("UNE_CLE_BOOLEAN"));
             Assert.assertEquals(Boolean.TRUE, activite1.getVariable("UNE_CLE_BOOLEAN"));
         });
     }

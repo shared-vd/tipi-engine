@@ -9,12 +9,8 @@ import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
-import ch.vd.registre.base.tx.TxCallbackWithoutResult;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.transaction.TransactionStatus;
-
-;
 
 public class ResumingTest extends TipiEngineTest {
 
@@ -52,16 +48,13 @@ public class ResumingTest extends TipiEngineTest {
         while (tipiFacade.isRunning(pid)) {
             Thread.sleep(10);
         }
-		Assert.assertEquals(1, ResumingProcess.value);
+        Assert.assertEquals(1, ResumingProcess.value);
 
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
+        txTemplate.txWithout(s -> {
+            DbActivity model = persist.get(DbActivity.class, pid);
+            Assert.assertEquals(ActivityState.SUSPENDED, model.getState());
+            Assert.assertEquals("blabla", model.getCorrelationId());
 
-                DbActivity model = persist.get(DbActivity.class, pid);
-				Assert.assertEquals(ActivityState.SUSPENDED, model.getState());
-				Assert.assertEquals("blabla", model.getCorrelationId());
-            }
         });
 
         final VariableMap vars = new VariableMap();
@@ -73,21 +66,18 @@ public class ResumingTest extends TipiEngineTest {
         while (ResumingProcess.value < 2) {
             Thread.sleep(10);
         }
-		Assert.assertEquals(2, ResumingProcess.value);
+        Assert.assertEquals(2, ResumingProcess.value);
         ResumingProcess.value = 3;
         while (tipiFacade.isRunning(pid)) {
             Thread.sleep(10);
         }
 
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
+        txTemplate.txWithout(s -> {
+            DbActivity model = persist.get(DbActivity.class, pid);
+            Assert.assertEquals(ActivityState.FINISHED, model.getState());
+            Assert.assertEquals("blabla", model.getCorrelationId());
+            Assert.assertEquals(42, model.getVariable("correl"));
 
-                DbActivity model = persist.get(DbActivity.class, pid);
-				Assert.assertEquals(ActivityState.FINISHED, model.getState());
-				Assert.assertEquals("blabla", model.getCorrelationId());
-				Assert.assertEquals(42, model.getVariable("correl"));
-            }
         });
     }
 

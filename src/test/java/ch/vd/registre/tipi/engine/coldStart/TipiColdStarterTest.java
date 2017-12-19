@@ -5,12 +5,9 @@ import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.engine.TopProcessGroupLauncher;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
-import ch.vd.registre.base.tx.TxCallback;
-import ch.vd.registre.base.tx.TxCallbackWithoutResult;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.transaction.TransactionStatus;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -40,21 +37,18 @@ public class TipiColdStarterTest extends TipiEngineTest {
             boolean end = false;
             while (!end) {
                 Thread.sleep(100);
-                end = doInTransaction(new TxCallback<Boolean>() {
-                    @Override
-                    public Boolean execute(TransactionStatus status) throws Exception {
-                        DbActivity g1a1 = persist.get(DbActivity.class, ColdGroup1Activity1.id);
-                        if ((g1a1 != null)
-                                &&
-                                g1a1.getState() == ActivityState.FINISHED
-                                &&
-                                !g1a1.isRequestEndExecution()) {
+                end = txTemplate.txWith(s -> {
+                    DbActivity g1a1 = persist.get(DbActivity.class, ColdGroup1Activity1.id);
+                    if ((g1a1 != null)
+                            &&
+                            g1a1.getState() == ActivityState.FINISHED
+                            &&
+                            !g1a1.isRequestEndExecution()) {
 
-                            log.info(g1a1);
-                            return Boolean.TRUE;
-                        }
-                        return Boolean.FALSE;
+                        log.info(g1a1);
+                        return Boolean.TRUE;
                     }
+                    return Boolean.FALSE;
                 });
             }
         }
@@ -64,9 +58,7 @@ public class TipiColdStarterTest extends TipiEngineTest {
             boolean end = false;
             while (!end) {
                 Thread.sleep(100);
-                end = doInTransaction(new TxCallback<Boolean>() {
-                    @Override
-                    public Boolean execute(TransactionStatus status) throws Exception {
+                end = txTemplate.txWith(s -> {
                         DbActivity g1a2 = persist.get(DbActivity.class, ColdGroup1Activity2.id);
                         if ((g1a2 != null)
                                 &&
@@ -78,7 +70,7 @@ public class TipiColdStarterTest extends TipiEngineTest {
                             return Boolean.TRUE;
                         }
                         return Boolean.FALSE;
-                    }
+
                 });
             }
         }
@@ -94,18 +86,15 @@ public class TipiColdStarterTest extends TipiEngineTest {
         }
 
         // On remet les activités a pas terminées
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
+        txTemplate.txWithout(s -> {
+            final DbActivity g1a1 = persist.get(DbActivity.class, ColdGroup1Activity1.id);
+            g1a1.setState(ActivityState.FINISHED);
+            g1a1.setRequestEndExecution(true);
 
-                final DbActivity g1a1 = persist.get(DbActivity.class, ColdGroup1Activity1.id);
-                g1a1.setState(ActivityState.FINISHED);
-                g1a1.setRequestEndExecution(true);
+            final DbActivity g1a2 = persist.get(DbActivity.class, ColdGroup1Activity2.id);
+            g1a2.setState(ActivityState.EXECUTING);
+            g1a2.setRequestEndExecution(false);
 
-                final DbActivity g1a2 = persist.get(DbActivity.class, ColdGroup1Activity2.id);
-                g1a2.setState(ActivityState.EXECUTING);
-                g1a2.setRequestEndExecution(false);
-            }
         });
         ColdGroup1Activity2.sendException = false;
 
@@ -123,28 +112,30 @@ public class TipiColdStarterTest extends TipiEngineTest {
         group1();
 
         // L'activité G1A1 doit être reqEnd = false
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
+        txTemplate.txWithout(s -> {
+            boolean end = false;
+            while (!end) {
+                persist.clear();
+                final DbActivity g1a1 = persist.get(DbActivity.class, ColdGroup1Activity1.id);
+                end = !g1a1.isRequestEndExecution();
 
-                boolean end = false;
-                while (!end) {
-                    persist.clear();
-                    final DbActivity g1a1 = persist.get(DbActivity.class, ColdGroup1Activity1.id);
-                    end = !g1a1.isRequestEndExecution();
-                }
             }
         });
 
         group2();
 
         // Attente de la fin du process
-        while (tipiFacade.isRunning(pid)) {
+        while (tipiFacade.isRunning(pid))
+
+        {
             Thread.sleep(10);
         }
-        while (tipiFacade.hasActivityPending()) {
+        while (tipiFacade.hasActivityPending())
+
+        {
             Thread.sleep(10);
         }
+
     }
 
     private void group2() throws Exception {

@@ -4,14 +4,14 @@ import ch.sharedvd.tipi.engine.action.Activity;
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
-import ch.vd.registre.base.utils.Assert;
+import ch.sharedvd.tipi.engine.utils.Assert;
 import org.apache.log4j.Logger;
 
 public class RetryCountActivity extends Activity {
 
     private static final Logger LOGGER = Logger.getLogger(RetryCountActivity.class);
 
-    public static final ActivityMetaModel meta = new ActivityMetaModel(RetryCountActivity.class, new RetryCountTestPolicy());
+    public static final ActivityMetaModel meta = new ActivityMetaModel(RetryCountActivity.class);
 
     private static int passages = 0;
 
@@ -29,7 +29,7 @@ public class RetryCountActivity extends Activity {
             RetryAfterOtherExecutingTest.FIRST_ACTI_ID = getActivityId();
             // 1er passage -> exception
             Assert.isEqual(1, passages);
-            Assert.fail("Assert fail pour les tests. Pas de problème boy!");
+            Assert.fail("Assert.fail pour les tests. Pas de problème boy!");
         } else if (RetryAfterOtherExecutingTest.FIRST_ACTI_ID != getActivityId()) {
             // 2eme passage -> OK
             Assert.isEqual(2, passages);

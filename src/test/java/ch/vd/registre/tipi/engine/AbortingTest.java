@@ -74,13 +74,10 @@ public class AbortingTest extends TipiEngineTest {
         }
 
         // Vérification
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
+        txTemplate.txWithout(s -> {
+            DbTopProcess tp = persist.get(DbTopProcess.class, pid);
+            Assert.assertEquals(ActivityState.ABORTED, tp.getState());
 
-                DbTopProcess tp = persist.get(DbTopProcess.class, pid);
-                Assert.assertEquals(ActivityState.ABORTED, tp.getState());
-            }
         });
 
     }

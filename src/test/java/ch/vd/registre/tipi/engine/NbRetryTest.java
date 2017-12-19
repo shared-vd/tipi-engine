@@ -6,12 +6,9 @@ import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
-import ch.vd.registre.base.tx.TxCallbackWithoutResult;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.transaction.TransactionStatus;
-
-;
 
 public class NbRetryTest extends TipiEngineTest {
 
@@ -39,20 +36,29 @@ public class NbRetryTest extends TipiEngineTest {
             }
         });
 
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus status) throws Exception {
+        txTemplate.txWithout(s -> {
+            DbActivity model = persist.get(DbActivity.class, pid);
+            Assert.assertEquals(2, model.getNbRetryDone());
+            Assert.assertEquals(ActivityState.ERROR, model.getState());
 
-                DbActivity model = persist.get(DbActivity.class, pid);
-				Assert.assertEquals(2, model.getNbRetryDone());
-				Assert.assertEquals(ActivityState.ERROR, model.getState());
+            // Call stack
+            assertContains("TEST: une erreur", model.getCallstack());
+            assertContains("NbRetryTest$NbRetryProcess.execute", model.getCallstack());
+            assertContains("ActivityRunner.executeActivity", model.getCallstack());
 
-                // Call stack
-                assertContains("TEST: une erreur", model.getCallstack());
-                assertContains("NbRetryTest$NbRetryProcess.execute", model.getCallstack());
-                assertContains("ActivityRunner.executeActivity", model.getCallstack());
-            }
         });
+    }
+
+    public static void assertContains(String containee, String container) {
+        assertContains(containee, container, "'" + container + "' does not contain '" + containee + "'");
+    }
+
+    public static void assertContains(String containee, String container, String msg) {
+        if (StringUtils.isNotBlank(containee) && StringUtils.isNotBlank(container)) {
+            Assert.assertTrue(msg, container.contains(containee));
+        } else {
+            Assert.fail("Les 2 valeurs à comparer ne peuvent pas être nulles");
+        }
     }
 
 }
