@@ -14,7 +14,7 @@ public class ColdRestartCommand extends Command {
     @Override
     @SuppressWarnings("unchecked")
     public void execute() {
-        LOGGER.info("Cold restart TiPi ...");
+        LOGGER.info("Executing cold restart ...");
         // On récupère toutes les activités qui sont en ReqEnd=true pour les terminer correctement
         {
             final List<DbActivity> actis = activityRepository.findByRequestEndExecutionOrderById(true);
@@ -30,4 +30,8 @@ public class ColdRestartCommand extends Command {
         commandService.sendCommand(new RunExecutingActivitiesCommand());
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

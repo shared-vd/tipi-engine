@@ -22,9 +22,7 @@ import ch.sharedvd.tipi.engine.utils.Assert;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -32,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ActivityServiceImpl implements InitializingBean {
+public class ActivityServiceImpl {
 
     private Logger LOGGER = LoggerFactory.getLogger(ActivityServiceImpl.class);
 
@@ -56,23 +54,11 @@ public class ActivityServiceImpl implements InitializingBean {
     @Autowired
     private EntityManager em;
     @Autowired
-    private PlatformTransactionManager ptmTxManager;
     private TxTemplate txTemplate;
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        txTemplate = new TxTemplate(ptmTxManager);
-    }
-
-    private static final String GET_TOP_PROC_NAMES_WITH_EXECUTABLE_ACTIVITIES_SQL = "" + "select distinct p.NAME from TP_ACTIVITY a "
-            + "	join TP_ACTIVITY p on (p.ID=a.PROCESS_FK or p.ID=a.ID) "
-            + "where p.DTYPE='process' and a.STATE=?1 and a.REQUEST_END_EXECUTION=?2";
 
     @SuppressWarnings("unchecked")
     public List<String> getTopProcessNamesWithExecutingActivities() {
-        Assert.fail("");
-        return null;
-        //return activityRepository.listSqlQuery(GET_TOP_PROC_NAMES_WITH_EXECUTABLE_ACTIVITIES_SQL, ActivityState.EXECUTING.name(), Boolean.FALSE);
+        return activityRepository.findTopProcessNamesByStateAndReqEnd(ActivityState.EXECUTING, false);
     }
 
     // package
@@ -91,8 +77,7 @@ public class ActivityServiceImpl implements InitializingBean {
 //		amc.addOrder(DbActivityProperty.Id, true);
 //
 //		return hqlBuilder.getResultList(DbActivity.class, amc, max);
-        Assert.fail("");
-        return null;
+        return activityRepository.findExecutingActivities(aTopProcessName);
     }
 
     public long launch(final ActivityMetaModel meta, final VariableMap vars) {
@@ -295,5 +280,4 @@ public class ActivityServiceImpl implements InitializingBean {
 
         commandService.sendCommand(new RunExecutingActivitiesCommand());
     }
-
 }

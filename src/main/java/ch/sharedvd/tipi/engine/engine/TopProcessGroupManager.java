@@ -6,7 +6,6 @@ import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
-import javax.transaction.TransactionManager;
 import java.util.*;
 
 public class TopProcessGroupManager implements Startable {
@@ -26,21 +25,11 @@ public class TopProcessGroupManager implements Startable {
     @Autowired
     protected ConnectionCapManager connectionsCup;
 
-    //@Autowired
-    private TransactionManager txManager;
-
-    private boolean stopped = false;
-
     private final Map<String, TopProcessGroupLauncher> launchers = new HashMap<String, TopProcessGroupLauncher>();
 
     @Override
     public void start() throws Exception {
-        start(false);
-    }
-
-    public void start(boolean stopGroups) throws Exception {
         synchronized (launchers) {
-            stopped = false;
             launchers.clear();
 
         }
@@ -52,7 +41,6 @@ public class TopProcessGroupManager implements Startable {
             for (TopProcessGroupLauncher l : launchers.values()) {
                 l.shutdown();
             }
-            stopped = true;
         }
     }
 
@@ -121,7 +109,7 @@ public class TopProcessGroupManager implements Startable {
         TopProcessGroupLauncher launcher = getLaunchers().get(fqn);
         if (launcher == null) {
             TopProcessMetaModel meta = MetaModelHelper.getTopProcessMeta(fqn);
-            launcher = new TopProcessGroupLauncher(meta, txManager, activityService, connectionsCup, true);
+            launcher = new TopProcessGroupLauncher(meta, activityService, connectionsCup, true);
             launchers.put(fqn, launcher);
         }
         Assert.notNull(launcher, "Name: " + fqn);

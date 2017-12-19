@@ -21,7 +21,6 @@ public class RunExecutingActivitiesCommand extends Command {
 
 	@Override
 	public void execute() {
-
 		final long begin = System.currentTimeMillis();
 
 		removeOtherSameCommands();

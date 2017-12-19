@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import javax.transaction.Status;
-
 public class CommandServiceImpl implements CommandService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandServiceImpl.class);
@@ -17,10 +15,11 @@ public class CommandServiceImpl implements CommandService {
     private CommandConsumer consumer;
 
     private class CommandSynchronization implements TransactionSynchronization {
-        private Command command;
+        private final Command command;
 
         CommandSynchronization(Command c) {
-            command = c;
+            Assert.notNull(c, "Command can't be null");
+            this.command = c;
         }
 
         @Override
@@ -33,23 +32,27 @@ public class CommandServiceImpl implements CommandService {
 
         @Override
         public void flush() {
+            toString();
         }
 
         @Override
         public void beforeCommit(boolean readOnly) {
+            toString();
         }
 
         @Override
         public void beforeCompletion() {
+            toString();
         }
 
         @Override
         public void afterCommit() {
+            toString();
         }
 
         @Override
         public void afterCompletion(int status) {
-            if (Status.STATUS_COMMITTED == 0) {
+            if (TransactionSynchronization.STATUS_COMMITTED == status) {
                 consumer.addCommand(command);
             }
         }
@@ -64,7 +67,7 @@ public class CommandServiceImpl implements CommandService {
     public void sendCommand(Command command) {
         Assert.notNull(command);
         try {
-            CommandSynchronization synchro = new CommandSynchronization(command);
+            final CommandSynchronization synchro = new CommandSynchronization(command);
             TransactionSynchronizationManager.registerSynchronization(synchro);
             //consumer.addCommand(command);
         } catch (RuntimeException e) {

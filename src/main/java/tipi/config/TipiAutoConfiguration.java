@@ -22,6 +22,17 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class TipiAutoConfiguration {
 
     @Bean
+    public ConnectionCap defaultCap() {
+        ConnectionCap cap = new ConnectionCap();
+        cap.setName("DataSource");
+        cap.setDescription("Limit on the datasource connections");
+        cap.setNbMaxConcurrent(10);
+        cap.setDefault(true);
+        cap.setManager(connectionCapManager());
+        return cap;
+    }
+
+    @Bean
     public CommandHelperService commandHelperService() {
         return new CommandHelperService();
     }

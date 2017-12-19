@@ -132,16 +132,9 @@ public class EndActivityCommand extends ActivityCommand {
     @SuppressWarnings("unchecked")
     private List<DbActivity> getChildren(DbActivity aAct) {
         final long begin = System.currentTimeMillis();
-        List<DbActivity> ch = new ArrayList<DbActivity>();
+        List<DbActivity> ch = new ArrayList<>();
         if (aAct instanceof DbSubProcess) {
-            Assert.fail("");
-//			DbActivityCriteria crit = new DbActivityCriteria();
-//			crit.addAndExpression(crit.parent().eq(aAct));
-//
-//			if (LOGGER.isTraceEnabled()) {
-//				LOGGER.trace("HQL: " + crit.buildHqlQuery().getHqlQuery());
-//			}
-//			ch.addAll(hqlBuilder.getResultList(crit));
+            ch.addAll(activityRepository.findChildren(aAct));
         }
         if (!ch.isEmpty()) {
             final long diff = System.currentTimeMillis() - begin;

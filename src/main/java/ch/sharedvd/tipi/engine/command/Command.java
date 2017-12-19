@@ -9,11 +9,10 @@ import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.utils.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 
-public abstract class Command implements InitializingBean {
+public abstract class Command {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Command.class);
 
@@ -34,10 +33,6 @@ public abstract class Command implements InitializingBean {
 
 	@Autowired
 	protected ActivityServiceImpl activityService;
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-	}
 
 	public abstract void execute();
 

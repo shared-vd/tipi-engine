@@ -19,7 +19,7 @@ public class TipiStarterImpl implements TipiStarter, Startable, InitializingBean
     private static final Logger LOGGER = LoggerFactory.getLogger(TipiStarterImpl.class);
 
     @Autowired
-    private TopProcessGroupManager activityGroupManager;
+    private TopProcessGroupManager topProcessGroupManager;
     @Autowired
     private CommandConsumer commandConsumer;
     @Autowired
@@ -93,7 +93,7 @@ public class TipiStarterImpl implements TipiStarter, Startable, InitializingBean
     public void destroy() throws Exception {
         LOGGER.info("Destroy de TiPi - " + tipiContext);
         commandConsumer.destroy();
-        activityGroupManager.destroy();
+        topProcessGroupManager.destroy();
     }
 
     @Override
@@ -108,14 +108,14 @@ public class TipiStarterImpl implements TipiStarter, Startable, InitializingBean
 
     public void start(boolean pauseGroups) throws Exception {
         LOGGER.info("Démarrage de TiPi - " + tipiContext);
-        activityGroupManager.start(pauseGroups);
+        topProcessGroupManager.start();
         commandConsumer.start();
     }
 
     @Override
     public void stop() throws Exception {
         LOGGER.info("Arret de TiPi - " + tipiContext);
-        activityGroupManager.stop();
+        topProcessGroupManager.stop();
         commandConsumer.destroy();
     }
 

@@ -11,7 +11,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.Assert;
 
 import java.util.Iterator;
@@ -27,10 +26,7 @@ public class CommandConsumer implements Startable, Runnable {
     private BeanAutowirer autowirer;
 
     @Autowired
-    private PlatformTransactionManager txManager;
     private TxTemplate tt;
-
-    private String tipiContext = "TBD";
 
     private boolean resumeTipiAtBoot = true;
 
@@ -46,13 +42,12 @@ public class CommandConsumer implements Startable, Runnable {
         Assert.isTrue(stopped);
 
         stopped = false;
-        tt = new TxTemplate(txManager);
 
         queue = new ArrayBlockingQueue<CommandWrapper>(100000);
 
         // Thread de consommation
-        this.consumationThread = new Thread(this);
-        consumationThread.setName("TiPi-Consumer-" + tipiContext);
+        consumationThread = new Thread(this);
+        consumationThread.setName("TiPi-Consumer");
         consumationThread.setPriority(Thread.NORM_PRIORITY + 1);
         LOGGER.info("Démarrage du Thread de CommandConsumer ...");
         consumationThread.start();
@@ -67,7 +62,7 @@ public class CommandConsumer implements Startable, Runnable {
     }
 
     @Override
-    public void stop() throws Exception {
+    public void stop() {
         stopped = true;
     }
 
@@ -155,7 +150,6 @@ public class CommandConsumer implements Startable, Runnable {
 
     @Override
     public void run() {
-
         boolean loopActive = true;
         while (loopActive) {
             try {
@@ -166,7 +160,7 @@ public class CommandConsumer implements Startable, Runnable {
                     commandEnCours = false;
 
                     final CommandWrapper currentCommand = queue.take();
-                    // currentCommand ne peut pas être null: il y a soit une commande soit une InterruptedException.
+                    Assert.notNull(currentCommand, "currentCommand can't ne null. Either a command or an InterruptedException");
 
                     commandEnCours = true;
 
@@ -239,7 +233,7 @@ public class CommandConsumer implements Startable, Runnable {
                 LOGGER.error(e.getMessage(), e);
             }
         }
-        LOGGER.info("CommandConsumer thread (" + tipiContext + ") stopped");
+        LOGGER.info("CommandConsumer thread (" + consumationThread.getName() + ") stopped");
         commandEnCours = false;
         consumationThread = null;
     }
