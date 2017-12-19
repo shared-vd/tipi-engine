@@ -1,4 +1,4 @@
-package ch.sharedvd.tipi.engine;
+package ch.sharedvd.tipi.engine.common;
 
 import ch.sharedvd.tipi.engine.client.TipiFacade;
 import ch.sharedvd.tipi.engine.query.TipiQueryFacade;
@@ -20,7 +20,7 @@ import javax.persistence.EntityManager;
         TipiTestingApplication.class,
         TipiUtDatabaseConfig.class
 }, webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public abstract class AbstractTipiPersistenceTest {
+public abstract class AbstractTipiPersistenceTest extends AbstractSpringBootTruncaterTest {
 
     @Autowired
     protected ActivityPersisterService activityPersistenceService;
@@ -42,8 +42,12 @@ public abstract class AbstractTipiPersistenceTest {
     @Autowired
     protected TipiQueryFacade tipiQueryFacade;
 
-    @Before
-    public void onSetUp() {
+    @Override
+    public TxTemplate getTxTemplate() {
+        return txTemplate;
+    }
 
+    @Before
+    public void onSetUp() throws Exception {
     }
 }

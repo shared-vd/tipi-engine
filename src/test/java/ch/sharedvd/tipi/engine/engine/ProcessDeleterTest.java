@@ -1,6 +1,6 @@
 package ch.sharedvd.tipi.engine.engine;
 
-import ch.sharedvd.tipi.engine.AbstractTipiPersistenceTest;
+import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.model.*;
 import org.junit.Test;
 

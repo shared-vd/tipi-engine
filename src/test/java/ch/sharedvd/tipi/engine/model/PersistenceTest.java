@@ -1,6 +1,6 @@
 package ch.sharedvd.tipi.engine.model;
 
-import ch.sharedvd.tipi.engine.AbstractTipiPersistenceTest;
+import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.utils.ArrayLong;
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class PersistenceTest extends AbstractTipiPersistenceTest {
 
     @Override
-    public void onSetUp() {
+    public void onSetUp() throws Exception {
         super.onSetUp();
     }
 

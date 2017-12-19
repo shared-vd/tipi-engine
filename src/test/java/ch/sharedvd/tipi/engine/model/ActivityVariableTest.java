@@ -1,7 +1,7 @@
 package ch.sharedvd.tipi.engine.model;
 
-import ch.sharedvd.tipi.engine.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.client.VariableMap;
+import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.infos.TipiActivityInfos;
 import ch.sharedvd.tipi.engine.utils.InputStreamHolder;
 import org.junit.Test;

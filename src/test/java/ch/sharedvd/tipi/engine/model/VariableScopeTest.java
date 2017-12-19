@@ -1,10 +1,10 @@
 package ch.sharedvd.tipi.engine.model;
 
-import ch.sharedvd.tipi.engine.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.action.Activity;
 import ch.sharedvd.tipi.engine.action.ActivityFacade;
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;
+import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
 import org.junit.Assert;
 import org.junit.Test;
 

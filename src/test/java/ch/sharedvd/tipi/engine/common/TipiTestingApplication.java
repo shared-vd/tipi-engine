@@ -1,4 +1,4 @@
-package ch.sharedvd.tipi.engine;
+package ch.sharedvd.tipi.engine.common;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
