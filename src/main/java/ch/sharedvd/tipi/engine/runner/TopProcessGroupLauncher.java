@@ -1,12 +1,9 @@
 package ch.sharedvd.tipi.engine.runner;
 
-import ch.sharedvd.tipi.engine.engine.ActivityRunner;
-import ch.sharedvd.tipi.engine.engine.ConnectionCapManager;
-import ch.sharedvd.tipi.engine.engine.TipiThreadPoolExecutor;
-import ch.sharedvd.tipi.engine.engine.stats.TipiThreadStats;
 import ch.sharedvd.tipi.engine.infos.ActivityThreadInfos;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.DbActivity;
+import ch.sharedvd.tipi.engine.runner.stats.TipiThreadStats;
 import ch.sharedvd.tipi.engine.utils.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

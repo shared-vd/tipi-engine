@@ -1,13 +1,13 @@
 package ch.sharedvd.tipi.engine.query;
 
-import ch.sharedvd.tipi.engine.engine.ConnectionCap;
-import ch.sharedvd.tipi.engine.engine.ConnectionCapManager;
-import ch.sharedvd.tipi.engine.engine.TopProcessGroupManager;
 import ch.sharedvd.tipi.engine.infos.*;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
+import ch.sharedvd.tipi.engine.runner.ConnectionCap;
+import ch.sharedvd.tipi.engine.runner.ConnectionCapManager;
+import ch.sharedvd.tipi.engine.runner.TopProcessGroupManager;
 import ch.sharedvd.tipi.engine.utils.Assert;
 import ch.sharedvd.tipi.engine.utils.ResultListWithCount;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;

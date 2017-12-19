@@ -1,4 +1,4 @@
-package ch.sharedvd.tipi.engine.engine;
+package ch.sharedvd.tipi.engine.runner;
 
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;

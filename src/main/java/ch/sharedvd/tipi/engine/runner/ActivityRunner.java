@@ -1,4 +1,4 @@
-package ch.sharedvd.tipi.engine.engine;
+package ch.sharedvd.tipi.engine.runner;
 
 import ch.sharedvd.tipi.engine.action.Activity;
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
@@ -9,7 +9,6 @@ import ch.sharedvd.tipi.engine.command.CommandHelperService;
 import ch.sharedvd.tipi.engine.command.CommandService;
 import ch.sharedvd.tipi.engine.command.impl.EndActivityCommand;
 import ch.sharedvd.tipi.engine.command.impl.RunExecutingActivitiesCommand;
-import ch.sharedvd.tipi.engine.engine.stats.TipiThreadStats;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
@@ -19,7 +18,7 @@ import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.retry.DefaultRetryPolicy;
 import ch.sharedvd.tipi.engine.retry.RetryContext;
 import ch.sharedvd.tipi.engine.retry.RetryPolicy;
-import ch.sharedvd.tipi.engine.runner.TopProcessGroupLauncher;
+import ch.sharedvd.tipi.engine.runner.stats.TipiThreadStats;
 import ch.sharedvd.tipi.engine.utils.Assert;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
 import org.apache.commons.lang3.exception.ExceptionUtils;

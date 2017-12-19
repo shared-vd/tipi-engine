@@ -1,4 +1,4 @@
-package ch.sharedvd.tipi.engine.engine;
+package ch.sharedvd.tipi.engine.runner;
 
 import ch.sharedvd.tipi.engine.command.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;

@@ -1,6 +1,6 @@
 package ch.sharedvd.tipi.engine.infos;
 
-import ch.sharedvd.tipi.engine.engine.stats.TipiThreadStats;
+import ch.sharedvd.tipi.engine.runner.stats.TipiThreadStats;
 
 import java.io.Serializable;
 import java.util.Date;

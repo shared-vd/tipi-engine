@@ -1,7 +1,7 @@
-package ch.sharedvd.tipi.engine.engine;
+package ch.sharedvd.tipi.engine.runner;
 
-import ch.sharedvd.tipi.engine.engine.stats.TipiThreadStats;
-import ch.sharedvd.tipi.engine.engine.stats.TipiThreadsStats;
+import ch.sharedvd.tipi.engine.runner.stats.TipiThreadStats;
+import ch.sharedvd.tipi.engine.runner.stats.TipiThreadsStats;
 
 import java.util.Date;
 import java.util.concurrent.SynchronousQueue;

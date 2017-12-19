@@ -1,9 +1,9 @@
 package ch.sharedvd.tipi.engine.command.impl;
 
 import ch.sharedvd.tipi.engine.command.Command;
-import ch.sharedvd.tipi.engine.engine.ActivityStateChangeService;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
+import ch.sharedvd.tipi.engine.runner.ActivityStateChangeService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package ch.sharedvd.tipi.engine.engine.stats;
+package ch.sharedvd.tipi.engine.runner.stats;
 
 import ch.sharedvd.tipi.engine.utils.Assert;
 

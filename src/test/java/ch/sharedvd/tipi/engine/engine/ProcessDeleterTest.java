@@ -2,6 +2,7 @@ package ch.sharedvd.tipi.engine.engine;
 
 import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.model.*;
+import ch.sharedvd.tipi.engine.runner.ProcessDeleter;
 import org.junit.Assert;
 import org.junit.Test;
 

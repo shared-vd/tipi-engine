@@ -1,4 +1,4 @@
-package ch.sharedvd.tipi.engine.engine;
+package ch.sharedvd.tipi.engine.runner;
 
 import ch.sharedvd.tipi.engine.command.CommandConsumer;
 import org.slf4j.Logger;

@@ -1,10 +1,10 @@
 package ch.vd.registre.tipi.engine;
 
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;
-import ch.sharedvd.tipi.engine.engine.ActivityStateChangeService;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;
+import ch.sharedvd.tipi.engine.runner.ActivityStateChangeService;
 import org.junit.Assert;
 import org.junit.Test;
 

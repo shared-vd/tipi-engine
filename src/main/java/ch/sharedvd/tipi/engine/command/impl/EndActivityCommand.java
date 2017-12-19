@@ -1,10 +1,10 @@
 package ch.sharedvd.tipi.engine.command.impl;
 
-import ch.sharedvd.tipi.engine.engine.ActivityStateChangeService;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
+import ch.sharedvd.tipi.engine.runner.ActivityStateChangeService;
 import ch.sharedvd.tipi.engine.runner.TopProcessGroupLauncher;
 import ch.sharedvd.tipi.engine.utils.Assert;
 import org.slf4j.Logger;

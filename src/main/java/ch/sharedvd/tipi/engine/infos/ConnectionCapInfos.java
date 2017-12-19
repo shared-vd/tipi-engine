@@ -1,7 +1,7 @@
 package ch.sharedvd.tipi.engine.infos;
 
-import ch.sharedvd.tipi.engine.engine.ConnectionCap;
-import ch.sharedvd.tipi.engine.engine.ConnectionCapManager;
+import ch.sharedvd.tipi.engine.runner.ConnectionCap;
+import ch.sharedvd.tipi.engine.runner.ConnectionCapManager;
 
 public class ConnectionCapInfos {
 

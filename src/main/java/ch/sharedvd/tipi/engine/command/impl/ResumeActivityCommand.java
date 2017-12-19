@@ -1,8 +1,8 @@
 package ch.sharedvd.tipi.engine.command.impl;
 
 import ch.sharedvd.tipi.engine.client.VariableMap;
-import ch.sharedvd.tipi.engine.engine.ActivityStateChangeService;
 import ch.sharedvd.tipi.engine.model.DbActivity;
+import ch.sharedvd.tipi.engine.runner.ActivityStateChangeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
