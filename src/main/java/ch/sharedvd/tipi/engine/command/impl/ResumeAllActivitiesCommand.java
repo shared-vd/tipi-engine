@@ -4,7 +4,6 @@ import ch.sharedvd.tipi.engine.command.Command;
 import ch.sharedvd.tipi.engine.engine.ActivityStateChangeService;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
-import ch.sharedvd.tipi.engine.utils.DialectToSqlHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.util.List;
 
 public class ResumeAllActivitiesCommand extends Command {
@@ -39,29 +37,12 @@ public class ResumeAllActivitiesCommand extends Command {
 
     @SuppressWarnings("unchecked")
     public List<DbActivity> getActivities() {
-
-        final DialectToSqlHelper helper = new DialectToSqlHelper(dialect);
-
-        final String HQL;
         final List<DbActivity> models;
         if (StringUtils.isNotBlank(groupName)) {
-            HQL =
-                    "select a from DbActivity a join a.process p " +
-                            "where p.id in (select pi.id from DbTopProcess pi where pi.fqn = :group) " +
-                            "  and a.requestEndExecution = " + helper.formatBoolean(false) +
-                            "  and a.state = :state";
-            final Query q = em.createQuery(HQL);
-            q.setParameter("group", groupName);
-            q.setParameter("state", state);
-            models = q.getResultList();
+            models = activityRepository.findByGroupAndState(groupName, state);
+
         } else {
-            HQL =
-                    "select a from DbActivity a " +
-                            "where a.requestEndExecution = " + helper.formatBoolean(false) +
-                            "  and a.state = ?1";
-            final Query q = em.createQuery(HQL);
-            q.setParameter("state", state);
-            models = q.getResultList();
+            models = activityRepository.findByState(state);
         }
         return models;
     }

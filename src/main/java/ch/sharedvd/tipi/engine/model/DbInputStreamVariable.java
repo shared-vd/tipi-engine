@@ -61,16 +61,11 @@ public class DbInputStreamVariable extends DbBlobVariable<InputStreamHolder> {
 
     public void setValue(InputStreamHolder is, BlobFactory aBlobFactory) {
         deserialBlob = null;
-        DeflaterInputStream inputStream = null;
-        try {
-            inputStream = new DeflaterInputStream(is.getInputStream());
+        try (DeflaterInputStream inputStream = new DeflaterInputStream(is.getInputStream())) {
             setBlob(aBlobFactory.createBlob(inputStream));
         } catch (Exception e) {
             String msg = "Impossible de mettre à jour le blob";
             throw new RuntimeException(msg, e);
-        } finally {
-            IOUtils.closeQuietly(inputStream);
-            IOUtils.closeQuietly(is.getInputStream());
         }
     }
 }

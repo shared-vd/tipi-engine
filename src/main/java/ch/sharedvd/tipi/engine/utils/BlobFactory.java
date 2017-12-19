@@ -3,9 +3,7 @@ package ch.sharedvd.tipi.engine.utils;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.engine.jdbc.ContextualLobCreator;
 import org.hibernate.engine.jdbc.LobCreator;
-import org.springframework.util.Assert;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,15 +33,13 @@ public class BlobFactory {
 	public Blob createBlob(InputStream aInputStream) {
 
 		final LobCreator lobCreator = Hibernate.getLobCreator(session);
-		// JDBC4 -> pas besoin de la taille
-		if (lobCreator instanceof ContextualLobCreator) {
-			// Passage de -1 comme taille: De toutes façons cette valeur n'est pas utilisée en jdbc4
-			Assert.isTrue(false, "N'est plus utilisé. On est jjrs en JDBC3");
-			return lobCreator.createBlob(aInputStream, -1);
-		}
-		else {
+//		// JDBC4 -> pas besoin de la taille
+//		if (lobCreator instanceof ContextualLobCreator) {
+//			// Passage de -1 comme taille: De toutes façons cette valeur n'est pas utilisée en jdbc4
+//			return lobCreator.createBlob(aInputStream, -1);
+//		}
+//		else {
 			// Fallback JDBC3
-
 			// On récupère le stream pour connaitre la taille
 			final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			try {
@@ -53,7 +49,7 @@ public class BlobFactory {
 			catch (IOException ioe) {
 				throw new RuntimeException(ioe);
 			}
-		}
+//		}
 	}
 
 	public Blob createBlob(InputStream aInputStream, long aLength) {

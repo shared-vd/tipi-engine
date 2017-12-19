@@ -25,14 +25,14 @@ public abstract class Command {
 	@Autowired
 	protected TopProcessGroupManager groupManager;
 	@Autowired
-	protected ConnectionCapManager connectionsCup;
+	protected ConnectionCapManager connectionCapManager;
 	@Autowired
 	protected CommandService commandService;
 	@Autowired
 	protected CommandHelperService commandHelperService;
 
 	@Autowired
-	protected ActivityServiceImpl activityService;
+	protected ActivityRunningService activityService;
 
 	public abstract void execute();
 
@@ -55,7 +55,7 @@ public abstract class Command {
 
 		final TopProcessGroupManager.RunReason reason = groupManager.hasRoom(topProcess);
 		if (reason == TopProcessGroupManager.RunReason.OK) {
-			if (connectionsCup.hasConnections(meta)) {
+			if (connectionCapManager.hasConnections(meta)) {
 				final TopProcessGroupLauncher launcher = getLauncher(topProcess);
 				if (!launcher.isRunning(id)) {
 					Assert.isEqual(ActivityState.EXECUTING, aActivity.getState());

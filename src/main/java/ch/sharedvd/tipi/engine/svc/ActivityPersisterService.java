@@ -11,7 +11,6 @@ import ch.sharedvd.tipi.engine.utils.BlobFactory;
 import ch.sharedvd.tipi.engine.utils.InputStreamHolder;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import java.io.Serializable;
@@ -21,8 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class ActivityPersistenceService {
+public class ActivityPersisterService {
 
     @Autowired
     private ActivityRepository activityRepository;

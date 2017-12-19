@@ -1,13 +1,18 @@
 package tipi.config;
 
+import ch.sharedvd.tipi.engine.client.TipiFacade;
+import ch.sharedvd.tipi.engine.client.TipiFacadeImpl;
 import ch.sharedvd.tipi.engine.command.CommandConsumer;
 import ch.sharedvd.tipi.engine.command.CommandHelperService;
 import ch.sharedvd.tipi.engine.command.CommandService;
 import ch.sharedvd.tipi.engine.command.CommandServiceImpl;
 import ch.sharedvd.tipi.engine.engine.*;
 import ch.sharedvd.tipi.engine.model.DbActivity;
+import ch.sharedvd.tipi.engine.query.ActivityQueryService;
+import ch.sharedvd.tipi.engine.query.TipiQueryFacade;
+import ch.sharedvd.tipi.engine.query.TipiQueryFacadeImpl;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
-import ch.sharedvd.tipi.engine.svc.ActivityPersistenceService;
+import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import ch.sharedvd.tipi.engine.utils.BeanAutowirer;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
@@ -28,8 +33,24 @@ public class TipiAutoConfiguration {
         cap.setDescription("Limit on the datasource connections");
         cap.setNbMaxConcurrent(10);
         cap.setDefault(true);
-        cap.setManager(connectionCapManager());
+        cap.setConnectionCapManager(connectionCapManager());
         return cap;
+    }
+
+    @Bean
+    public TipiQueryFacade tipiQueryFacade() {
+        return new TipiQueryFacadeImpl();
+    }
+
+
+    @Bean
+    public TipiFacade tipiFacade() {
+        return new TipiFacadeImpl();
+    }
+
+    @Bean
+    public ActivityQueryService activityQueryService() {
+        return new ActivityQueryService();
     }
 
     @Bean
@@ -63,13 +84,13 @@ public class TipiAutoConfiguration {
     }
 
     @Bean
-    public ActivityServiceImpl activityService() {
-        return new ActivityServiceImpl();
+    public ActivityRunningService activityService() {
+        return new ActivityRunningService();
     }
 
     @Bean
-    public ActivityPersistenceService activityPersistenceService() {
-        return new ActivityPersistenceService();
+    public ActivityPersisterService activityPersistenceService() {
+        return new ActivityPersisterService();
     }
 
     @Bean

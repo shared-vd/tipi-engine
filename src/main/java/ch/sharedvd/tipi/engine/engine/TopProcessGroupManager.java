@@ -21,9 +21,9 @@ public class TopProcessGroupManager implements Startable {
     }
 
     @Autowired
-    protected ActivityServiceImpl activityService;
+    protected ActivityRunningService activityService;
     @Autowired
-    protected ConnectionCapManager connectionsCup;
+    protected ConnectionCapManager connectionCapManager;
 
     private final Map<String, TopProcessGroupLauncher> launchers = new HashMap<String, TopProcessGroupLauncher>();
 
@@ -109,7 +109,7 @@ public class TopProcessGroupManager implements Startable {
         TopProcessGroupLauncher launcher = getLaunchers().get(fqn);
         if (launcher == null) {
             TopProcessMetaModel meta = MetaModelHelper.getTopProcessMeta(fqn);
-            launcher = new TopProcessGroupLauncher(meta, activityService, connectionsCup, true);
+            launcher = new TopProcessGroupLauncher(meta, activityService, connectionCapManager, true);
             launchers.put(fqn, launcher);
         }
         Assert.notNull(launcher, "Name: " + fqn);

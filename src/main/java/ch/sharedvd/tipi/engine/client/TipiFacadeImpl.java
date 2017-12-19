@@ -7,16 +7,14 @@ import ch.sharedvd.tipi.engine.command.MetaModelHelper;
 import ch.sharedvd.tipi.engine.command.impl.AbortProcessCommand;
 import ch.sharedvd.tipi.engine.command.impl.ColdRestartCommand;
 import ch.sharedvd.tipi.engine.command.impl.RunExecutingActivitiesCommand;
-import ch.sharedvd.tipi.engine.engine.ActivityServiceImpl;
+import ch.sharedvd.tipi.engine.engine.ActivityRunningService;
 import ch.sharedvd.tipi.engine.engine.TipiStarter;
 import ch.sharedvd.tipi.engine.engine.TopProcessGroupManager;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
 public class TipiFacadeImpl implements TipiFacade {
 
     private static final Logger log = LoggerFactory.getLogger(TipiFacadeImpl.class);
@@ -31,7 +29,7 @@ public class TipiFacadeImpl implements TipiFacade {
     private CommandConsumer commandConsumer;
 
     @Autowired
-    private ActivityServiceImpl activityService;
+    private ActivityRunningService activityService;
 
     @Autowired
     private TopProcessGroupManager groupManager;

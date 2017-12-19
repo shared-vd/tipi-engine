@@ -1,9 +1,10 @@
 package ch.sharedvd.tipi.engine;
 
 import ch.sharedvd.tipi.engine.client.TipiFacade;
+import ch.sharedvd.tipi.engine.query.TipiQueryFacade;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
-import ch.sharedvd.tipi.engine.svc.ActivityPersistenceService;
+import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -22,7 +23,7 @@ import javax.persistence.EntityManager;
 public abstract class AbstractTipiPersistenceTest {
 
     @Autowired
-    protected ActivityPersistenceService activityPersistenceService;
+    protected ActivityPersisterService activityPersistenceService;
 
     @Autowired
     protected TopProcessRepository topProcessRepository;
@@ -38,6 +39,8 @@ public abstract class AbstractTipiPersistenceTest {
 
     @Autowired
     protected TipiFacade tipiFacade;
+    @Autowired
+    protected TipiQueryFacade tipiQueryFacade;
 
     @Before
     public void onSetUp() {

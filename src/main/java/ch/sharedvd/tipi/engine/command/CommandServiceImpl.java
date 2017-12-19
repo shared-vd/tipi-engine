@@ -67,9 +67,12 @@ public class CommandServiceImpl implements CommandService {
     public void sendCommand(Command command) {
         Assert.notNull(command);
         try {
-            final CommandSynchronization synchro = new CommandSynchronization(command);
-            TransactionSynchronizationManager.registerSynchronization(synchro);
-            //consumer.addCommand(command);
+            if (TransactionSynchronizationManager.isSynchronizationActive()) {
+                final CommandSynchronization synchro = new CommandSynchronization(command);
+                TransactionSynchronizationManager.registerSynchronization(synchro);
+            } else {
+                consumer.addCommand(command);
+            }
         } catch (RuntimeException e) {
             LOGGER.error(e.getMessage(), e);
             throw e;

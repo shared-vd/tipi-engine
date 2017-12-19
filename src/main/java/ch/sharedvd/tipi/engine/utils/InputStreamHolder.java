@@ -5,15 +5,16 @@ import java.io.Serializable;
 
 public class InputStreamHolder implements Serializable {
 
-	private static final long serialVersionUID = 6633210850174717740L;
+    private static final long serialVersionUID = 6633210850174717740L;
 
-	transient final private InputStream inputStream;
+    transient final private InputStream inputStream;
 
-	public InputStreamHolder(InputStream inputStream) {
-		this.inputStream = inputStream;
-	}
+    public InputStreamHolder(InputStream inputStream) {
+        Assert.notNull(inputStream, "InputStream can't be null");
+        this.inputStream = inputStream;
+    }
 
-	public InputStream getInputStream() {
-		return inputStream;
-	}
+    public InputStream getInputStream() {
+        return inputStream;
+    }
 }

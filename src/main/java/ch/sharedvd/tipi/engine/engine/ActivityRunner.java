@@ -38,7 +38,7 @@ public class ActivityRunner implements Runnable {
     private final ActivityRepository activityRepository;
     private final CommandHelperService commandHelperService;
     private final CommandService commandService;
-    private final TopProcessGroupLauncher groupLauncher;
+    private final TopProcessGroupLauncher topProcessGroupLauncher;
 
     private final long activityId;
     private final ActivityMetaModel meta;
@@ -59,7 +59,7 @@ public class ActivityRunner implements Runnable {
         this.commandService = context.commandService;
         this.activityRepository = context.activityRepository;
         this.commandHelperService = context.commandHelperService;
-        this.groupLauncher = context.launcher;
+        this.topProcessGroupLauncher = context.launcher;
         this.tt = new TxTemplate(context.txManager);
     }
 
@@ -79,7 +79,7 @@ public class ActivityRunner implements Runnable {
     public void run() {
 
         try {
-            groupLauncher.initInfosForThread(this);
+            topProcessGroupLauncher.initInfosForThread(this);
 
             //engineInterceptor.onStartActivity(getActivityId(), getActivityName());
 
@@ -96,7 +96,7 @@ public class ActivityRunner implements Runnable {
             LOGGER.error("Activity " + activityId + " ended poorly: " + e, e);
             // Si on a une exception ici, c'est qu'on n'a pas bien trappé l'exception
             // Il faut donc remover l'ID de cette activité de la liste des running
-            groupLauncher.removeRunning(activityId);
+            topProcessGroupLauncher.removeRunning(activityId);
         } finally {
             //engineInterceptor.onEndActivity(getActivityId(), getActivityName());
         }
@@ -117,7 +117,7 @@ public class ActivityRunner implements Runnable {
 
             final boolean runExecuting;
             int nbRetry = 0;
-            if (!aborted && !interrupted && groupLauncher.isStarted()) {
+            if (!aborted && !interrupted && topProcessGroupLauncher.isStarted()) {
 
                 nbRetry = incrementNbRetries();
                 final String baseMessage = "Activity id=" + activityId + " retry=" + nbRetry + " (" + getActivityName() + ") : rollback done. Retrying? Msg='" + t.getMessage() + "'";
@@ -150,13 +150,13 @@ public class ActivityRunner implements Runnable {
             }
 
             if (interrupted) {
-                groupLauncher.setStatusForThread(TipiThreadStats.STATUS_INTERRUPTED);
+                topProcessGroupLauncher.setStatusForThread(TipiThreadStats.STATUS_INTERRUPTED);
             } else if (aborted) {
-                groupLauncher.setStatusForThread(TipiThreadStats.STATUS_ABORTED);
+                topProcessGroupLauncher.setStatusForThread(TipiThreadStats.STATUS_ABORTED);
             } else {
-                groupLauncher.setStatusForThread(TipiThreadStats.STATUS_EXCEPTION + ":" + nbRetry);
+                topProcessGroupLauncher.setStatusForThread(TipiThreadStats.STATUS_EXCEPTION + ":" + nbRetry);
             }
-            groupLauncher.removeRunning(activityId);
+            topProcessGroupLauncher.removeRunning(activityId);
 
             // On doit réessayer de lancer cette activité APRES l'avoir supprimé de
             // la liste des RUNNING sinon elle va pas pouvoir être relancée
@@ -345,13 +345,13 @@ public class ActivityRunner implements Runnable {
 
                 ActivityStateChangeService.runnerFinished(model, resultContext);
 
-                groupLauncher.setStatusForThread(TipiThreadStats.STATUS_COMMIT);
+                topProcessGroupLauncher.setStatusForThread(TipiThreadStats.STATUS_COMMIT);
             } else {
                 LOGGER.info("Activité ou process (" + getActivityId() + ") ABORTED -> pas de run");
                 // ABORTED -> on met l'activité en ABORTED
                 ActivityStateChangeService.aborted(model);
 
-                groupLauncher.setStatusForThread(TipiThreadStats.STATUS_ABORTED);
+                topProcessGroupLauncher.setStatusForThread(TipiThreadStats.STATUS_ABORTED);
 
                 // Activité non créée
                 activity = null;

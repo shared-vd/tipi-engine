@@ -10,7 +10,7 @@ import ch.sharedvd.tipi.engine.meta.VariableDescription;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
-import ch.sharedvd.tipi.engine.svc.ActivityPersistenceService;
+import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import ch.sharedvd.tipi.engine.utils.Assert;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ public class MetaModelHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetaModelHelper.class);
 
     public static DbActivity createModelFromMeta(final ActivityMetaModel meta, final boolean isProcess,
-                                                 final VariableMap vars, ActivityPersistenceService aHelperService) {
+                                                 final VariableMap vars, ActivityPersisterService aHelperService) {
         Assert.notNull(meta);
 
         DbActivity a = null;

@@ -7,7 +7,7 @@ import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
 import ch.sharedvd.tipi.engine.meta.SubProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
-import ch.sharedvd.tipi.engine.svc.ActivityPersistenceService;
+import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import ch.sharedvd.tipi.engine.utils.Assert;
 import ch.sharedvd.tipi.engine.utils.BeanAutowirer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class CommandHelperService {
 	@Autowired
 	private ActivityRepository activityRepository;
 	@Autowired
-	private ActivityPersistenceService activityHelper;
+	private ActivityPersisterService activityHelper;
 
 	public Activity createActivity(long actId) {
 		DbActivity model = activityRepository.findOne(actId);

@@ -8,8 +8,6 @@ import ch.sharedvd.tipi.engine.command.MetaModelHelper;
 import ch.sharedvd.tipi.engine.command.impl.ResumeActivityCommand;
 import ch.sharedvd.tipi.engine.command.impl.ResumeAllActivitiesCommand;
 import ch.sharedvd.tipi.engine.command.impl.RunExecutingActivitiesCommand;
-import ch.sharedvd.tipi.engine.infos.ActivityThreadInfos;
-import ch.sharedvd.tipi.engine.infos.ConnectionCapInfos;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
@@ -17,7 +15,7 @@ import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
-import ch.sharedvd.tipi.engine.svc.ActivityPersistenceService;
+import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import ch.sharedvd.tipi.engine.utils.Assert;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
 import org.slf4j.Logger;
@@ -26,22 +24,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ActivityServiceImpl {
+public class ActivityRunningService {
 
-    private Logger LOGGER = LoggerFactory.getLogger(ActivityServiceImpl.class);
-
-    @Autowired
-    private TopProcessGroupManager groupManager;
+    private Logger LOGGER = LoggerFactory.getLogger(ActivityRunningService.class);
 
     @Autowired
-    private ConnectionCapManager connectionsCup;
+    private TopProcessGroupManager topProcessGroupManager;
 
     @Autowired
-    private ActivityPersistenceService activityPersistenceService;
+    private ConnectionCapManager connectionCapManager;
+
+    @Autowired
+    private ActivityPersisterService activityPersistenceService;
 
     @Autowired
     private CommandService commandService;
@@ -63,20 +60,6 @@ public class ActivityServiceImpl {
 
     // package
     List<DbActivity> getExecutingActivities(String aTopProcessName, Collection<Long> aRunningActivities, int max) {
-//		DbTopProcessCriteria tpc = new DbTopProcessCriteria();
-//		tpc.addAndExpression(tpc.fqn().eq(aTopProcessName));
-//		tpc.restrictSelect(DbTopProcessProperty.Id);
-//		DbActivityCriteria amc = new DbActivityCriteria();
-//		amc.addAndExpression(Expr.or(amc.process__Id().in(tpc), amc.id().in(tpc)), amc.state().eq(ActivityState.EXECUTING), amc
-//				.requestEndExecution().eq(false));
-//
-//		if ((null != aRunningActivities) && !aRunningActivities.isEmpty()) {
-//			amc.addAndExpression(amc.id().notIn(aRunningActivities));
-//		}
-//		amc.addOrder(DbActivityProperty.NbRetryDone, true);
-//		amc.addOrder(DbActivityProperty.Id, true);
-//
-//		return hqlBuilder.getResultList(DbActivity.class, amc, max);
         return activityRepository.findExecutingActivities(aTopProcessName);
     }
 
@@ -210,7 +193,7 @@ public class ActivityServiceImpl {
 
             // on regarde maintenant si l'activité est bien en cours d'exécution (pour de vrai) dans un thread
             // (l'activité pour être dans l'état EXECUTING, mais néanmoins en attente si tous les threads d'exécution sont occupés, par exemple)
-            final TopProcessGroupLauncher launcher = groupManager.getLauncher(act.getProcessOrThis().getFqn());
+            final TopProcessGroupLauncher launcher = topProcessGroupManager.getLauncher(act.getProcessOrThis().getFqn());
             return launcher.isRunning(aid);
         });
     }
@@ -244,39 +227,27 @@ public class ActivityServiceImpl {
 
         // Ensuite les sous-activités du processus
         txTemplate.txWithout((status) -> {
-                LOGGER.debug("Activities of process " + processId + " -> state=ABORTED");
-                Query q = em.createQuery("update DbActivity a set a.state = 'ABORTED' where a.process.id = :processId");
-                q.setParameter("processId", processId);
-                q.executeUpdate();
+            LOGGER.debug("Activities of process " + processId + " -> state=ABORTED");
+            Query q = em.createQuery("update DbActivity a set a.state = 'ABORTED' where a.process.id = :processId");
+            q.setParameter("processId", processId);
+            q.executeUpdate();
         });
     }
 
-    public List<ActivityThreadInfos> getThreadsInfos() {
-        return groupManager.getThreadsInfos();
-    }
-
-    public List<ConnectionCapInfos> getAllConnectionCupInfos() {
-        List<ConnectionCapInfos> connCupInfos = new ArrayList<>();
-        for (ConnectionCap ct : connectionsCup.getCaps()) {
-            connCupInfos.add(new ConnectionCapInfos(ct, connectionsCup));
-        }
-        return connCupInfos;
-    }
-
     public void setMaxConnections(String aConnectionType, int aNbMaxConnections) {
-        connectionsCup.setNbMaxConcurrent(aConnectionType, aNbMaxConnections);
+        connectionCapManager.setNbMaxConcurrent(aConnectionType, aNbMaxConnections);
 
         commandService.sendCommand(new RunExecutingActivitiesCommand());
     }
 
     public void setMaxConcurrentActivitiesForGroup(String aGroupName, int aNbMaxConnections) {
-        groupManager.setMaxConcurrentActivitiesForGroup(aGroupName, aNbMaxConnections);
+        topProcessGroupManager.setMaxConcurrentActivitiesForGroup(aGroupName, aNbMaxConnections);
 
         commandService.sendCommand(new RunExecutingActivitiesCommand());
     }
 
     public void setPriorityForGroup(String aGroupName, int aPrio) {
-        groupManager.setPriorityForGroup(aGroupName, aPrio);
+        topProcessGroupManager.setPriorityForGroup(aGroupName, aPrio);
 
         commandService.sendCommand(new RunExecutingActivitiesCommand());
     }

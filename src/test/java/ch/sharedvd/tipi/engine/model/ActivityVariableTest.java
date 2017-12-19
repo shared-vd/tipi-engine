@@ -2,13 +2,14 @@ package ch.sharedvd.tipi.engine.model;
 
 import ch.sharedvd.tipi.engine.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.client.VariableMap;
+import ch.sharedvd.tipi.engine.infos.TipiActivityInfos;
 import ch.sharedvd.tipi.engine.utils.InputStreamHolder;
 import org.junit.Test;
 
 import java.io.InputStream;
 import java.time.LocalDate;
 
-import static ch.sharedvd.tipi.engine.utils.Assert.fail;
+import static org.junit.Assert.assertEquals;
 
 public class ActivityVariableTest extends AbstractTipiPersistenceTest {
 
@@ -21,16 +22,15 @@ public class ActivityVariableTest extends AbstractTipiPersistenceTest {
         vars.put("regdate", LocalDate.of(2001, 2, 3));
         vars.put("str", "Une string");
 
-        InputStream is = getClass().getResourceAsStream("inputStreamVariable.txt");
+        InputStream is = getClass().getResourceAsStream("/ActivityVariableTest/inputStreamVariable.txt");
         vars.put("file", new InputStreamHolder(is));
 
         final long pid = tipiFacade.launch(ActivityVariableProcess.meta, vars);
         while (tipiFacade.isRunning(pid)) {
             Thread.sleep(100);
         }
-        fail("");
-        //TipiActivityInfos infos = tipiFacade.getActivityInfos(pid);
-        //assertEquals(ActivityState.FINISHED, infos.getState());
+        final TipiActivityInfos infos = tipiQueryFacade.getActivityInfos(pid);
+        assertEquals(ActivityState.FINISHED, infos.getState());
     }
 
 }

@@ -6,12 +6,12 @@ import ch.sharedvd.tipi.engine.engine.ConnectionCapManager;
 public class ConnectionCapInfos {
 
 	private ConnectionCap cap;
-	private ConnectionCapManager capManager;
+	private ConnectionCapManager connectionCapManager;
 
 
 	public ConnectionCapInfos(ConnectionCap aConnectionType, ConnectionCapManager aConnectionsCup) {
 		cap = aConnectionType;
-		capManager = aConnectionsCup;
+		connectionCapManager = aConnectionsCup;
 	}
 
 	// Info statique du connection cup
@@ -25,7 +25,7 @@ public class ConnectionCapInfos {
 	}
 
 	public long getNbCurrentConnections() {
-		return capManager.getNbCurrentConcurrent(cap.getName());
+		return connectionCapManager.getNbCurrentConcurrent(cap.getName());
 	}
 
 }

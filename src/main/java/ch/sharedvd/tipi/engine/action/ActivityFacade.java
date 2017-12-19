@@ -3,11 +3,11 @@ package ch.sharedvd.tipi.engine.action;
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.command.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
-import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.ActivityState;
+import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
-import ch.sharedvd.tipi.engine.svc.ActivityPersistenceService;
+import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import ch.sharedvd.tipi.engine.utils.Assert;
 
 import java.io.Serializable;
@@ -15,10 +15,10 @@ import java.util.List;
 
 public class ActivityFacade {
 
-    private ActivityPersistenceService activityPersistenceService;
+    private ActivityPersisterService activityPersistenceService;
     private long activityId;
 
-    public ActivityFacade(long activityId, ActivityPersistenceService manager) {
+    public ActivityFacade(long activityId, ActivityPersisterService manager) {
         Assert.notNull(activityId);
         Assert.notNull(manager);
         this.activityId = activityId;

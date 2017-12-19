@@ -15,7 +15,8 @@ import static ch.sharedvd.tipi.engine.model.DbActivity.*;
         @NamedQuery(name = "DbActivity.findTopProcessNamesByStateAndReqEnd", query = FIND_TP_BY_STATE_AND_REQ_END),
         @NamedQuery(name = "DbActivity.findExecutingActivities", query = FIND_EXEC_ACTIVITIES),
         @NamedQuery(name = "DbActivity.findChildren", query = FIND_CHILDREN),
-
+        @NamedQuery(name = "DbActivity.findByGroupAndState", query = FIND_GROUP_STATE),
+        @NamedQuery(name = "DbActivity.findByState", query = FIND_BY_STATE)
 })
 @Table(name = "TP_ACTIVITY", indexes = {
         @Index(name = "TP_ACT_REQEND_STATE_IDX", columnList = "STATE,REQUEST_END_EXECUTION"),
@@ -33,6 +34,17 @@ import static ch.sharedvd.tipi.engine.model.DbActivity.*;
 @DiscriminatorColumn
 @DiscriminatorValue("activity")
 public class DbActivity extends DbBaseEntity {
+
+    static final String FIND_BY_STATE =
+            "select a from DbActivity a " +
+                    "where a.requestEndExecution = false " +
+                    "  and a.state = (?1)";
+
+    static final String FIND_GROUP_STATE =
+            "select a from DbActivity a join a.process p " +
+                    "where p in (select pi from DbTopProcess pi where pi.fqn = (?1)) " +
+                    "  and a.requestEndExecution = false " +
+                    "  and a.state = (?2)";
 
     static final String FIND_CHILDREN = "from DbActivity a " +
             "where a.parent = (?1)";

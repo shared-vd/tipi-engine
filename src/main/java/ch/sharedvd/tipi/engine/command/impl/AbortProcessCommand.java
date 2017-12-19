@@ -1,6 +1,6 @@
 package ch.sharedvd.tipi.engine.command.impl;
 
-import ch.sharedvd.tipi.engine.engine.ActivityServiceImpl;
+import ch.sharedvd.tipi.engine.engine.ActivityRunningService;
 import ch.sharedvd.tipi.engine.engine.TopProcessGroupManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,7 @@ public class AbortProcessCommand extends ActivityCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbortProcessCommand.class);
 
     @Autowired
-    private ActivityServiceImpl activityService;
+    private ActivityRunningService activityService;
     @Autowired
     private TopProcessGroupManager manager;
 

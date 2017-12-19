@@ -8,11 +8,11 @@ public class ConnectionCap implements InitializingBean {
 	private String name;
 	private String description;
 	private int nbMaxConcurrent;
-	private ConnectionCapManager manager;
+	private ConnectionCapManager connectionCapManager;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		manager.register(this);
+		connectionCapManager.register(this);
 	}
 
 	public String getName() {
@@ -42,9 +42,9 @@ public class ConnectionCap implements InitializingBean {
 	public void setNbMaxConcurrent(int nbMaxConcurrent) {
 		this.nbMaxConcurrent = nbMaxConcurrent;
 	}
-	
-	public void setManager(ConnectionCapManager mgr) {
-		manager = mgr;
+
+	public void setConnectionCapManager(ConnectionCapManager mgr) {
+		connectionCapManager = mgr;
 	}
 	
 	@Override

@@ -25,8 +25,8 @@ public class TopProcessGroupLauncher {
     // public pour que les UNIT TESTS puissent changer cette valeur
     public static int CACHE_SIZE = 1000;
 
-    protected ActivityServiceImpl activityService;
-    protected ConnectionCapManager connectionsCup;
+    protected ActivityRunningService activityService;
+    protected ConnectionCapManager connectionCapManager;
 
     private List<DbActivity> readyActivities = new ArrayList<>();
     private TopProcessMetaModel topProcess;
@@ -40,14 +40,14 @@ public class TopProcessGroupLauncher {
     private int priority;
 
     public TopProcessGroupLauncher(final TopProcessMetaModel topProcess,
-                                   final ActivityServiceImpl activityService, final ConnectionCapManager connectionsCup, boolean startGroup) {
+                                   final ActivityRunningService activityService, final ConnectionCapManager connectionsCup, boolean startGroup) {
         Assert.notNull(topProcess);
         Assert.notNull(activityService);
         Assert.notNull(connectionsCup);
 
         this.topProcess = topProcess;
         this.activityService = activityService;
-        this.connectionsCup = connectionsCup;
+        this.connectionCapManager = connectionsCup;
         this.groupStarted = startGroup;
 
         final ThreadGroup threadGroup = new ThreadGroup("TG-" + topProcess.getFQN());
@@ -76,7 +76,7 @@ public class TopProcessGroupLauncher {
     }
 
     private int getNbMaxStartableActivities() {
-        int nbrMax = connectionsCup.getAvailableConnections(topProcess);
+        int nbrMax = connectionCapManager.getAvailableConnections(topProcess);
         if (nbMaxConcurrentActivities < 0) {
             return nbrMax;
         }
@@ -161,7 +161,7 @@ public class TopProcessGroupLauncher {
 
     public boolean removeRunning(long id) {
         synchronized (runningActivities) {
-            connectionsCup.remove(id);
+            connectionCapManager.remove(id);
             runningTopActivities.remove(id);
             return runningActivities.remove(id);
         }
@@ -225,7 +225,7 @@ public class TopProcessGroupLauncher {
             synchronized (runningActivities) {
                 Assert.isFalse(runningActivities.contains(runner.getActivityId()), "Error");
                 runningActivities.add(runner.getActivityId());
-                connectionsCup.add(runner.getActivityName(), runner.getActivityId());
+                connectionCapManager.add(runner.getActivityName(), runner.getActivityId());
 
                 // TX Synchro
                 try {
