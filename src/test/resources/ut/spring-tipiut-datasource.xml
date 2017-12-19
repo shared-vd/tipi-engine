@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context-3.1.xsd
+			http://www.springframework.org/schema/util
+			http://www.springframework.org/schema/util/spring-util-3.1.xsd
+			http://www.springframework.org/schema/tx
+			http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+
+    <context:annotation-config/>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="dbSchema" class="java.lang.String">
+        <constructor-arg value="${jdbc.username}"/>
+    </bean>
+
+    <bean id="jdbcManagedConnectionFactory" class="ch.vd.shared.hibernate.dynamic.DynamicXAMCFFactoryBean">
+        <property name="jdbcProfile" value="${jdbc.profile}"/>
+        <property name="maxPoolSize" value="20"/>
+
+        <property name="oracleUrl" value="${jdbc.url}"/>
+        <property name="oracleServerName" value="${jdbc.server}"/>
+        <property name="oraclePortNumber" value="${jdbc.port}"/>
+        <property name="oracleDatabaseName" value="${jdbc.instance}"/>
+        <property name="oracleUserName" value="${jdbc.username}"/>
+        <property name="oraclePassword" value="${jdbc.password}"/>
+
+        <property name="postgresqlServerName" value="${jdbc.server}"/>
+        <property name="postgresqlPortNumber" value="${jdbc.port}"/>
+        <property name="postgresqlDatabaseName" value="${jdbc.instance}"/>
+        <property name="postgresqlUserName" value="${jdbc.username}"/>
+        <property name="postgresqlPassword" value="${jdbc.password}"/>
+    </bean>
+
+    <!-- transaction manager -->
+    <bean id="transactionManager" class="org.jencks.factory.TransactionManagerFactoryBean">
+        <property name="defaultTransactionTimeoutSeconds" value="600"/>
+    </bean>
+    <bean id="txTemplate" class="ch.vd.registre.base.tx.TxTemplate">
+        <constructor-arg ref="transactionManager"/>
+    </bean>
+
+    <!-- jdbc configuration -->
+    <bean id="jdbcConnectionManager" class="org.jencks.factory.ConnectionManagerFactoryBean">
+        <property name="transaction" value="xa"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="pooling" value="true"/>
+        <property name="poolMinSize" value="1"/>
+        <property name="poolMaxSize" value="20"/>
+    </bean>
+
+    <bean id="dataSource" class="ch.vd.registre.base.jencks.ConnectionFactoryFactoryBean">
+        <property name="connectionManager" ref="jdbcConnectionManager"/>
+        <property name="managedConnectionFactory" ref="jdbcManagedConnectionFactory"/>
+    </bean>
+
+    <util:map id="hibernateProperties">
+        <entry key="hibernate.connection.autocommit" value="false"/>
+        <entry key="hibernate.dialect" value-ref="hibernateDialect"/>
+        <entry key="hibernate.show_sql" value="false"/>
+        <entry key="hibernate.jdbc.batch_size" value="0"/>
+        <entry key="hibernate.jdbc.use_streams_for_binary" value="true"/>
+        <entry key="hibernate.hbm2ddl.auto" value="${hibernate.hmb2ddl}"/>
+        <entry key="ch.vd.registre.base.hibernate.generator.max_lo" value="0"/>
+    </util:map>
+
+    <bean id="hibernateDialect" class="java.lang.String">
+        <constructor-arg value="${hibernate.dialect}"/>
+    </bean>
+
+    <bean id="tipiSessionFactory" class="ch.vd.shared.hibernate.config.DescriptiveSessionFactoryBean">
+        <property name="description" value="RCPers TiPi UT"/>
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="annotatedClassesLists">
+            <list>
+                <ref bean="tipiEntities"/>
+            </list>
+        </property>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="hibernateProperties" ref="hibernateProperties"/>
+        <property name="eventListeners">
+            <map>
+                <entry key="auto-flush">
+                    <list>
+                        <ref bean="autoFlushEventListener"/>
+                    </list>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="autoFlushEventListener" class="ch.vd.shared.hibernate.event.DisablingAutoFlushEventListener">
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+    <alias name="dataSource" alias="tipiDataSource"/>
+    <alias name="transactionManager" alias="tipiTransactionManager"/>
+
+</beans>

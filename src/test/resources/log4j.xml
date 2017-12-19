@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <!-- log4j config pour les UT de TiPi -->
+
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <param name="Threshold" value="WARN"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[ut tipi] %-5p [%d{yyyy-MM-dd HH:mm:ss.SSS}] %c{1}.%M(%L) | %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="LOGFILE" class="org.apache.log4j.FileAppender">
+        <param name="Threshold" value="DEBUG"/>
+        <param name="File" value="target/shared-tipi.log"/>
+        <param name="Append" value="false"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="[ut tipi] [%t] %-5p [%d{yyyy-MM-dd HH:mm:ss.SSS}] %c{1}.%M(%L) | %m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="ch.vd.registre.tipi">
+        <level value="INFO"/>
+    </logger>
+
+    <logger name="ch.vd">
+        <level value="INFO"/>
+    </logger>
+
+
+    <logger name="org.apache">
+        <level value="WARN"/>
+    </logger>
+
+    <!-- Pour eviter les erreurs: Narrowing proxy to class XYZ - this operation breaks == -->
+    <!-- http://opensource.atlassian.com/projects/hibernate/browse/HHH-1367 -->
+    <logger name="org.hibernate.engine.internal.StatefulPersistenceContext">
+        <level value="ERROR"/>
+    </logger>
+    <logger name="org.hibernate">
+        <level value="WARN"/>
+    </logger>
+    <logger name="org.hibernate.SQL">
+        <level value="OFF"/>
+    </logger>
+
+    <logger name="org.springframework">
+        <level value="INFO"/>
+    </logger>
+
+    <root>
+        <level value="INFO"/>
+        <appender-ref ref="LOGFILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</log4j:configuration>

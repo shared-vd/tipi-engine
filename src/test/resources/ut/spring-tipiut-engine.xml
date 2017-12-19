@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="tipiContext" class="java.lang.String">
+        <constructor-arg value="TiPi UT"/>
+    </bean>
+
+    <bean id="tipiAutostart" class="java.lang.Boolean">
+        <constructor-arg value="false"/>
+    </bean>
+    <bean id="tipiResumeAtBoot" class="java.lang.Boolean">
+        <constructor-arg value="false"/>
+    </bean>
+
+    <!-- Caps -->
+    <bean id="tipiOracleCap" class="ch.vd.registre.tipi.engine.ConnectionCap">
+        <property name="name" value="ORACLE"/>
+        <property name="description" value="Base Oracle"/>
+        <property name="nbMaxConcurrent" value="16"/>
+        <property name="default" value="true"/>
+
+        <property name="manager" ref="connectionCapManager"/>
+    </bean>
+    <bean id="tipiEsbCap" class="ch.vd.registre.tipi.engine.ConnectionCap">
+        <property name="name" value="ESB"/>
+        <property name="description" value="Bus ESB"/>
+        <property name="nbMaxConcurrent" value="20"/>
+
+        <property name="manager" ref="connectionCapManager"/>
+    </bean>
+    <bean id="tipiDbHostCap" class="ch.vd.registre.tipi.engine.ConnectionCap">
+        <property name="name" value="DB_HOST"/>
+        <property name="description" value="Host DB2"/>
+        <property name="nbMaxConcurrent" value="10"/>
+
+        <property name="manager" ref="connectionCapManager"/>
+    </bean>
+    <bean id="tipiProdDbCap" class="ch.vd.registre.tipi.engine.ConnectionCap">
+        <property name="name" value="DB_ORACLE_PROD"/>
+        <property name="description" value="DB Oracle de Prod"/>
+        <property name="nbMaxConcurrent" value="10"/>
+
+        <property name="manager" ref="connectionCapManager"/>
+    </bean>
+    <bean id="tipiUpiWsCap" class="ch.vd.registre.tipi.engine.ConnectionCap">
+        <property name="name" value="UPI_WS"/>
+        <property name="description" value="WS UPI"/>
+        <property name="nbMaxConcurrent" value="4"/>
+
+        <property name="manager" ref="connectionCapManager"/>
+    </bean>
+
+    <bean id="oracleStatsComputerInterceptor" class="ch.vd.registre.tipi.oracle.OracleStatsComputerInterceptor">
+    </bean>
+
+</beans>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean class="ch.vd.registre.tipi.client.ActivityRegistrar">
+        <property name="classes">
+            <list>
+                <value>ch.vd.registre.tipi.batch.TipiBatchSchedulerTest$BatchTopProcess</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="batchScheduler" class="ch.vd.registre.tipi.batch.TipiBatchScheduler"/>
+    <bean id="tipiRegistry" class="ch.vd.registre.tipi.engine.TipiRegistry"/>
+
+</beans>

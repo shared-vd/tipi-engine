@@ -1,12 +1,16 @@
 package ch.sharedvd.tipi.engine.common;
 
+import ch.qos.logback.classic.Level;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
+import org.hibernate.boot.spi.MetadataImplementor;
 import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+
+import javax.sql.DataSource;
 
 import static junit.framework.TestCase.assertTrue;
 
@@ -15,12 +19,10 @@ public abstract class AbstractSpringBootTruncaterTest implements ApplicationCont
     private static final Logger log = LoggerFactory.getLogger(AbstractSpringBootTruncaterTest.class);
 
     private boolean onSetUpWasRun = false;
-
     private HibernateMetaDataTruncater truncater;
+    private ApplicationContext applicationContext;
 
     protected abstract TxTemplate getTxTemplate();
-
-    private ApplicationContext applicationContext;
 
     public ApplicationContext getApplicationContext() {
         return applicationContext;
@@ -38,6 +40,8 @@ public abstract class AbstractSpringBootTruncaterTest implements ApplicationCont
 
     // To be overriden by sub-classes
     protected void afterContextInitialization() {
+        truncater = new HibernateMetaDataTruncater(applicationContext.getBean(DataSource.class),
+                applicationContext.getBean(MetadataImplementor.class));
     }
 
     /**
@@ -109,5 +113,43 @@ public abstract class AbstractSpringBootTruncaterTest implements ApplicationCont
     // Can be overriden
     protected void truncateDatabase() throws Exception {
         truncater.truncate();
+    }
+
+    public interface Log4jBlockingCallback<T> {
+        T execute() throws Exception;
+    }
+
+    protected <T> T doWithLog4jBlocking(String log4jLoggerStr, Log4jBlockingCallback<T> cb) throws Exception {
+
+        ch.qos.logback.classic.Logger logger = null;
+        Level loggerLevel = null;
+        ch.qos.logback.classic.Logger root = null;
+        Level rootLevel = null;
+        try {
+            logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(log4jLoggerStr);
+            loggerLevel = disableLogger(logger);
+
+            final T t = cb.execute();
+            return t;
+        } finally {
+            enableLogger(logger, loggerLevel);
+            enableLogger(root, rootLevel);
+        }
+    }
+
+    private void enableLogger(ch.qos.logback.classic.Logger logger, Level level) {
+        if (logger != null && level != null) {
+            logger.setLevel(level);
+        }
+    }
+
+    private Level disableLogger(ch.qos.logback.classic.Logger logger) {
+        if (logger != null) {
+            Level level = null;
+            level = logger.getLevel();
+            logger.setLevel(Level.OFF);
+            return level;
+        }
+        return null;
     }
 }
