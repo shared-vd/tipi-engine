@@ -7,8 +7,6 @@ import java.util.Date;
 @DiscriminatorValue("subproc")
 public class DbSubProcess extends DbActivity {
 
-    private static final long serialVersionUID = 1L;
-
     private boolean executed;
     private Date dateStartTerminate; // la date de début du terminate()
     private Date dateEndTerminate; // la date de fin du terminate()

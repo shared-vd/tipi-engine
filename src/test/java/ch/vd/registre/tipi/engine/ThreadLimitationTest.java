@@ -11,7 +11,6 @@ import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.transaction.TransactionStatus;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -52,8 +51,7 @@ public class ThreadLimitationTest extends TipiEngineTest {
         public static AtomicInteger begin = new AtomicInteger();
         public static AtomicInteger end = new AtomicInteger();
 
-        public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity1.class, TipiEngineTest.defaultRetry,
-                new String[]{"DB_ORACLE_PROD", "DB_HOST"}, null);
+        public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity1.class, new String[]{"DB_ORACLE_PROD", "DB_HOST"}, null);
 
         @Override
         protected ActivityResultContext execute() throws Exception {
@@ -78,7 +76,7 @@ public class ThreadLimitationTest extends TipiEngineTest {
         public static AtomicInteger begin = new AtomicInteger();
         public static AtomicInteger end = new AtomicInteger();
 
-        public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity2.class, TipiEngineTest.defaultRetry,
+        public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity2.class,
                 new String[]{TestingConnectionType.ESB.name(), TestingConnectionType.UPI_WS.name()}, null);
 
         @Override
@@ -104,7 +102,7 @@ public class ThreadLimitationTest extends TipiEngineTest {
         public static AtomicInteger begin = new AtomicInteger();
         public static AtomicInteger end = new AtomicInteger();
 
-        public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity3.class, TipiEngineTest.defaultRetry,
+        public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity3.class,
                 new String[]{TestingConnectionType.DB_HOST.name(), TestingConnectionType.UPI_WS.name()}, null);
 
         @Override
@@ -139,43 +137,43 @@ public class ThreadLimitationTest extends TipiEngineTest {
         while (TLTActivity2.begin.get() < 1) {    // ok: ESB et UPI_WS sont libres
             Thread.sleep(10);
         }
-		Assert.assertEquals(0, TLTActivity3.begin.get());    // bloqué: ni DB_HOST ni UPI_WS n'est libre
-		Assert.assertEquals(0, TLTActivity1.end.get());
-		Assert.assertEquals(0, TLTActivity2.end.get());
-		Assert.assertEquals(0, TLTActivity3.end.get());
+        Assert.assertEquals(0, TLTActivity3.begin.get());    // bloqué: ni DB_HOST ni UPI_WS n'est libre
+        Assert.assertEquals(0, TLTActivity1.end.get());
+        Assert.assertEquals(0, TLTActivity2.end.get());
+        Assert.assertEquals(0, TLTActivity3.end.get());
 
         TLTActivity1.count.incrementAndGet();        // Termine l'activité 1 => libère DB_ORACLE_PROD et DB_HOST
 
-		Assert.assertEquals(1, TLTActivity1.begin.get());
-		Assert.assertEquals(1, TLTActivity2.begin.get());
-		Assert.assertEquals(0, TLTActivity3.begin.get());    // bloqué: DB_HOST est libre, UPI_WS n'est pas libre
+        Assert.assertEquals(1, TLTActivity1.begin.get());
+        Assert.assertEquals(1, TLTActivity2.begin.get());
+        Assert.assertEquals(0, TLTActivity3.begin.get());    // bloqué: DB_HOST est libre, UPI_WS n'est pas libre
         while (TLTActivity1.end.get() < 1) {
             Thread.sleep(10);
         }
-		Assert.assertEquals(0, TLTActivity2.end.get());
-		Assert.assertEquals(0, TLTActivity3.end.get());
+        Assert.assertEquals(0, TLTActivity2.end.get());
+        Assert.assertEquals(0, TLTActivity3.end.get());
 
         TLTActivity2.count.incrementAndGet();        // Termine l'activité 2 => libère ESB et UPI_WS
 
-		Assert.assertEquals(1, TLTActivity1.begin.get());
-		Assert.assertEquals(1, TLTActivity2.begin.get());
+        Assert.assertEquals(1, TLTActivity1.begin.get());
+        Assert.assertEquals(1, TLTActivity2.begin.get());
         while (TLTActivity3.begin.get() < 1) {    // ok: DB_HOST et UPI_WS sont libres
             Thread.sleep(10);
         }
-		Assert.assertEquals(1, TLTActivity1.end.get());
+        Assert.assertEquals(1, TLTActivity1.end.get());
         while (TLTActivity2.end.get() < 1) {
             Thread.sleep(10);
         }
-		Assert.assertEquals(0, TLTActivity3.end.get());
+        Assert.assertEquals(0, TLTActivity3.end.get());
 
         TLTActivity3.count.incrementAndGet();        // Termine l'activité 3
         Thread.sleep(10);
 
-		Assert.assertEquals(1, TLTActivity1.begin.get());
-		Assert.assertEquals(1, TLTActivity2.begin.get());
-		Assert.assertEquals(1, TLTActivity3.begin.get());
-		Assert.assertEquals(1, TLTActivity1.end.get());
-		Assert.assertEquals(1, TLTActivity2.end.get());
+        Assert.assertEquals(1, TLTActivity1.begin.get());
+        Assert.assertEquals(1, TLTActivity2.begin.get());
+        Assert.assertEquals(1, TLTActivity3.begin.get());
+        Assert.assertEquals(1, TLTActivity1.end.get());
+        Assert.assertEquals(1, TLTActivity2.end.get());
         while (TLTActivity3.end.get() < 1) {
             Thread.sleep(10);
         }
@@ -190,8 +188,7 @@ public class ThreadLimitationTest extends TipiEngineTest {
 
             boolean end = false;
             while (!end) {
-                DbActivityCriteria actCrit = new DbActivityCriteria();
-                List<DbActivity> acts = hqlBuilder.getResultList(actCrit);
+                List<DbActivity> acts = activityRepository.findAll();
                 end = ((null != acts) && !acts.isEmpty());
                 Thread.sleep(10);
             }
@@ -201,9 +198,7 @@ public class ThreadLimitationTest extends TipiEngineTest {
             boolean end = false;
             while (!end) {
                 // Assert que plus aucune activité n'est potentiellement démarrable.
-                DbActivityCriteria actCrit = new DbActivityCriteria();
-                actCrit.addAndExpression(Expr.or(actCrit.state().eq(ActivityState.EXECUTING), actCrit.requestEndExecution().eq(Boolean.TRUE)));
-                List<DbActivity> acts = hqlBuilder.getResultList(actCrit);
+                List<DbActivity> acts = activityRepository.findByStateOrRequestEndExecution(ActivityState.EXECUTING, true);
                 end = ((null == acts) || acts.isEmpty());
                 if (!end) {
                     // On attend sur cette activité puis on relance
@@ -211,11 +206,8 @@ public class ThreadLimitationTest extends TipiEngineTest {
                     DbActivity model;
                     do {
                         Thread.sleep(10);
-                        model = doInTransaction(new TxCallback<DbActivity>() {
-                            @Override
-                            public DbActivity execute(TransactionStatus aArg0) throws Exception {
-                                return activityRepository.findOne(actId);
-                            }
+                        model = txTemplate.txWith(s -> {
+                            return activityRepository.findOne(actId);
                         });
                     } while ((null != model)
                             && ((ActivityState.EXECUTING == model.getState()) || model.isRequestEndExecution()));

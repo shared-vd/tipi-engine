@@ -6,11 +6,14 @@ import ch.sharedvd.tipi.engine.infos.TipiTopProcessInfos;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
+import ch.sharedvd.tipi.engine.repository.ActivityRepository;
+import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
 import org.hibernate.SessionException;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,18 +22,20 @@ public class TipiTestingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TipiTestingService.class);
 
+    @Autowired
+    private TopProcessRepository topProcessRepository;
+    @Autowired
+    private ActivityRepository activityRepository;
+    @Autowired
     private TxTemplate txTemplate;
+    @Autowired
     private CommandConsumer commandConsumer;
 
     public List<TipiTopProcessInfos> getAllProcesses(final Class<? extends TopProcess> clazz) {
         final List<TipiTopProcessInfos> list = new ArrayList<>();
 
         txTemplate.txWithout((s) -> {
-            final DbTopProcessCriteria criteria = new DbTopProcessCriteria();
-            criteria.addAndExpression(criteria.parent__Id().isNull()); // Process
-            criteria.addAndExpression(criteria.fqn().eq(clazz.getName()));
-            final List<DbTopProcess> results = hqlBuilder.getResultList(DbTopProcess.class, criteria);
-
+            final List<DbTopProcess> results = topProcessRepository.findProcessesByName(clazz.getName());
             for (DbTopProcess am : results) {
                 final TipiTopProcessInfos infos = new TipiTopProcessInfos(am, false);
                 list.add(infos);
@@ -60,10 +65,8 @@ public class TipiTestingService {
         boolean end = false;
         while (!end) {
             try {
-                // Assert.ue plus aucune activité n'est potentiellement démarrable.
-                DbActivityCriteria actCrit = new DbActivityCriteria();
-                actCrit.addAndExpression(Expr.or(actCrit.state().eq(ActivityState.EXECUTING), actCrit.requestEndExecution().eq(Boolean.TRUE)));
-                List<DbActivity> acts = hqlBuilder.getResultList(DbActivity.class, actCrit);
+                // Assert que plus aucune activité n'est potentiellement démarrable.
+                final List<DbActivity> acts = activityRepository.findByStateOrRequestEndExecution(ActivityState.EXECUTING, true);
                 end = ((null == acts) || acts.isEmpty());
                 if (end) {
                     // Contrôle en plus qu'il n'y a plus de commande dans la queue.
@@ -78,20 +81,11 @@ public class TipiTestingService {
         }
 
         if (assertThatThereIsNoError) {
-            DbActivityCriteria actCrit = new DbActivityCriteria();
-            List<DbActivity> acts = hqlBuilder.getResultList(DbActivity.class, actCrit);
+            List<DbActivity> acts = activityRepository.findAll();
             for (DbActivity am : acts) {
                 Assert.assertTrue("State: " + am.getState(), ActivityState.ERROR != am.getState());
             }
         }
-    }
-
-    public void setTxTemplate(TxTemplate txTemplate) {
-        this.txTemplate = txTemplate;
-    }
-
-    public void setCommandConsumer(CommandConsumer commandConsumer) {
-        this.commandConsumer = commandConsumer;
     }
 
 }

@@ -44,9 +44,7 @@ public class ResumeAllTest extends TipiEngineTest {
             while (!ready) {
                 Thread.sleep(20);
                 ready = txTemplate.txWith(s -> {
-                    DbActivityCriteria crit = new DbActivityCriteria();
-                    crit.addAndExpression(crit.requestEndExecution().eq(false));
-                    List<DbActivity> actis = hqlBuilder.getResultList(crit);
+                    List<DbActivity> actis = activityRepository.findByRequestEndExecutionOrderById(false);
                     boolean wait = false;
                     int suspErr = 0;
                     for (DbActivity acti : actis) {

@@ -45,7 +45,7 @@ public class MasseTest extends TipiEngineTest {
 
         public static AtomicInteger count = new AtomicInteger(0);
 
-        public static final ActivityMetaModel meta = new ActivityMetaModel(MasseTestActivity.class, TipiEngineTest.defaultRetry);
+        public static final ActivityMetaModel meta = new ActivityMetaModel(MasseTestActivity.class);
 
         @Override
         protected ActivityResultContext execute() throws Exception {

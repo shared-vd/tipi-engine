@@ -12,7 +12,7 @@ public class StopStartGroupActivity1 extends Activity {
     public static AtomicInteger beginStep = new AtomicInteger(0);
     public static AtomicInteger endStep = new AtomicInteger(0);
 
-    public static final ActivityMetaModel meta = new ActivityMetaModel(StopStartGroupActivity1.class, StopStartGroupParentProcess.retry);
+    public static final ActivityMetaModel meta = new ActivityMetaModel(StopStartGroupActivity1.class);
 
     @Override
     public ActivityResultContext execute() throws Exception {

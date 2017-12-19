@@ -218,14 +218,14 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             em.persist(act);
             ID.set(act.getId());
 
-            activityPersistenceService.putVariable(act, "UNE_CLE_REGDATE", LocalDate.of(2001, 2, 3));
-            activityPersistenceService.putVariable(act, "UNE_CLE_ARRAY_LONG", new ArrayLong(1L, 2L, 3L));
-            activityPersistenceService.putVariable(act, "UNE_CLE_SERIALIZABLE", new Exception("salut"));
-            activityPersistenceService.putVariable(act, "UNE_CLE_TIMESTAMP", DATE);
-            activityPersistenceService.putVariable(act, "UNE_CLE_STRING", "UN STRING");
-            activityPersistenceService.putVariable(act, "UNE_CLE_LONG", 1L);
-            activityPersistenceService.putVariable(act, "UNE_CLE_INT", 4);
-            activityPersistenceService.putVariable(act, "UNE_CLE_BOOLEAN", Boolean.TRUE);
+            activityPersisterService.putVariable(act, "UNE_CLE_REGDATE", LocalDate.of(2001, 2, 3));
+            activityPersisterService.putVariable(act, "UNE_CLE_ARRAY_LONG", new ArrayLong(1L, 2L, 3L));
+            activityPersisterService.putVariable(act, "UNE_CLE_SERIALIZABLE", new Exception("salut"));
+            activityPersisterService.putVariable(act, "UNE_CLE_TIMESTAMP", DATE);
+            activityPersisterService.putVariable(act, "UNE_CLE_STRING", "UN STRING");
+            activityPersisterService.putVariable(act, "UNE_CLE_LONG", 1L);
+            activityPersisterService.putVariable(act, "UNE_CLE_INT", 4);
+            activityPersisterService.putVariable(act, "UNE_CLE_BOOLEAN", Boolean.TRUE);
         });
 
         txTemplate.txWithout((s) -> {
@@ -275,9 +275,9 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             em.persist(p);
             P_ID.set(p.getId());
 
-            activityPersistenceService.putVariable(p, "var1", 12L);
-            activityPersistenceService.putVariable(p, "var2", 1);
-            activityPersistenceService.putVariable(p, "var3", "Bla");
+            activityPersisterService.putVariable(p, "var1", 12L);
+            activityPersisterService.putVariable(p, "var2", 1);
+            activityPersisterService.putVariable(p, "var3", "Bla");
 
             DbActivity a1;
             {
@@ -287,9 +287,9 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
                 em.persist(a);
                 a1 = a;
 
-                activityPersistenceService.putVariable(a, "var1", 13L);
-                activityPersistenceService.putVariable(a, "var2", 2);
-                activityPersistenceService.putVariable(a, "var3", "Bli");
+                activityPersisterService.putVariable(a, "var1", 13L);
+                activityPersisterService.putVariable(a, "var2", 2);
+                activityPersisterService.putVariable(a, "var3", "Bli");
             }
             A_ID.set(a1.getId());
             {

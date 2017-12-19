@@ -22,14 +22,14 @@ public class SearchActivitiesTest extends AbstractTipiPersistenceTest {
                 {
                     DbTopProcess model = new DbTopProcess();
                     model.setFqn("ch.vd.registre.tipi.model.SearchActivitiesTest$SearchTopProcess");
-                    activityPersistenceService.putVariable(model, "bla", "bli");
+                    activityPersisterService.putVariable(model, "bla", "bli");
                     em.persist(model);
                 }
                 Thread.sleep(100); // Pour que Creation date soit plus grande
                 {
                     DbTopProcess model = new DbTopProcess();
                     model.setFqn("ch.vd.registre.tipi.model.SearchActivitiesTest$SearchTopProcess");
-                    activityPersistenceService.putVariable(model, "bla", "blo");
+                    activityPersisterService.putVariable(model, "bla", "blo");
                     em.persist(model);
                 }
 
@@ -38,14 +38,14 @@ public class SearchActivitiesTest extends AbstractTipiPersistenceTest {
         {
             TipiCriteria criteria = new TipiCriteria();
             criteria.setVariableName("bla");
-            ResultListWithCount<TipiActivityInfos> results = activityPersistenceService.searchActivities(criteria, -1);
+            ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
             Assert.assertEquals(2L, results.getCount());
             Assert.assertEquals(2, results.getResult().size());
         }
         {
             TipiCriteria criteria = new TipiCriteria();
             criteria.setVariableName("bla");
-            ResultListWithCount<TipiActivityInfos> results = activityPersistenceService.searchActivities(criteria, 1);
+            ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, 1);
             Assert.assertEquals(2L, results.getCount());
             Assert.assertEquals(1, results.getResult().size());
             TipiActivityInfos infos = results.getResult().get(0);

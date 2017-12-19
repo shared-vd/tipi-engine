@@ -2,6 +2,7 @@ package ch.sharedvd.tipi.engine.common;
 
 import ch.sharedvd.tipi.engine.TipiTestingApplication;
 import ch.sharedvd.tipi.engine.client.TipiFacade;
+import ch.sharedvd.tipi.engine.query.ActivityQueryService;
 import ch.sharedvd.tipi.engine.query.TipiQueryFacade;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
@@ -25,9 +26,11 @@ import javax.persistence.EntityManager;
 public abstract class AbstractTipiPersistenceTest extends AbstractSpringBootTruncaterTest {
 
     @Autowired
-    protected ActivityPersisterService activityPersistenceService;
+    protected ActivityPersisterService activityPersisterService;
     @Autowired
     protected ActivityRunningService activityRunningService;
+    @Autowired
+    protected ActivityQueryService activityQueryService;
 
     @Autowired
     protected TopProcessRepository topProcessRepository;

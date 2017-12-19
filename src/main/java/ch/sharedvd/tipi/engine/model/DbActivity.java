@@ -61,25 +61,6 @@ public class DbActivity extends DbBaseEntity {
             "   and a.requestEndExecution = false " +
             "order by nbRetryDone, id";
 
-
-//		DbTopProcessCriteria tpc = new DbTopProcessCriteria();
-//		tpc.addAndExpression(tpc.fqn().eq(aTopProcessName));
-//		tpc.restrictSelect(DbTopProcessProperty.Id);
-//		DbActivityCriteria amc = new DbActivityCriteria();
-//		amc.addAndExpression(Expr.or(amc.process__Id().in(tpc), amc.id().in(tpc)), amc.state().eq(ActivityState.EXECUTING), amc
-//				.requestEndExecution().eq(false));
-//
-//		if ((null != aRunningActivities) && !aRunningActivities.isEmpty()) {
-//			amc.addAndExpression(amc.id().notIn(aRunningActivities));
-//		}
-//		amc.addOrder(DbActivityProperty.NbRetryDone, true);
-//		amc.addOrder(DbActivityProperty.Id, true);
-//
-//		return hqlBuilder.getResultList(DbActivity.class, amc, max);
-
-
-    private static final long serialVersionUID = -1L;
-
     private String fqn; // Le nom de l'activité
     private ActivityState state; // L'état de l'activité
 

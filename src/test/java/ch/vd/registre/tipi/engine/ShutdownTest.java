@@ -73,7 +73,7 @@ public class ShutdownTest extends TipiEngineTest {
         Assert.assertEquals(0, ShutProcess.endStep.get());
 
         starter.stop();
-        assertFalse(tipiFacade.isTipiStarted());
+        Assert.assertFalse(tipiFacade.isTipiStarted());
 
         // On arrete le process qui est en boucle infinie
         ShutProcess.throwException = true;
@@ -82,7 +82,7 @@ public class ShutdownTest extends TipiEngineTest {
         while (ShutProcess.endStep.get() < 1) {
             Thread.sleep(10);
         }
-        assertFalse(tipiFacade.hasActivityPending());
+        Assert.assertFalse(tipiFacade.hasActivityPending());
 
         ShutProcess.throwException = false;
         ShutProcess.globalStep = new AtomicInteger(0);

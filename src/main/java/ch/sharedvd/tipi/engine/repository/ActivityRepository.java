@@ -12,6 +12,8 @@ public interface ActivityRepository extends JpaRepository<DbActivity, Long> {
 
     List<DbActivity> findByState(ActivityState state);
 
+    List<DbActivity> findByStateOrRequestEndExecution(ActivityState state, boolean reqEnd);
+
     List<DbActivity> findByGroupAndState(String groupName, ActivityState state);
 
     List<DbActivity> findExecutingActivities(String topProcessName);

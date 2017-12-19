@@ -84,7 +84,7 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
     public void createCriteria_All() throws Exception {
         txTemplate.txWithout(s -> {
             ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR);
-            cmd.setPersist(persist);
+            //cmd.setPersist(persist);
             cmd.setDialect(hibernateDialect);
 
             List<DbActivity> actis = cmd.getActivities();
@@ -118,7 +118,7 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
 
         txTemplate.txWithout(s -> {
             ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR, "bli");
-            cmd.setPersist(persist);
+            //cmd.setPersist(persist);
             cmd.setDialect(hibernateDialect);
 
             List<DbActivity> actis = cmd.getActivities();

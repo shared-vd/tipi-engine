@@ -4,29 +4,19 @@ import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.infos.TipiActivityInfos;
-import ch.sharedvd.tipi.engine.infos.TipiTopProcessInfos;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
-import ch.sharedvd.tipi.engine.model.ActivityState;
-import ch.sharedvd.tipi.engine.model.DbActivity;
-import ch.sharedvd.tipi.engine.model.DbSubProcess;
-import ch.sharedvd.tipi.engine.model.DbTopProcess;
+import ch.sharedvd.tipi.engine.model.*;
 import ch.sharedvd.tipi.engine.query.TipiCriteria;
-import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import ch.sharedvd.tipi.engine.utils.ResultListWithCount;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.TransactionStatus;
 
 import java.util.List;
 
-;
+import static org.junit.Assert.fail;
 
 public class ActivityPersisterServiceTest extends AbstractTipiPersistenceTest {
-
-    @Autowired
-    private ActivityPersisterService service;
 
     @Test
     @Ignore("TODO(JEC) ce test peut pas passer et je sais pas comment corriger")
@@ -37,7 +27,7 @@ public class ActivityPersisterServiceTest extends AbstractTipiPersistenceTest {
 
         final TipiCriteria criteria = new TipiCriteria();
         //	criteria.setGroupe("Proc");
-        ResultListWithCount<TipiActivityInfos> results = service.searchActivities(criteria, -1);
+        ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
         Assert.assertEquals(1, results.getCount());
     }
 
@@ -51,7 +41,7 @@ public class ActivityPersisterServiceTest extends AbstractTipiPersistenceTest {
 
         final TipiCriteria criteria = new TipiCriteria();
         //	criteria.setGroupe("Proc");
-        ResultListWithCount<TipiActivityInfos> results = service.searchActivities(criteria, -1);
+        ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
         Assert.assertEquals(10, results.getCount());
     }
 
@@ -64,25 +54,19 @@ public class ActivityPersisterServiceTest extends AbstractTipiPersistenceTest {
         });
 
         // On vérifie qu'on a 1 process
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            public void execute(TransactionStatus aStatus) throws Exception {
-                DbActivityCriteria crit = new DbActivityCriteria();
-                List<DbActivity> actis = hqlBuilder.getResultList(crit);
-                Assert.assertEquals(11, actis.size());
-            }
+        txTemplate.txWithout(s -> {
+            List<DbActivity> actis = activityRepository.findAll();
+            Assert.assertEquals(11, actis.size());
+
         });
 
-        ResultListWithCount<TipiTopProcessInfos> infos = service.getAllProcesses(50);
-
-        for (
-                TipiTopProcessInfos ttpi : infos)
-
-        {
-            Assert.assertEquals(11L, ttpi.getNbActivitesTotal());
-            Assert.assertEquals(1L, ttpi.getNbActivitesError());
-            Assert.assertEquals(2L, ttpi.getNbActivitesExecuting());
-        }
+        fail();
+//        ResultListWithCount<TipiTopProcessInfos> infos = activityQueryService.getAllProcesses(50);
+//        for (TipiTopProcessInfos ttpi : infos) {
+//            Assert.assertEquals(11L, ttpi.getNbActivitesTotal());
+//            Assert.assertEquals(1L, ttpi.getNbActivitesError());
+//            Assert.assertEquals(2L, ttpi.getNbActivitesExecuting());
+//        }
     }
 
     @Test
@@ -93,7 +77,7 @@ public class ActivityPersisterServiceTest extends AbstractTipiPersistenceTest {
         });
 
         final TipiCriteria criteria = new TipiCriteria();
-        ResultListWithCount<TipiActivityInfos> results = service.searchActivities(criteria, -1);
+        ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
         Assert.assertEquals(11l, results.getCount());
         TipiActivityInfos infos = results.getResult().get(0);
         Assert.assertEquals("Unknown: ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess", infos.getNameOrProcessName());
@@ -344,10 +328,10 @@ public class ActivityPersisterServiceTest extends AbstractTipiPersistenceTest {
     }
 
     private void addVars(DbActivity acti) {
-        final StringVariable var1 = new StringVariable("str", "value");
+        final DbStringVariable var1 = new DbStringVariable("str", "value");
         var1.setOwner(acti);
         acti.putVariable(var1);
-        final BooleanVariable var2 = new BooleanVariable("bool", true);
+        final DbBooleanVariable var2 = new DbBooleanVariable("bool", true);
         var2.setOwner(acti);
         acti.putVariable(var2);
     }
@@ -364,7 +348,7 @@ public class ActivityPersisterServiceTest extends AbstractTipiPersistenceTest {
 
         @Override
         protected ActivityResultContext execute() throws Exception {
-            Assert.fail("ne sera jamais appelé");
+            fail("ne sera jamais appelé");
             return null;
         }
     }
