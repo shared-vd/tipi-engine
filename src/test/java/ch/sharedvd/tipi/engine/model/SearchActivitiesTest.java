@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.model;
+package ch.sharedvd.tipi.engine.model;
 
 
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
@@ -6,7 +6,6 @@ import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.infos.TipiActivityInfos;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
-import ch.sharedvd.tipi.engine.model.DbTopProcess;
 import ch.sharedvd.tipi.engine.query.TipiCriteria;
 import ch.sharedvd.tipi.engine.utils.ResultListWithCount;
 import org.junit.Assert;

@@ -11,12 +11,11 @@ public class ActivityGetVariableTest extends AbstractTipiPersistenceTest {
 
     @Test
     public void getVariable() throws Exception {
-
-        final long aId = txTemplate.txWith((s) -> {
+        final long aId = txTemplate.txWith(s -> {
             DbActivity model = new DbActivity();
             model.setFqn("act1");
-            DbActivity a = activityRepository.save(model);
-            return a.getId();
+            activityRepository.save(model);
+            return model.getId();
         }).longValue();
 
         VariableMap vars = new VariableMap();

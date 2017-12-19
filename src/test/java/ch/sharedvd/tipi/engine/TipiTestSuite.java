@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi;
+package ch.sharedvd.tipi.engine;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
