@@ -9,6 +9,7 @@ import ch.vd.registre.tipi.action.parentChild.*;
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.persistence.Query;
 import java.util.List;
 
 import static junit.framework.TestCase.assertNotNull;
@@ -113,12 +114,12 @@ public class ParentChildTest extends TipiEngineTest {
             assertNull(process.getPrevious());
 
             // Put number 1
-            final long id_nb1;
+            final Long id_nb1;
             {
-                DbActivityCriteria criteria = new DbActivityCriteria();
-                criteria.addAndExpression(criteria.fqn().eq(TstPutNumberActivity1.meta.getFQN()));
-                DbActivity act = hqlBuilder.getSingleResult(DbActivity.class, criteria);
-                assertNotNull(act);
+                final List<DbActivity> acts = activityRepository.findByFqn(TstPutNumberActivity1.meta.getFQN());
+                assertNotNull(acts);
+                Assert.assertEquals(1, acts.size());
+                final DbActivity act = acts.get(0);
                 Assert.assertEquals(process, act.getProcess());
                 Assert.assertEquals(process, act.getParent());
                 assertNull(act.getPrevious());
@@ -126,10 +127,10 @@ public class ParentChildTest extends TipiEngineTest {
             }
             // Put number 2
             {
-                DbActivityCriteria criteria = new DbActivityCriteria();
-                criteria.addAndExpression(criteria.fqn().eq(TstPutNumberActivity2.meta.getFQN()));
-                DbActivity act = hqlBuilder.getSingleResult(DbActivity.class, criteria);
-                assertNotNull(act);
+                final List<DbActivity> acts = activityRepository.findByFqn(TstPutNumberActivity2.meta.getFQN());
+                assertNotNull(acts);
+                Assert.assertEquals(1, acts.size());
+                final DbActivity act = acts.get(0);
                 Assert.assertEquals(process, act.getProcess());
                 Assert.assertEquals(process, act.getParent());
                 Assert.assertEquals(id_nb1, act.getPrevious().getId());
@@ -138,9 +139,10 @@ public class ParentChildTest extends TipiEngineTest {
             // Sub-Proc
             final DbSubProcess sub;
             {
-                DbActivityCriteria criteria = new DbActivityCriteria();
-                criteria.addAndExpression(criteria.fqn().eq(TstListVarsSubProcess.meta.getFQN()));
-                sub = hqlBuilder.getSingleResult(DbSubProcess.class, criteria);
+                final List<DbActivity> acts = activityRepository.findByFqn(TstListVarsSubProcess.meta.getFQN());
+                assertNotNull(acts);
+                Assert.assertEquals(1, acts.size());
+                sub = (DbSubProcess) acts.get(0);
                 assertNotNull(sub);
                 Assert.assertEquals(process, sub.getProcess());
                 Assert.assertEquals(process, sub.getParent());
@@ -149,10 +151,9 @@ public class ParentChildTest extends TipiEngineTest {
 
             // Assign vars sans previous
             {
-                DbActivityCriteria criteria = new DbActivityCriteria();
-                criteria.addAndExpression(criteria.fqn().eq(TstAssignVarActivity.meta.getFQN()));
-                criteria.addAndExpression(criteria.previous__Id().isNull());
-                List<DbActivity> acts = hqlBuilder.getResultList(criteria);
+                final Query q = em.createQuery("from DbActivity a where a.fqn = :fqn and a.previous is null");
+                q.setParameter("fqn", TstAssignVarActivity.meta.getFQN());
+                final List<DbActivity> acts = q.getResultList();
                 for (DbActivity act : acts) {
                     assertNotNull(act);
                     Assert.assertEquals(process, act.getProcess());
@@ -162,10 +163,9 @@ public class ParentChildTest extends TipiEngineTest {
             }
             // Assign vars sans previous
             {
-                DbActivityCriteria criteria = new DbActivityCriteria();
-                criteria.addAndExpression(criteria.fqn().eq(TstAssignVarActivity.meta.getFQN()));
-                criteria.addAndExpression(criteria.previous__Id().isNotNull());
-                DbActivity act = hqlBuilder.getSingleResult(DbActivity.class, criteria);
+                final Query q = em.createQuery("from DbActivity a where a.fqn = :fqn and a.previous is NOT null");
+                q.setParameter("fqn", TstAssignVarActivity.meta.getFQN());
+                final DbActivity act = (DbActivity) q.getSingleResult();
                 assertNotNull(act);
                 Assert.assertEquals(process, act.getProcess());
                 Assert.assertEquals(sub, act.getParent());

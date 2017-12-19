@@ -7,7 +7,7 @@ import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 
 public class ResumeAllProcess extends TopProcess {
 
-    public static final TopProcessMetaModel meta = new TopProcessMetaModel(ResumeAllProcess.class, retry, 10, -1, 10, null) {
+    public static final TopProcessMetaModel meta = new TopProcessMetaModel(ResumeAllProcess.class, 10, -1, 10, null) {
         @Override
         protected void init() {
             setDeleteWhenFinished(false);

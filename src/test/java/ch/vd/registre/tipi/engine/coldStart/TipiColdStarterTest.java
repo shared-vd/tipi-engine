@@ -115,7 +115,7 @@ public class TipiColdStarterTest extends TipiEngineTest {
         txTemplate.txWithout(s -> {
             boolean end = false;
             while (!end) {
-                persist.clear();
+                em.clear();
                 final DbActivity g1a1 = activityRepository.findOne(ColdGroup1Activity1.id);
                 end = !g1a1.isRequestEndExecution();
 

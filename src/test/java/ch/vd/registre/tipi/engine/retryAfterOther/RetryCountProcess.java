@@ -10,7 +10,7 @@ public class RetryCountProcess extends TopProcess {
 
     private static final Logger LOGGER = Logger.getLogger(RetryCountProcess.class);
 
-    public static final TopProcessMetaModel meta = new TopProcessMetaModel(RetryCountProcess.class, new RetryCountTestPolicy(), 1, -1, 1, null);
+    public static final TopProcessMetaModel meta = new TopProcessMetaModel(RetryCountProcess.class, 1, -1, 1, null);
 
     @Override
     protected ActivityResultContext execute() throws Exception {

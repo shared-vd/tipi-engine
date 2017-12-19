@@ -11,7 +11,7 @@ public class OnErrorTest extends TipiEngineTest {
     @Test
     public void onError() throws Exception {
 
-        assertFalse(OnErrorProcess.errorCalled);
+        Assert.assertFalse(OnErrorProcess.errorCalled);
 
         doWithLog4jBlocking("ch.vd.registre.tipi", new Log4jBlockingCallback<Object>() {
             @Override

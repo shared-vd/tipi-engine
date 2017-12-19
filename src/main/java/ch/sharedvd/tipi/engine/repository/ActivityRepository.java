@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface ActivityRepository extends JpaRepository<DbActivity, Long> {
 
+    List<DbActivity> findByFqn(String fqn);
+
     List<DbActivity> findChildren(DbActivity parent);
 
     List<DbActivity> findByState(ActivityState state);

@@ -10,7 +10,6 @@ import ch.vd.registre.tipi.engine.aborting.AbortingActivity;
 import ch.vd.registre.tipi.engine.aborting.AbortingProcess;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.transaction.TransactionStatus;
 
 import java.util.List;
 
@@ -39,19 +38,15 @@ public class AbortingTest extends TipiEngineTest {
         // On attends que toutes les activités se finissent
         boolean end = false;
         while (!end) {
-            end = doInTransaction(new TxCallback<Boolean>() {
-                @Override
-                public Boolean execute(TransactionStatus status) throws Exception {
-                    DbActivityCriteria crit = new DbActivityCriteria();
-                    List<DbActivity> actis = hqlBuilder.getResultList(crit);
-                    boolean hasNotFinished = false;
-                    for (DbActivity a : actis) {
-                        if (a.getState() != ActivityState.ABORTED) {
-                            hasNotFinished = true;
-                        }
+            end = txTemplate.txWith(s -> {
+                List<DbActivity> actis = activityRepository.findAll();
+                boolean hasNotFinished = false;
+                for (DbActivity a : actis) {
+                    if (a.getState() != ActivityState.ABORTED) {
+                        hasNotFinished = true;
                     }
-                    return !hasNotFinished;
                 }
+                return !hasNotFinished;
             }).booleanValue();
         }
     }

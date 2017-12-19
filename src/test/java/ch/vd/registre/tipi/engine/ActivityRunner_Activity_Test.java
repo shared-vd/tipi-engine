@@ -9,7 +9,6 @@ import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.transaction.TransactionStatus;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -106,19 +105,11 @@ public class ActivityRunner_Activity_Test extends TipiEngineTest {
             }
         });
 
-        doInTransaction(new TxCallbackWithoutResult() {
-            @Override
-            @SuppressWarnings("unchecked")
-            public void execute(TransactionStatus status) throws Exception {
-
-                DbActivityCriteria crit = new DbActivityCriteria();
-                crit.addAndExpression(crit.parent__Id().eq(pid));
-
-                List<DbActivity> nexts = hqlBuilder.getResultList(crit);
-                Assert.assertEquals(1, nexts.size());
-                DbActivity act = nexts.get(0);
-                act.setState(ActivityState.EXECUTING);
-            }
+        txTemplate.txWithout(s -> {
+            final List<DbActivity> nexts = activityRepository.findByParentId(pid);
+            Assert.assertEquals(1, nexts.size());
+            final DbActivity act = nexts.get(0);
+            act.setState(ActivityState.EXECUTING);
         });
     }
 
