@@ -1,7 +1,10 @@
 package ch.vd.registre.tipi.engine.onerror;
 
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
+import org.junit.Assert;
 import org.junit.Test;
+
+;
 
 public class OnErrorTest extends TipiEngineTest {
 
@@ -20,7 +23,7 @@ public class OnErrorTest extends TipiEngineTest {
                 return null;
             }
         });
-        assertTrue(OnErrorProcess.errorCalled);
+        Assert.assertTrue(OnErrorProcess.errorCalled);
     }
 
 }

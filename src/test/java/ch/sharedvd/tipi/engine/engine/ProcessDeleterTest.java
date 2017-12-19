@@ -2,11 +2,12 @@ package ch.sharedvd.tipi.engine.engine;
 
 import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.model.*;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+;
 
 public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
 
@@ -22,7 +23,7 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
         // On vérifie qu'on a 1 process
         txTemplate.txWithout((s) -> {
             List<DbActivity> actis = activityRepository.findAll();
-            assertEquals(11, actis.size());
+            Assert.assertEquals(11, actis.size());
         });
 
         txTemplate.txWithout((s) -> {
@@ -34,7 +35,7 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
         // On vérifie qu'on n'a plus d'activités
         txTemplate.txWithout((s) -> {
             List<DbActivity> actis = activityRepository.findAll();
-            assertEquals(0, actis.size());
+            Assert.assertEquals(0, actis.size());
         });
 
     }
@@ -49,7 +50,7 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
         // On vérifie qu'on a 11 activités
         txTemplate.txWithout((s) -> {
             List<DbActivity> actis = activityRepository.findAll();
-            assertEquals(11, actis.size());
+            Assert.assertEquals(11, actis.size());
         });
 
         txTemplate.txWithout((s) -> {
@@ -61,7 +62,7 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
         // On vérifie qu'on n'a plus d'activités
         txTemplate.txWithout((s) -> {
             List<DbActivity> actis = activityRepository.findAll();
-            assertEquals(0, actis.size());
+            Assert.assertEquals(0, actis.size());
         });
     }
 

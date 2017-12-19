@@ -8,9 +8,12 @@ import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+;
 
 public class MasseTest extends TipiEngineTest {
 
@@ -63,7 +66,7 @@ public class MasseTest extends TipiEngineTest {
         while (tipiFacade.isRunning(pid)) {
             Thread.sleep(2);
         }
-        assertEquals(MasseTestProcess.NB_TO_START, MasseTestActivity.count.get());
+        Assert.assertEquals(MasseTestProcess.NB_TO_START, MasseTestActivity.count.get());
         long diff = System.currentTimeMillis() - begin;
         log.info("Temps: " + (int) (diff / 1000.0) + " secondes pour " + MasseTestProcess.NB_TO_START + " activités");
     }

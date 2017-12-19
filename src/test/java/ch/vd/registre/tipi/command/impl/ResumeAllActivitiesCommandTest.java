@@ -1,10 +1,11 @@
 package ch.vd.registre.tipi.command.impl;
 
-import ch.sharedvd.tipi.engine.AbstractTipiPersistenceTest;
+import ch.sharedvd.tipi.engine.command.impl.ResumeAllActivitiesCommand;
+import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
-import ch.vd.registre.base.tx.TxCallbackWithoutResult;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -82,7 +83,6 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
 
     @Test
     public void createCriteria_All() throws Exception {
-
         doInTransaction(new TxCallbackWithoutResult() {
             @Override
             public void execute(TransactionStatus status) throws Exception {
@@ -91,10 +91,10 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
                 cmd.setDialect(hibernateDialect);
 
                 List<DbActivity> actis = cmd.getActivities();
-                assertEquals(3, actis.size());
-                assertTrue(actis.get(0) instanceof DbActivity);
-                assertEquals(ActivityState.ERROR, actis.get(0).getState());
-                assertTrue("bla".equals(actis.get(0).getProcess().getFqn()) || "bli".equals(actis.get(0).getProcess().getFqn()));
+                Assert.assertEquals(3, actis.size());
+                Assert.assertTrue(actis.get(0) instanceof DbActivity);
+                Assert.assertEquals(ActivityState.ERROR, actis.get(0).getState());
+                Assert.assertTrue("bla".equals(actis.get(0).getProcess().getFqn()) || "bli".equals(actis.get(0).getProcess().getFqn()));
             }
         });
     }
@@ -110,10 +110,10 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
                 cmd.setDialect(hibernateDialect);
 
                 List<DbActivity> actis = cmd.getActivities();
-                assertEquals(1, actis.size());
-                assertTrue(actis.get(0) instanceof DbActivity);
-                assertEquals(ActivityState.ERROR, actis.get(0).getState());
-                assertEquals("bla", actis.get(0).getProcess().getFqn());
+                Assert.assertEquals(1, actis.size());
+                Assert.assertTrue(actis.get(0) instanceof DbActivity);
+                Assert.assertEquals(ActivityState.ERROR, actis.get(0).getState());
+                Assert.assertEquals("bla", actis.get(0).getProcess().getFqn());
             }
         });
     }
@@ -129,10 +129,10 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
                 cmd.setDialect(hibernateDialect);
 
                 List<DbActivity> actis = cmd.getActivities();
-                assertEquals(2, actis.size());
-                assertTrue(actis.get(0) instanceof DbActivity);
-                assertEquals(ActivityState.ERROR, actis.get(0).getState());
-                assertEquals("bli", actis.get(0).getProcess().getFqn());
+                Assert.assertEquals(2, actis.size());
+                Assert.assertTrue(actis.get(0) instanceof DbActivity);
+                Assert.assertEquals(ActivityState.ERROR, actis.get(0).getState());
+                Assert.assertEquals("bli", actis.get(0).getProcess().getFqn());
             }
         });
     }

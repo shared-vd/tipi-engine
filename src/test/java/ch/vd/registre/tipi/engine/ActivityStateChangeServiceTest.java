@@ -6,7 +6,12 @@ import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;
 import ch.vd.registre.testing.AssertableBaseTest;
+import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+
+;
 
 public class ActivityStateChangeServiceTest extends AssertableBaseTest {
 
@@ -18,7 +23,7 @@ public class ActivityStateChangeServiceTest extends AssertableBaseTest {
 
         ActivityStateChangeService.executing(model);
 
-        assertEquals(ActivityState.EXECUTING, model.getState());
+        Assert.assertEquals(ActivityState.EXECUTING, model.getState());
         assertFalse(model.isRequestEndExecution());
     }
 
@@ -31,8 +36,8 @@ public class ActivityStateChangeServiceTest extends AssertableBaseTest {
 
         ActivityStateChangeService.runnerFinished(model, new FinishedActivityResultContext("Bla bla"));
 
-        assertEquals(ActivityState.WAIT_ON_CHILDREN, model.getState());
-        assertTrue(model.isRequestEndExecution());
+        Assert.assertEquals(ActivityState.WAIT_ON_CHILDREN, model.getState());
+        Assert.assertTrue(model.isRequestEndExecution());
     }
 
     @Test
@@ -43,7 +48,7 @@ public class ActivityStateChangeServiceTest extends AssertableBaseTest {
 
         ActivityStateChangeService.waitingOnChildren(model);
 
-        assertEquals(ActivityState.WAIT_ON_CHILDREN, model.getState());
+        Assert.assertEquals(ActivityState.WAIT_ON_CHILDREN, model.getState());
         assertFalse(model.isRequestEndExecution());
     }
 
@@ -55,8 +60,8 @@ public class ActivityStateChangeServiceTest extends AssertableBaseTest {
 
         ActivityStateChangeService.runnerFinished(model, new FinishedActivityResultContext("Message"));
 
-        assertEquals(ActivityState.FINISHED, model.getState());
-        assertTrue(model.isRequestEndExecution());
+        Assert.assertEquals(ActivityState.FINISHED, model.getState());
+        Assert.assertTrue(model.isRequestEndExecution());
     }
 
     @Test
@@ -68,8 +73,8 @@ public class ActivityStateChangeServiceTest extends AssertableBaseTest {
 
         ActivityStateChangeService.runnerFinished(model, new FinishedActivityResultContext("Message"));
 
-        assertEquals(ActivityState.FINISHED, model.getState());
-        assertTrue(model.isRequestEndExecution());
+        Assert.assertEquals(ActivityState.FINISHED, model.getState());
+        Assert.assertTrue(model.isRequestEndExecution());
     }
 
     @Test
@@ -80,7 +85,7 @@ public class ActivityStateChangeServiceTest extends AssertableBaseTest {
 
         ActivityStateChangeService.executionEnded(model);
 
-        assertEquals(ActivityState.FINISHED, model.getState());
+        Assert.assertEquals(ActivityState.FINISHED, model.getState());
         assertFalse(model.isRequestEndExecution());
     }
 
@@ -92,7 +97,7 @@ public class ActivityStateChangeServiceTest extends AssertableBaseTest {
 
         ActivityStateChangeService.executingFirstActivity(model);
 
-        assertEquals(ActivityState.EXECUTING, model.getState());
+        Assert.assertEquals(ActivityState.EXECUTING, model.getState());
         assertFalse(model.isRequestEndExecution());
     }
 

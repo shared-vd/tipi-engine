@@ -6,11 +6,14 @@ import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.command.CommandConsumer;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+;
 
 @Ignore
 public class ShutdownTest extends TipiEngineTest {
@@ -65,9 +68,9 @@ public class ShutdownTest extends TipiEngineTest {
         while (ShutProcess.beginStep.get() < 1) {
             Thread.sleep(10);
         }
-        assertTrue(tipiFacade.hasActivityPending());
-        assertEquals(1, ShutProcess.beginStep.get());
-        assertEquals(0, ShutProcess.endStep.get());
+        Assert.assertTrue(tipiFacade.hasActivityPending());
+        Assert.assertEquals(1, ShutProcess.beginStep.get());
+        Assert.assertEquals(0, ShutProcess.endStep.get());
 
         starter.stop();
         assertFalse(tipiFacade.isTipiStarted());
@@ -91,19 +94,19 @@ public class ShutdownTest extends TipiEngineTest {
             Thread.sleep(10);
         }
 
-        assertEquals(2, ShutProcess.beginStep.get());
-        assertEquals(0, ShutProcess.endStep.get());
+        Assert.assertEquals(2, ShutProcess.beginStep.get());
+        Assert.assertEquals(0, ShutProcess.endStep.get());
 
         while (tipiFacade.hasCommandPending()) {
             Thread.sleep(10);
         }
-        assertTrue(tipiFacade.hasActivityPending());
+        Assert.assertTrue(tipiFacade.hasActivityPending());
         ShutProcess.globalStep.incrementAndGet(); // -> 1
         while (ShutProcess.endStep.get() < 1) {
             Thread.sleep(10);
         }
-        assertEquals(2, ShutProcess.beginStep.get());
-        assertEquals(1, ShutProcess.endStep.get());
+        Assert.assertEquals(2, ShutProcess.beginStep.get());
+        Assert.assertEquals(1, ShutProcess.endStep.get());
 
         // Fin du process
         while (tipiFacade.isRunning(pid)) {
@@ -128,9 +131,9 @@ public class ShutdownTest extends TipiEngineTest {
         while (ShutProcess.beginStep.get() < 1) {
             Thread.sleep(10);
         }
-        assertTrue(tipiFacade.hasActivityPending());
-        assertEquals(1, ShutProcess.beginStep.get());
-        assertEquals(0, ShutProcess.endStep.get());
+        Assert.assertTrue(tipiFacade.hasActivityPending());
+        Assert.assertEquals(1, ShutProcess.beginStep.get());
+        Assert.assertEquals(0, ShutProcess.endStep.get());
 
         starter.stop();
         // On attend que l'activité se termine.
@@ -141,13 +144,13 @@ public class ShutdownTest extends TipiEngineTest {
         while (ShutProcess.beginStep.get() < 2) {
             Thread.sleep(10);
         }
-        assertTrue(tipiFacade.hasActivityPending());
+        Assert.assertTrue(tipiFacade.hasActivityPending());
         ShutProcess.globalStep.incrementAndGet(); // -> 1
         while (ShutProcess.endStep.get() < 1) {
             Thread.sleep(10);
         }
-        assertEquals(2, ShutProcess.beginStep.get());
-        assertEquals(1, ShutProcess.endStep.get());
+        Assert.assertEquals(2, ShutProcess.beginStep.get());
+        Assert.assertEquals(1, ShutProcess.endStep.get());
 
         // Fin du process
         while (tipiFacade.isRunning(pid)) {
@@ -184,14 +187,14 @@ public class ShutdownTest extends TipiEngineTest {
             while (ShutProcess.beginStep.get() < 2) {
                 Thread.sleep(10);
             }
-            assertEquals(2, ShutProcess.beginStep.get());
+            Assert.assertEquals(2, ShutProcess.beginStep.get());
 
             ShutProcess.globalStep.incrementAndGet();
 
             while (ShutProcess.endStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, ShutProcess.endStep.get());
+            Assert.assertEquals(1, ShutProcess.endStep.get());
 
             // Fin du process
             while (tipiFacade.isRunning(pid)) {

@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+;
+
 public class VariableScopeTest extends AbstractTipiPersistenceTest {
 
     @Test

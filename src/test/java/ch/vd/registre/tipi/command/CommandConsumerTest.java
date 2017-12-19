@@ -2,7 +2,10 @@ package ch.vd.registre.tipi.command;
 
 import ch.sharedvd.tipi.engine.command.Command;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
+import org.junit.Assert;
 import org.junit.Test;
+
+;
 
 public class CommandConsumerTest extends TipiEngineTest {
 
@@ -27,7 +30,7 @@ public class CommandConsumerTest extends TipiEngineTest {
             while (cmd.count < 2) {
                 Thread.sleep(200);
             }
-            assertEquals(2, cmd.count);
+            Assert.assertEquals(2, cmd.count);
             return null;
         });
     }

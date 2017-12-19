@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
 import org.hibernate.boot.spi.MetadataImplementor;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +12,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import javax.sql.DataSource;
-
-import static junit.framework.TestCase.assertTrue;
 
 public abstract class AbstractSpringBootTruncaterTest implements ApplicationContextAware {
 
@@ -52,7 +51,7 @@ public abstract class AbstractSpringBootTruncaterTest implements ApplicationCont
      */
     protected final void runOnSetUpOnlyOnce() throws Exception {
         if (!onSetUpWasRun) {
-            assertTrue("Pour être sûr que mvn test exécute les tests, il faut que le nom de la classe se termine par Test, ou IT ou UT.",
+            Assert.assertTrue("Pour être sûr que mvn test exécute les tests, il faut que le nom de la classe se termine par Test, ou IT ou UT.",
                     getClass().getSimpleName().endsWith("Test") ||
                             getClass().getSimpleName().endsWith("IT") ||
                             getClass().getSimpleName().endsWith("UT")

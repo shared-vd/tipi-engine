@@ -1,20 +1,20 @@
 package ch.vd.registre.tipi.engine;
 
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
-import ch.sharedvd.tipi.engine.criteria.DbActivityCriteria;
-import ch.sharedvd.tipi.engine.engine.aborting.AbortManagerActivity;
-import ch.sharedvd.tipi.engine.engine.aborting.AbortManagerProcess;
-import ch.sharedvd.tipi.engine.engine.aborting.AbortingActivity;
-import ch.sharedvd.tipi.engine.engine.aborting.AbortingProcess;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
-import ch.vd.registre.base.tx.TxCallback;
-import ch.vd.registre.base.tx.TxCallbackWithoutResult;
+import ch.vd.registre.tipi.engine.aborting.AbortManagerActivity;
+import ch.vd.registre.tipi.engine.aborting.AbortManagerProcess;
+import ch.vd.registre.tipi.engine.aborting.AbortingActivity;
+import ch.vd.registre.tipi.engine.aborting.AbortingProcess;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.transaction.TransactionStatus;
 
 import java.util.List;
+
+;
 
 public class AbortingTest extends TipiEngineTest {
 
@@ -79,7 +79,7 @@ public class AbortingTest extends TipiEngineTest {
             public void execute(TransactionStatus status) throws Exception {
 
                 DbTopProcess tp = persist.get(DbTopProcess.class, pid);
-                assertEquals(ActivityState.ABORTED, tp.getState());
+                Assert.assertEquals(ActivityState.ABORTED, tp.getState());
             }
         });
 

@@ -2,13 +2,15 @@ package ch.vd.registre.tipi.command.stats;
 
 import ch.sharedvd.tipi.engine.command.CommandConsumer;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
+import ch.sharedvd.tipi.engine.oracle.OracleStatisticsComputer;
 import ch.sharedvd.tipi.engine.oracle.OracleStatsComputerInterceptor;
-import ch.vd.registre.base.oracle.OracleStatisticsComputer;
-import ch.vd.registre.base.utils.Assert;
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+;
 
 public class OracleStatisticsComputerTest extends TipiEngineTest {
 
@@ -50,7 +52,7 @@ public class OracleStatisticsComputerTest extends TipiEngineTest {
     }
 
     private void _computeStats(String schema, String table) throws Exception {
-        Assert.notNull(table);
+        Assert.assertNotNull(table);
         oracleStatisticsComputer.computeStatisticsForTable(schema, table);
         oracleStatisticsComputer.recalculateIndexes(schema, table);
 

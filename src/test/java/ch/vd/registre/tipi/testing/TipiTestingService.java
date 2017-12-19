@@ -81,7 +81,7 @@ public class TipiTestingService {
             DbActivityCriteria actCrit = new DbActivityCriteria();
             List<DbActivity> acts = hqlBuilder.getResultList(DbActivity.class, actCrit);
             for (DbActivity am : acts) {
-                Assert.assertTrue("State: " + am.getState(), ActivityState.ERROR != am.getState());
+                Assert.Assert.assertTrue("State: " + am.getState(), ActivityState.ERROR != am.getState());
             }
         }
     }

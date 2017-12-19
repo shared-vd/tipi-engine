@@ -12,6 +12,7 @@ public class TipiRegistryImpl implements TipiRegistry {
 
     private Listener listener;
 
+    @Override
     public void register(final TopProcessMetaModel tp) {
         Assert.notNull(tp);
         Assert.notNull(tp.getSimpleName());
@@ -51,7 +52,7 @@ public class TipiRegistryImpl implements TipiRegistry {
 
     @Override
     public List<TopProcessMetaModel> getAllTopProcesses() {
-        return new ArrayList<TopProcessMetaModel>(topProcess.values());
+        return new ArrayList<>(topProcess.values());
     }
 
     @Override
@@ -62,14 +63,11 @@ public class TipiRegistryImpl implements TipiRegistry {
                 availables.add(meta);
             }
         }
-        Collections.sort(availables, new Comparator<TopProcessMetaModel>() {
-            @Override
-            public int compare(TopProcessMetaModel o1, TopProcessMetaModel o2) {
-                if (o1 != null && o2 != null) {
-                    return o1.getSimpleName().compareTo(o2.getSimpleName());
-                }
-                return 0;
+        Collections.sort(availables, (o1, o2) -> {
+            if (o1 != null && o2 != null) {
+                return o1.getSimpleName().compareTo(o2.getSimpleName());
             }
+            return 0;
         });
         return availables;
     }

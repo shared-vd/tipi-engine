@@ -9,9 +9,11 @@ import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
 import ch.vd.registre.base.hqlbuilder.srv.ResultListWithCount;
 import ch.vd.registre.base.tx.TxCallbackWithoutResult;
-import ch.vd.registre.base.utils.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.transaction.TransactionStatus;
+
+;
 
 public class SearchActivitiesTest extends AbstractTipiPersistenceTest {
 
@@ -42,17 +44,17 @@ public class SearchActivitiesTest extends AbstractTipiPersistenceTest {
             TipiCriteria criteria = new TipiCriteria();
             criteria.setVariableName("bla");
             ResultListWithCount<TipiActivityInfos> results = activityPersistenceService.searchActivities(criteria, -1);
-            assertEquals(2L, results.getCount());
-            assertEquals(2, results.getResult().size());
+            Assert.assertEquals(2L, results.getCount());
+            Assert.assertEquals(2, results.getResult().size());
         }
         {
             TipiCriteria criteria = new TipiCriteria();
             criteria.setVariableName("bla");
             ResultListWithCount<TipiActivityInfos> results = activityPersistenceService.searchActivities(criteria, 1);
-            assertEquals(2L, results.getCount());
-            assertEquals(1, results.getResult().size());
+            Assert.assertEquals(2L, results.getCount());
+            Assert.assertEquals(1, results.getResult().size());
             TipiActivityInfos infos = results.getResult().get(0);
-            assertEquals("SearchActivitiesTest$SearchTopProcess", infos.getNameOrProcessName());
+            Assert.assertEquals("SearchActivitiesTest$SearchTopProcess", infos.getNameOrProcessName());
         }
     }
 

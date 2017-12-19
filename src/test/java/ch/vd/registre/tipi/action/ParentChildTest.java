@@ -1,15 +1,18 @@
 package ch.vd.registre.tipi.action;
 
-import ch.sharedvd.tipi.engine.action.parentChild.*;
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
+import ch.vd.registre.tipi.action.parentChild.*;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.transaction.TransactionStatus;
 
 import java.util.List;
+
+;
 
 
 public class ParentChildTest extends TipiEngineTest {
@@ -28,14 +31,14 @@ public class ParentChildTest extends TipiEngineTest {
             while (TstParentProcess.beginStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, TstParentProcess.beginStep.get());
+            Assert.assertEquals(1, TstParentProcess.beginStep.get());
 
             TstParentProcess.globalStep.incrementAndGet(); // -> 1
 
             while (TstParentProcess.endStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, TstParentProcess.endStep.get());
+            Assert.assertEquals(1, TstParentProcess.endStep.get());
         }
 
         // Attends sur le 1er fils et le 3eme fils
@@ -43,22 +46,22 @@ public class ParentChildTest extends TipiEngineTest {
             while (TstPutNumberActivity1.beginStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, TstPutNumberActivity1.beginStep.get());
+            Assert.assertEquals(1, TstPutNumberActivity1.beginStep.get());
 
             while (TstListVarsSubProcess.beginStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, TstListVarsSubProcess.beginStep.get());
+            Assert.assertEquals(1, TstListVarsSubProcess.beginStep.get());
 
             TstParentProcess.globalStep.incrementAndGet(); // -> 2
 
             while (TstPutNumberActivity1.endStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, TstPutNumberActivity1.endStep.get());
+            Assert.assertEquals(1, TstPutNumberActivity1.endStep.get());
             // List vars a pas terminé
-            assertEquals(1, TstListVarsSubProcess.beginStep.get());
-            assertEquals(0, TstListVarsSubProcess.endStep.get());
+            Assert.assertEquals(1, TstListVarsSubProcess.beginStep.get());
+            Assert.assertEquals(0, TstListVarsSubProcess.endStep.get());
         }
 
         // Attends sur le 2eme fils
@@ -66,17 +69,17 @@ public class ParentChildTest extends TipiEngineTest {
             while (TstPutNumberActivity2.beginStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, TstPutNumberActivity2.beginStep.get());
+            Assert.assertEquals(1, TstPutNumberActivity2.beginStep.get());
 
             TstParentProcess.globalStep.incrementAndGet(); // -> 3
 
             while (TstPutNumberActivity2.endStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, TstPutNumberActivity2.endStep.get());
+            Assert.assertEquals(1, TstPutNumberActivity2.endStep.get());
             // List vars a pas terminé
-            assertEquals(1, TstListVarsSubProcess.beginStep.get());
-            assertEquals(0, TstListVarsSubProcess.endStep.get());
+            Assert.assertEquals(1, TstListVarsSubProcess.beginStep.get());
+            Assert.assertEquals(0, TstListVarsSubProcess.endStep.get());
         }
 
         // Attends sur le 3eme fils
@@ -84,14 +87,14 @@ public class ParentChildTest extends TipiEngineTest {
             while (TstListVarsSubProcess.beginStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, TstListVarsSubProcess.beginStep.get());
+            Assert.assertEquals(1, TstListVarsSubProcess.beginStep.get());
 
             TstParentProcess.globalStep.incrementAndGet(); // -> 4
 
             while (TstListVarsSubProcess.endStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, TstListVarsSubProcess.endStep.get());
+            Assert.assertEquals(1, TstListVarsSubProcess.endStep.get());
         }
 
         while (tipiFacade.isRunning(pid)) {
@@ -99,7 +102,7 @@ public class ParentChildTest extends TipiEngineTest {
         }
 
         String concat = tipiFacade.getStringVariable(pid, "concat");
-        assertEquals("10,8,6,4", concat);
+        Assert.assertEquals("10,8,6,4", concat);
 
         // Vérifie les pointeurs parent/process
         doInTransaction(new TxCallbackWithoutResult() {
@@ -119,8 +122,8 @@ public class ParentChildTest extends TipiEngineTest {
                     criteria.addAndExpression(criteria.fqn().eq(TstPutNumberActivity1.meta.getFQN()));
                     DbActivity act = hqlBuilder.getSingleResult(DbActivity.class, criteria);
                     assertNotNull(act);
-                    assertEquals(process, act.getProcess());
-                    assertEquals(process, act.getParent());
+                    Assert.assertEquals(process, act.getProcess());
+                    Assert.assertEquals(process, act.getParent());
                     assertNull(act.getPrevious());
                     id_nb1 = act.getId();
                 }
@@ -130,9 +133,9 @@ public class ParentChildTest extends TipiEngineTest {
                     criteria.addAndExpression(criteria.fqn().eq(TstPutNumberActivity2.meta.getFQN()));
                     DbActivity act = hqlBuilder.getSingleResult(DbActivity.class, criteria);
                     assertNotNull(act);
-                    assertEquals(process, act.getProcess());
-                    assertEquals(process, act.getParent());
-                    assertEquals(id_nb1, act.getPrevious().getId());
+                    Assert.assertEquals(process, act.getProcess());
+                    Assert.assertEquals(process, act.getParent());
+                    Assert.assertEquals(id_nb1, act.getPrevious().getId());
                 }
 
                 // Sub-Proc
@@ -142,8 +145,8 @@ public class ParentChildTest extends TipiEngineTest {
                     criteria.addAndExpression(criteria.fqn().eq(TstListVarsSubProcess.meta.getFQN()));
                     sub = hqlBuilder.getSingleResult(DbSubProcess.class, criteria);
                     assertNotNull(sub);
-                    assertEquals(process, sub.getProcess());
-                    assertEquals(process, sub.getParent());
+                    Assert.assertEquals(process, sub.getProcess());
+                    Assert.assertEquals(process, sub.getParent());
                     assertNull(sub.getPrevious());
                 }
 
@@ -155,8 +158,8 @@ public class ParentChildTest extends TipiEngineTest {
                     List<DbActivity> acts = hqlBuilder.getResultList(criteria);
                     for (DbActivity act : acts) {
                         assertNotNull(act);
-                        assertEquals(process, act.getProcess());
-                        assertEquals(sub, act.getParent());
+                        Assert.assertEquals(process, act.getProcess());
+                        Assert.assertEquals(sub, act.getParent());
                         assertNull(act.getPrevious());
                     }
                 }
@@ -167,8 +170,8 @@ public class ParentChildTest extends TipiEngineTest {
                     criteria.addAndExpression(criteria.previous__Id().isNotNull());
                     DbActivity act = hqlBuilder.getSingleResult(DbActivity.class, criteria);
                     assertNotNull(act);
-                    assertEquals(process, act.getProcess());
-                    assertEquals(sub, act.getParent());
+                    Assert.assertEquals(process, act.getProcess());
+                    Assert.assertEquals(sub, act.getParent());
                     assertNotNull(act.getPrevious());
                 }
             }

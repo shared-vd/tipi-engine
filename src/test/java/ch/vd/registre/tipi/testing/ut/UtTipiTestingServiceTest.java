@@ -2,7 +2,10 @@ package ch.vd.registre.tipi.testing.ut;
 
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
+import org.junit.Assert;
 import org.junit.Test;
+
+;
 
 public class UtTipiTestingServiceTest extends TipiEngineTest {
 
@@ -20,7 +23,7 @@ public class UtTipiTestingServiceTest extends TipiEngineTest {
         UtTipiTestingServiceTestProcess.counter.set(2);
         tts.waitEndAllActivitiesNoAssertIfError();
 
-        assertEquals(3, UtTipiTestingServiceTestProcess.counter.get());
+        Assert.assertEquals(3, UtTipiTestingServiceTestProcess.counter.get());
     }
 
     private class ProcessStarter implements Runnable {

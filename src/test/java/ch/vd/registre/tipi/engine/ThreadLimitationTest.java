@@ -12,11 +12,14 @@ import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.vd.registre.base.hqlbuilder.Expr;
 import ch.vd.registre.base.tx.TxCallback;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.transaction.TransactionStatus;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+;
 
 public class ThreadLimitationTest extends TipiEngineTest {
 
@@ -139,43 +142,43 @@ public class ThreadLimitationTest extends TipiEngineTest {
         while (TLTActivity2.begin.get() < 1) {    // ok: ESB et UPI_WS sont libres
             Thread.sleep(10);
         }
-        assertEquals(0, TLTActivity3.begin.get());    // bloqué: ni DB_HOST ni UPI_WS n'est libre
-        assertEquals(0, TLTActivity1.end.get());
-        assertEquals(0, TLTActivity2.end.get());
-        assertEquals(0, TLTActivity3.end.get());
+		Assert.assertEquals(0, TLTActivity3.begin.get());    // bloqué: ni DB_HOST ni UPI_WS n'est libre
+		Assert.assertEquals(0, TLTActivity1.end.get());
+		Assert.assertEquals(0, TLTActivity2.end.get());
+		Assert.assertEquals(0, TLTActivity3.end.get());
 
         TLTActivity1.count.incrementAndGet();        // Termine l'activité 1 => libère DB_ORACLE_PROD et DB_HOST
 
-        assertEquals(1, TLTActivity1.begin.get());
-        assertEquals(1, TLTActivity2.begin.get());
-        assertEquals(0, TLTActivity3.begin.get());    // bloqué: DB_HOST est libre, UPI_WS n'est pas libre
+		Assert.assertEquals(1, TLTActivity1.begin.get());
+		Assert.assertEquals(1, TLTActivity2.begin.get());
+		Assert.assertEquals(0, TLTActivity3.begin.get());    // bloqué: DB_HOST est libre, UPI_WS n'est pas libre
         while (TLTActivity1.end.get() < 1) {
             Thread.sleep(10);
         }
-        assertEquals(0, TLTActivity2.end.get());
-        assertEquals(0, TLTActivity3.end.get());
+		Assert.assertEquals(0, TLTActivity2.end.get());
+		Assert.assertEquals(0, TLTActivity3.end.get());
 
         TLTActivity2.count.incrementAndGet();        // Termine l'activité 2 => libère ESB et UPI_WS
 
-        assertEquals(1, TLTActivity1.begin.get());
-        assertEquals(1, TLTActivity2.begin.get());
+		Assert.assertEquals(1, TLTActivity1.begin.get());
+		Assert.assertEquals(1, TLTActivity2.begin.get());
         while (TLTActivity3.begin.get() < 1) {    // ok: DB_HOST et UPI_WS sont libres
             Thread.sleep(10);
         }
-        assertEquals(1, TLTActivity1.end.get());
+		Assert.assertEquals(1, TLTActivity1.end.get());
         while (TLTActivity2.end.get() < 1) {
             Thread.sleep(10);
         }
-        assertEquals(0, TLTActivity3.end.get());
+		Assert.assertEquals(0, TLTActivity3.end.get());
 
         TLTActivity3.count.incrementAndGet();        // Termine l'activité 3
         Thread.sleep(10);
 
-        assertEquals(1, TLTActivity1.begin.get());
-        assertEquals(1, TLTActivity2.begin.get());
-        assertEquals(1, TLTActivity3.begin.get());
-        assertEquals(1, TLTActivity1.end.get());
-        assertEquals(1, TLTActivity2.end.get());
+		Assert.assertEquals(1, TLTActivity1.begin.get());
+		Assert.assertEquals(1, TLTActivity2.begin.get());
+		Assert.assertEquals(1, TLTActivity3.begin.get());
+		Assert.assertEquals(1, TLTActivity1.end.get());
+		Assert.assertEquals(1, TLTActivity2.end.get());
         while (TLTActivity3.end.get() < 1) {
             Thread.sleep(10);
         }

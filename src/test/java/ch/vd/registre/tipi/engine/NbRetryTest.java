@@ -7,8 +7,11 @@ import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.vd.registre.base.tx.TxCallbackWithoutResult;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.transaction.TransactionStatus;
+
+;
 
 public class NbRetryTest extends TipiEngineTest {
 
@@ -41,8 +44,8 @@ public class NbRetryTest extends TipiEngineTest {
             public void execute(TransactionStatus status) throws Exception {
 
                 DbActivity model = persist.get(DbActivity.class, pid);
-                assertEquals(2, model.getNbRetryDone());
-                assertEquals(ActivityState.ERROR, model.getState());
+				Assert.assertEquals(2, model.getNbRetryDone());
+				Assert.assertEquals(ActivityState.ERROR, model.getState());
 
                 // Call stack
                 assertContains("TEST: une erreur", model.getCallstack());

@@ -7,10 +7,13 @@ import ch.sharedvd.tipi.engine.client.TipiTopProcess;
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+
+;
 
 /**
  * Cette classe teste le comportement du paramètre <i>nbMaxTopConcurrent</i> des top-process Tipi.
@@ -67,7 +70,7 @@ public class MaxTopConcurrentTest extends TipiEngineTest {
 
         // on vérifie que tout s'est bien passé
         final Boolean runned = (Boolean) datastore.get("testLaunchOneTopProcess");
-        assertTrue(runned != null && runned);
+        Assert.assertTrue(runned != null && runned);
     }
 
     /**
@@ -89,7 +92,7 @@ public class MaxTopConcurrentTest extends TipiEngineTest {
 
             // on vérifie que tout s'est bien passé
             final Boolean runned = (Boolean) datastore.get("testLaunchTwoTopProcessesSequentially1");
-            assertTrue(runned != null && runned);
+            Assert.assertTrue(runned != null && runned);
         }
 
         // démarrage du second top process
@@ -105,7 +108,7 @@ public class MaxTopConcurrentTest extends TipiEngineTest {
 
             // on vérifie que tout s'est bien passé
             final Boolean runned = (Boolean) datastore.get("testLaunchTwoTopProcessesSequentially2");
-            assertTrue(runned);
+            Assert.assertTrue(runned);
         }
     }
 
@@ -129,9 +132,9 @@ public class MaxTopConcurrentTest extends TipiEngineTest {
 
         // on laisse un peu de temps à Tipi pour tenter de démarrer le second process
         Thread.sleep(2000);
-        assertTrue(tipiFacade.isRunning(id1)); // le premier process doit être démarré
-        assertTrue(tipiFacade.isRunning(id2)); // le second process doit aussi être démarré (dans le sens : une demande de démarrage a été faite)
-        assertTrue(tipiFacade.isProcessScheduled(id1)); // le premier process doit être en cours d'exécution
+        Assert.assertTrue(tipiFacade.isRunning(id1)); // le premier process doit être démarré
+        Assert.assertTrue(tipiFacade.isRunning(id2)); // le second process doit aussi être démarré (dans le sens : une demande de démarrage a été faite)
+        Assert.assertTrue(tipiFacade.isProcessScheduled(id1)); // le premier process doit être en cours d'exécution
         assertFalse(tipiFacade.isProcessScheduled(id2)); // le second process ne doit pas être en cours d'exécution
 
         // on libère le lock du premier process
@@ -153,10 +156,10 @@ public class MaxTopConcurrentTest extends TipiEngineTest {
 
         // on vérifie que tout s'est bien passé pour le premier process
         final Boolean runned1 = (Boolean) datastore.get("testLaunchTwoTopProcessesSequentially1");
-        assertTrue(runned1);
+        Assert.assertTrue(runned1);
 
         // on vérifie que tout s'est bien passé pour le second process
         final Boolean runned2 = (Boolean) datastore.get("testLaunchTwoTopProcessesSequentially2");
-        assertTrue(runned2);
+        Assert.assertTrue(runned2);
     }
 }

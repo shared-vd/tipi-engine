@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface TipiRegistry {
 
+    void register(final TopProcessMetaModel tp);
+
     TopProcessMetaModel getTopProcess(Class<? extends TopProcess> clazz);
 
     TopProcessMetaModel getTopProcess(String name);

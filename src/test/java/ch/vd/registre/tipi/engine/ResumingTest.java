@@ -10,8 +10,11 @@ import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.vd.registre.base.tx.TxCallbackWithoutResult;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.transaction.TransactionStatus;
+
+;
 
 public class ResumingTest extends TipiEngineTest {
 
@@ -49,15 +52,15 @@ public class ResumingTest extends TipiEngineTest {
         while (tipiFacade.isRunning(pid)) {
             Thread.sleep(10);
         }
-        assertEquals(1, ResumingProcess.value);
+		Assert.assertEquals(1, ResumingProcess.value);
 
         doInTransaction(new TxCallbackWithoutResult() {
             @Override
             public void execute(TransactionStatus status) throws Exception {
 
                 DbActivity model = persist.get(DbActivity.class, pid);
-                assertEquals(ActivityState.SUSPENDED, model.getState());
-                assertEquals("blabla", model.getCorrelationId());
+				Assert.assertEquals(ActivityState.SUSPENDED, model.getState());
+				Assert.assertEquals("blabla", model.getCorrelationId());
             }
         });
 
@@ -70,7 +73,7 @@ public class ResumingTest extends TipiEngineTest {
         while (ResumingProcess.value < 2) {
             Thread.sleep(10);
         }
-        assertEquals(2, ResumingProcess.value);
+		Assert.assertEquals(2, ResumingProcess.value);
         ResumingProcess.value = 3;
         while (tipiFacade.isRunning(pid)) {
             Thread.sleep(10);
@@ -81,9 +84,9 @@ public class ResumingTest extends TipiEngineTest {
             public void execute(TransactionStatus status) throws Exception {
 
                 DbActivity model = persist.get(DbActivity.class, pid);
-                assertEquals(ActivityState.FINISHED, model.getState());
-                assertEquals("blabla", model.getCorrelationId());
-                assertEquals(42, model.getVariable("correl"));
+				Assert.assertEquals(ActivityState.FINISHED, model.getState());
+				Assert.assertEquals("blabla", model.getCorrelationId());
+				Assert.assertEquals(42, model.getVariable("correl"));
             }
         });
     }

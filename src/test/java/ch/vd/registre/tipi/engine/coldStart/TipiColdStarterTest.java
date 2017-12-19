@@ -8,10 +8,13 @@ import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.vd.registre.base.tx.TxCallback;
 import ch.vd.registre.base.tx.TxCallbackWithoutResult;
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.transaction.TransactionStatus;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+;
 
 public class TipiColdStarterTest extends TipiEngineTest {
 
@@ -151,10 +154,10 @@ public class TipiColdStarterTest extends TipiEngineTest {
             while (ColdGroup2Activity1.beginStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, ColdGroup2Activity1.beginStep.get());
-            assertEquals(0, ColdGroup2Activity1.endStep.get());
-            assertEquals(0, ColdGroup2Activity2.beginStep.get());
-            assertEquals(0, ColdGroup2Activity2.endStep.get());
+            Assert.assertEquals(1, ColdGroup2Activity1.beginStep.get());
+            Assert.assertEquals(0, ColdGroup2Activity1.endStep.get());
+            Assert.assertEquals(0, ColdGroup2Activity2.beginStep.get());
+            Assert.assertEquals(0, ColdGroup2Activity2.endStep.get());
 
             ColdParentProcess.globalStep.incrementAndGet(); // -> 5
 
@@ -164,11 +167,11 @@ public class TipiColdStarterTest extends TipiEngineTest {
             while (ColdGroup2Activity2.beginStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, ColdGroup2Activity1.beginStep.get());
-            assertEquals(1, ColdGroup2Activity1.endStep.get());
+            Assert.assertEquals(1, ColdGroup2Activity1.beginStep.get());
+            Assert.assertEquals(1, ColdGroup2Activity1.endStep.get());
             // Vérifie les autres
-            assertEquals(1, ColdGroup2Activity2.beginStep.get());
-            assertEquals(0, ColdGroup2Activity2.endStep.get());
+            Assert.assertEquals(1, ColdGroup2Activity2.beginStep.get());
+            Assert.assertEquals(0, ColdGroup2Activity2.endStep.get());
         }
 
         // G2-A2
@@ -185,11 +188,11 @@ public class TipiColdStarterTest extends TipiEngineTest {
             while (ColdGroup2Activity2.beginStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, ColdGroup2Activity1.beginStep.get());
-            assertEquals(1, ColdGroup2Activity1.endStep.get());
+            Assert.assertEquals(1, ColdGroup2Activity1.beginStep.get());
+            Assert.assertEquals(1, ColdGroup2Activity1.endStep.get());
             // Vérifie les autres
-            assertEquals(1, ColdGroup2Activity2.beginStep.get());
-            assertEquals(1, ColdGroup2Activity2.endStep.get());
+            Assert.assertEquals(1, ColdGroup2Activity2.beginStep.get());
+            Assert.assertEquals(1, ColdGroup2Activity2.endStep.get());
         }
     }
 
@@ -197,28 +200,28 @@ public class TipiColdStarterTest extends TipiEngineTest {
 
         // Parent
         {
-            assertEquals(1, ColdParentProcess.beginStep.get());
-            assertEquals(1, ColdParentProcess.endStep.get());
+            Assert.assertEquals(1, ColdParentProcess.beginStep.get());
+            Assert.assertEquals(1, ColdParentProcess.endStep.get());
         }
 
         // G1-A1 + G1-A3
         {
-            assertEquals(1, ColdGroup1Activity1.beginStep.get());
-            assertEquals(1, ColdGroup1Activity1.endStep.get());
-            assertEquals(1, ColdGroup1Activity3.beginStep.get());
-            assertEquals(1, ColdGroup1Activity3.endStep.get());
+            Assert.assertEquals(1, ColdGroup1Activity1.beginStep.get());
+            Assert.assertEquals(1, ColdGroup1Activity1.endStep.get());
+            Assert.assertEquals(1, ColdGroup1Activity3.beginStep.get());
+            Assert.assertEquals(1, ColdGroup1Activity3.endStep.get());
         }
 
         // G1-A2
         {
-            assertEquals(0, ColdGroup1Activity2.endStep.get());
+            Assert.assertEquals(0, ColdGroup1Activity2.endStep.get());
 
             // On vérifie que les groupe2 n'ont pas commencé
             {
-                assertEquals(0, ColdGroup2Activity1.beginStep.get());
-                assertEquals(0, ColdGroup2Activity1.endStep.get());
-                assertEquals(0, ColdGroup2Activity2.beginStep.get());
-                assertEquals(0, ColdGroup2Activity2.endStep.get());
+                Assert.assertEquals(0, ColdGroup2Activity1.beginStep.get());
+                Assert.assertEquals(0, ColdGroup2Activity1.endStep.get());
+                Assert.assertEquals(0, ColdGroup2Activity2.beginStep.get());
+                Assert.assertEquals(0, ColdGroup2Activity2.endStep.get());
             }
 
             ColdParentProcess.globalStep.incrementAndGet();
@@ -226,8 +229,8 @@ public class TipiColdStarterTest extends TipiEngineTest {
             while (ColdGroup1Activity2.endStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(2, ColdGroup1Activity2.beginStep.get());
-            assertEquals(1, ColdGroup1Activity2.endStep.get());
+            Assert.assertEquals(2, ColdGroup1Activity2.beginStep.get());
+            Assert.assertEquals(1, ColdGroup1Activity2.endStep.get());
         }
     }
 

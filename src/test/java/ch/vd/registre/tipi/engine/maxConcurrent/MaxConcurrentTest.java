@@ -1,7 +1,10 @@
 package ch.vd.registre.tipi.engine.maxConcurrent;
 
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
+import org.junit.Assert;
 import org.junit.Test;
+
+;
 
 public class MaxConcurrentTest extends TipiEngineTest {
 
@@ -31,8 +34,8 @@ public class MaxConcurrentTest extends TipiEngineTest {
             while (MaxConcParentProcess.endStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, MaxConcParentProcess.beginStep.get());
-            assertEquals(1, MaxConcParentProcess.endStep.get());
+            Assert.assertEquals(1, MaxConcParentProcess.beginStep.get());
+            Assert.assertEquals(1, MaxConcParentProcess.endStep.get());
         }
 
         // Child1
@@ -44,12 +47,12 @@ public class MaxConcurrentTest extends TipiEngineTest {
             while (MaxConcActivity2.beginStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, MaxConcActivity1.beginStep.get());
-            assertEquals(0, MaxConcActivity1.endStep.get());
-            assertEquals(1, MaxConcActivity2.beginStep.get());
-            assertEquals(0, MaxConcActivity2.endStep.get());
-            assertEquals(0, MaxConcActivity3.beginStep.get());
-            assertEquals(0, MaxConcActivity3.endStep.get());
+            Assert.assertEquals(1, MaxConcActivity1.beginStep.get());
+            Assert.assertEquals(0, MaxConcActivity1.endStep.get());
+            Assert.assertEquals(1, MaxConcActivity2.beginStep.get());
+            Assert.assertEquals(0, MaxConcActivity2.endStep.get());
+            Assert.assertEquals(0, MaxConcActivity3.beginStep.get());
+            Assert.assertEquals(0, MaxConcActivity3.endStep.get());
 
             MaxConcParentProcess.globalStep.incrementAndGet(); // -> 2
 
@@ -59,11 +62,11 @@ public class MaxConcurrentTest extends TipiEngineTest {
             while (MaxConcActivity3.beginStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, MaxConcActivity1.endStep.get());
-            assertEquals(1, MaxConcActivity2.beginStep.get());
-            assertEquals(0, MaxConcActivity2.endStep.get());
-            assertEquals(1, MaxConcActivity3.beginStep.get());
-            assertEquals(0, MaxConcActivity3.endStep.get());
+            Assert.assertEquals(1, MaxConcActivity1.endStep.get());
+            Assert.assertEquals(1, MaxConcActivity2.beginStep.get());
+            Assert.assertEquals(0, MaxConcActivity2.endStep.get());
+            Assert.assertEquals(1, MaxConcActivity3.beginStep.get());
+            Assert.assertEquals(0, MaxConcActivity3.endStep.get());
         }
 
         // Child2
@@ -73,10 +76,10 @@ public class MaxConcurrentTest extends TipiEngineTest {
             while (MaxConcActivity2.endStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, MaxConcActivity2.beginStep.get());
-            assertEquals(1, MaxConcActivity2.endStep.get());
-            assertEquals(1, MaxConcActivity3.beginStep.get());
-            assertEquals(0, MaxConcActivity3.endStep.get());
+            Assert.assertEquals(1, MaxConcActivity2.beginStep.get());
+            Assert.assertEquals(1, MaxConcActivity2.endStep.get());
+            Assert.assertEquals(1, MaxConcActivity3.beginStep.get());
+            Assert.assertEquals(0, MaxConcActivity3.endStep.get());
         }
 
         // Child3
@@ -86,8 +89,8 @@ public class MaxConcurrentTest extends TipiEngineTest {
             while (MaxConcActivity3.endStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, MaxConcActivity3.beginStep.get());
-            assertEquals(1, MaxConcActivity3.endStep.get());
+            Assert.assertEquals(1, MaxConcActivity3.beginStep.get());
+            Assert.assertEquals(1, MaxConcActivity3.endStep.get());
         }
 
         // End parent
@@ -95,7 +98,7 @@ public class MaxConcurrentTest extends TipiEngineTest {
             while (MaxConcParentProcess.terminatedStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, MaxConcParentProcess.terminatedStep.get());
+            Assert.assertEquals(1, MaxConcParentProcess.terminatedStep.get());
         }
 
         while (tipiFacade.isRunning(pid)) {

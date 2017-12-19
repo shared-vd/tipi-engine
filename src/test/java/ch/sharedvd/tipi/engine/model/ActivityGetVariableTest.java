@@ -2,9 +2,10 @@ package ch.sharedvd.tipi.engine.model;
 
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
+import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+;
 
 public class ActivityGetVariableTest extends AbstractTipiPersistenceTest {
 
@@ -25,12 +26,12 @@ public class ActivityGetVariableTest extends AbstractTipiPersistenceTest {
         while (tipiFacade.isRunning(pid)) {
             Thread.sleep(10);
         }
-        assertEquals(42, TstStoreNumberProcess.number);
+        Assert.assertEquals(42, TstStoreNumberProcess.number);
 
         txTemplate.txWithout((s) -> {
             DbTopProcess p = topProcessRepository.findOne(pid);
-            assertEquals("TheResult", p.getVariable("result"));
-            assertEquals("act1", p.getVariable("name"));
+            Assert.assertEquals("TheResult", p.getVariable("result"));
+            Assert.assertEquals("act1", p.getVariable("name"));
         });
     }
 

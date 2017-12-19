@@ -8,9 +8,12 @@ import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.vd.registre.base.tx.TxCallbackWithoutResult;
 import org.hibernate.SessionFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionStatus;
+
+;
 
 public class SessionClearTest extends TipiEngineTest {
 
@@ -51,7 +54,7 @@ public class SessionClearTest extends TipiEngineTest {
             @Override
             public void execute(TransactionStatus status) throws Exception {
                 DbActivity model = persist.get(DbActivity.class, pid);
-                assertEquals("bli", model.getVariable("bla"));
+				Assert.assertEquals("bli", model.getVariable("bla"));
             }
         });
     }

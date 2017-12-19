@@ -6,9 +6,12 @@ import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+;
 
 public class MaxConcurrentTopProcessTest extends TipiEngineTest {
 
@@ -59,7 +62,7 @@ public class MaxConcurrentTopProcessTest extends TipiEngineTest {
             while (MyProcess.beginStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, MyProcess.beginStep.get());
+            Assert.assertEquals(1, MyProcess.beginStep.get());
 
             // On lui permet de continuer...
             MyProcess.globalStep.incrementAndGet(); // -> 1
@@ -68,13 +71,13 @@ public class MaxConcurrentTopProcessTest extends TipiEngineTest {
             while (MyProcess.endStep.get() < 1) {
                 Thread.sleep(10);
             }
-            assertEquals(1, MyProcess.endStep.get());
+            Assert.assertEquals(1, MyProcess.endStep.get());
 
             // Le deuxième démarre
             while (MyProcess.beginStep.get() < 2) {
                 Thread.sleep(10);
             }
-            assertEquals(2, MyProcess.beginStep.get());
+            Assert.assertEquals(2, MyProcess.beginStep.get());
 
             // On lui permet de continuer...
             MyProcess.globalStep.incrementAndGet(); // -> 2
@@ -83,13 +86,13 @@ public class MaxConcurrentTopProcessTest extends TipiEngineTest {
             while (MyProcess.endStep.get() < 2) {
                 Thread.sleep(10);
             }
-            assertEquals(2, MyProcess.endStep.get());
+            Assert.assertEquals(2, MyProcess.endStep.get());
 
             // On attend la fin de la fin
             while (tipiFacade.isRunning(p1) || tipiFacade.isRunning(p2)) {
                 Thread.sleep(10);
             }
-            assertEquals(2, MyProcess.terminatedStep.get());
+            Assert.assertEquals(2, MyProcess.terminatedStep.get());
         }
     }
 }

@@ -7,11 +7,14 @@ import ch.sharedvd.tipi.engine.engine.resumeall.ResumeAllProcess;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.vd.registre.base.tx.TxCallback;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.transaction.TransactionStatus;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+;
 
 public class ResumeAllTest extends TipiEngineTest {
 
@@ -63,7 +66,7 @@ public class ResumeAllTest extends TipiEngineTest {
                 }).booleanValue();
             }
         }
-        assertEquals(2, ResumeAllActivity.nbCalled.get());
+        Assert.assertEquals(2, ResumeAllActivity.nbCalled.get());
 
         ResumeAllActivity.mode = 3; // Finished
 
@@ -82,6 +85,6 @@ public class ResumeAllTest extends TipiEngineTest {
             Thread.sleep(10);
         }
         Thread.sleep(50);
-        assertEquals(4, ResumeAllActivity.nbCalled.get());
+        Assert.assertEquals(4, ResumeAllActivity.nbCalled.get());
     }
 }

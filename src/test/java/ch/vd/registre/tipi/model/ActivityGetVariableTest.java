@@ -2,16 +2,19 @@ package ch.vd.registre.tipi.model;
 
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
-import ch.vd.registre.base.tx.TxCallback;
-import ch.vd.registre.base.tx.TxCallbackWithoutResult;
+import ch.sharedvd.tipi.engine.model.DbActivity;
+import ch.sharedvd.tipi.engine.model.DbTopProcess;
+import ch.sharedvd.tipi.engine.model.TstStoreNumberProcess;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.transaction.TransactionStatus;
+
+;
 
 public class ActivityGetVariableTest extends TipiEngineTest {
 
     @Test
     public void getVariable() throws Exception {
-
         final long aId = doInTransaction(new TxCallback<Long>() {
             @Override
             public Long execute(TransactionStatus status) throws Exception {
@@ -30,14 +33,14 @@ public class ActivityGetVariableTest extends TipiEngineTest {
         while (tipiFacade.isRunning(pid)) {
             Thread.sleep(10);
         }
-        assertEquals(42, TstStoreNumberProcess.number);
+        Assert.assertEquals(42, TstStoreNumberProcess.number);
 
         doInTransaction(new TxCallbackWithoutResult() {
             @Override
             public void execute(TransactionStatus status) throws Exception {
                 DbTopProcess p = persist.get(DbTopProcess.class, pid);
-                assertEquals("TheResult", p.getVariable("result"));
-                assertEquals("act1", p.getVariable("name"));
+                Assert.assertEquals("TheResult", p.getVariable("result"));
+                Assert.assertEquals("act1", p.getVariable("name"));
             }
         });
     }

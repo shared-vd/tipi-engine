@@ -5,7 +5,10 @@ import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;
 import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
+import org.junit.Assert;
 import org.junit.Test;
+
+;
 
 public class ProcessWithoutChildrenTest extends TipiEngineTest {
 
@@ -32,7 +35,7 @@ public class ProcessWithoutChildrenTest extends TipiEngineTest {
         while (tipiFacade.isRunning(pid)) {
             Thread.sleep(100);
         }
-        assertEquals(42, ProcessWithoutChildren.value);
+        Assert.assertEquals(42, ProcessWithoutChildren.value);
     }
 
 }

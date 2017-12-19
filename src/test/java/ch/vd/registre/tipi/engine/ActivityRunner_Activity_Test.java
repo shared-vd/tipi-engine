@@ -9,11 +9,14 @@ import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.vd.registre.base.tx.TxCallbackWithoutResult;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.transaction.TransactionStatus;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+;
 
 public class ActivityRunner_Activity_Test extends TipiEngineTest {
 
@@ -114,7 +117,7 @@ public class ActivityRunner_Activity_Test extends TipiEngineTest {
                 crit.addAndExpression(crit.parent__Id().eq(pid));
 
                 List<DbActivity> nexts = hqlBuilder.getResultList(crit);
-                assertEquals(1, nexts.size());
+                Assert.assertEquals(1, nexts.size());
                 DbActivity act = nexts.get(0);
                 act.setState(ActivityState.EXECUTING);
             }

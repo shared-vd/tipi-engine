@@ -7,10 +7,13 @@ import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
 import ch.vd.registre.base.tx.TxCallbackWithoutResult;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.transaction.TransactionStatus;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+;
 
 public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
 
@@ -64,7 +67,7 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
                 return pid;
             }
         });
-        assertEquals(2, ProcTstSubProcess.nb.get());
+        Assert.assertEquals(2, ProcTstSubProcess.nb.get());
 
         while (tipiFacade.isRunning(pid)) {
             Thread.sleep(10);
@@ -75,9 +78,9 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
             public void execute(TransactionStatus status) throws Exception {
 
                 DbTopProcess model = persist.get(DbTopProcess.class, pid);
-                assertEquals(ActivityState.FINISHED, model.getState());
+                Assert.assertEquals(ActivityState.FINISHED, model.getState());
                 assertFalse(model.isRequestEndExecution());
-                assertEquals(1, model.getNbRetryDone());
+                Assert.assertEquals(1, model.getNbRetryDone());
             }
         });
     }
@@ -98,9 +101,9 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
             public void execute(TransactionStatus status) throws Exception {
 
                 DbTopProcess model = persist.get(DbTopProcess.class, pid);
-                assertEquals(ActivityState.ERROR, model.getState());
+                Assert.assertEquals(ActivityState.ERROR, model.getState());
                 assertFalse(model.isRequestEndExecution());
-                assertEquals(0, model.getNbRetryDone());
+                Assert.assertEquals(0, model.getNbRetryDone());
             }
         });
     }
@@ -121,9 +124,9 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
             public void execute(TransactionStatus status) throws Exception {
 
                 DbTopProcess model = persist.get(DbTopProcess.class, pid);
-                assertEquals(ActivityState.ERROR, model.getState());
+                Assert.assertEquals(ActivityState.ERROR, model.getState());
                 assertFalse(model.isRequestEndExecution());
-                assertEquals(0, model.getNbRetryDone());
+                Assert.assertEquals(0, model.getNbRetryDone());
             }
         });
     }
@@ -150,9 +153,9 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
             public void execute(TransactionStatus status) throws Exception {
 
                 DbTopProcess model = persist.get(DbTopProcess.class, pid);
-                assertEquals(ActivityState.FINISHED, model.getState());
+                Assert.assertEquals(ActivityState.FINISHED, model.getState());
                 assertFalse(model.isRequestEndExecution());
-                assertEquals(0, model.getNbRetryDone());
+                Assert.assertEquals(0, model.getNbRetryDone());
             }
         });
     }

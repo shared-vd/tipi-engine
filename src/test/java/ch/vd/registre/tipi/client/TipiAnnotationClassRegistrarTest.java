@@ -3,9 +3,11 @@ package ch.vd.registre.tipi.client;
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;
 import ch.sharedvd.tipi.engine.action.TopProcess;
-import ch.sharedvd.tipi.engine.engine.TipiRegistry;
+import ch.sharedvd.tipi.engine.client.AnnotationActivityRegistrar;
+import ch.sharedvd.tipi.engine.client.TipiTopProcess;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
-import ch.sharedvd.tipi.engine.retry.DefaultRetryPolicy;
+import ch.sharedvd.tipi.engine.registry.TipiRegistry;
+import ch.sharedvd.tipi.engine.registry.TipiRegistryImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.core.type.filter.AssignableTypeFilter;
@@ -17,7 +19,7 @@ import java.util.List;
 
 public class TipiAnnotationClassRegistrarTest {
 
-    @TipiTopProcess(description = "AnnotedTopProcess1", showInUi = false, deleteWhenFinished = false, maxRetryForDefaultPolicy = 3, priority = 5,
+    @TipiTopProcess(description = "AnnotedTopProcess1", showInUi = false, deleteWhenFinished = false, priority = 5,
             nbMaxTopConcurrent = 1, nbMaxConcurrent = 4, startable = false)
     public class AnnotedTopProcess1 extends TopProcess {
 
@@ -27,7 +29,7 @@ public class TipiAnnotationClassRegistrarTest {
         }
     }
 
-    @TipiTopProcess(description = "AnnotedTopProcess2", showInUi = false, deleteWhenFinished = false, maxRetryForDefaultPolicy = 3, priority = 5,
+    @TipiTopProcess(description = "AnnotedTopProcess2", showInUi = false, deleteWhenFinished = false, priority = 5,
             nbMaxTopConcurrent = 1, nbMaxConcurrent = 4, startable = false)
     public class AnnotedTopProcess2 extends TopProcess {
 
@@ -40,7 +42,7 @@ public class TipiAnnotationClassRegistrarTest {
     @Test
     public void testAnnotationRegistration() throws Exception {
 
-        TipiRegistry registry = new TipiRegistry();
+        TipiRegistry registry = new TipiRegistryImpl();
         AnnotationActivityRegistrar registrar = new AnnotationActivityRegistrar();
         registrar.setaPackage("ch.vd.registre.tipi.client");
         registrar.setRegistry(registry);
@@ -61,9 +63,6 @@ public class TipiAnnotationClassRegistrarTest {
         Assert.assertEquals(AnnotedTopProcess1.class.getSimpleName(), meta0.getSimpleName());
         Assert.assertEquals(false, meta0.isShownInUI());
         Assert.assertEquals(false, meta0.isDeleteWhenFinished());
-        Assert.assertEquals(DefaultRetryPolicy.class, meta0.getRetryPolicy().getClass());
-        DefaultRetryPolicy policy = (DefaultRetryPolicy) meta0.getRetryPolicy();
-        Assert.assertEquals(3, policy.getMaxRetry());
         Assert.assertEquals(5, meta0.getPriority());
         Assert.assertEquals(1, meta0.getNbMaxTopConcurrent());
         Assert.assertEquals(4, meta0.getNbMaxConcurrent());
@@ -80,7 +79,7 @@ public class TipiAnnotationClassRegistrarTest {
     @Test
     public void testExcludeFilters() throws Exception {
 
-        TipiRegistry registry = new TipiRegistry();
+        TipiRegistry registry = new TipiRegistryImpl();
         AnnotationActivityRegistrar registrar = new AnnotationActivityRegistrar();
         registrar.setaPackage("ch.vd.registre.tipi.client");
         registrar.setRegistry(registry);
@@ -95,9 +94,6 @@ public class TipiAnnotationClassRegistrarTest {
         Assert.assertEquals(AnnotedTopProcess1.class.getSimpleName(), meta.getSimpleName());
         Assert.assertEquals(false, meta.isShownInUI());
         Assert.assertEquals(false, meta.isDeleteWhenFinished());
-        Assert.assertEquals(DefaultRetryPolicy.class, meta.getRetryPolicy().getClass());
-        DefaultRetryPolicy policy = (DefaultRetryPolicy) meta.getRetryPolicy();
-        Assert.assertEquals(3, policy.getMaxRetry());
         Assert.assertEquals(5, meta.getPriority());
         Assert.assertEquals(1, meta.getNbMaxTopConcurrent());
         Assert.assertEquals(4, meta.getNbMaxConcurrent());

@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 
+;
+
 public class ActivityServiceTest extends TipiEngineTest {
 
     private static long ID1;
@@ -56,7 +58,7 @@ public class ActivityServiceTest extends TipiEngineTest {
             }
         });
 
-        Assert.assertTrue(ID1 < ID2);
+        Assert.Assert.assertTrue(ID1 < ID2);
 
         // Vérifie l'ordre
         txTemplate.txWithout((s) -> {

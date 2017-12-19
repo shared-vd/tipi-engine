@@ -1,5 +1,6 @@
 package ch.sharedvd.tipi.engine.common;
 
+import ch.sharedvd.tipi.engine.TipiTestingApplication;
 import ch.sharedvd.tipi.engine.client.TipiFacade;
 import ch.sharedvd.tipi.engine.query.TipiQueryFacade;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
