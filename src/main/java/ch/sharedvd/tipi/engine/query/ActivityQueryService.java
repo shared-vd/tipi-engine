@@ -154,7 +154,7 @@ public class ActivityQueryService {
         }
 
         if (gatherChildActivities) {
-            Assert.fail("");
+            //Assert.fail("");
             // Tous les subProcess directs
 //            updateDateFinExecution(infos, getOlderProcessEndExecution(process.getId().longValue(), true));
 //            infos.incNbChildrenTotal(countActivitiesByState(process.getId().longValue(), null, true));

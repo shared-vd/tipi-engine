@@ -2,7 +2,6 @@ package ch.sharedvd.tipi.engine.action;
 
 import ch.sharedvd.tipi.engine.client.AbortManager;
 import ch.sharedvd.tipi.engine.utils.ArrayLong;
-import ch.sharedvd.tipi.engine.utils.Assert;
 import ch.sharedvd.tipi.engine.utils.InputStreamHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 public abstract class Activity {
 
@@ -107,8 +108,10 @@ public abstract class Activity {
     protected LocalDate getLocalDateVariable(String name) {
         Integer i = (Integer) facade.getVariable(name);
         if (i != null) {
-            Assert.fail("Bla");
-            return null;//LocalDate.fromIndex(i, true);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            formatter = formatter.withLocale(Locale.FRENCH);
+            LocalDate date = LocalDate.parse("" + i, formatter);
+            return date;
         }
         return null;
     }
