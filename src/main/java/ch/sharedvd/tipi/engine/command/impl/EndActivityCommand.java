@@ -7,14 +7,15 @@ import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
 import ch.sharedvd.tipi.engine.utils.Assert;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EndActivityCommand extends ActivityCommand {
 
-    private static final Logger LOGGER = Logger.getLogger(EndActivityCommand.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EndActivityCommand.class);
 
     public EndActivityCommand(long aid) {
         super(aid);

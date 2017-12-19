@@ -1,10 +1,11 @@
 package ch.sharedvd.tipi.engine.action;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class TopProcess extends SubProcess {
 
-	private static final Logger LOGGER = Logger.getLogger(TopProcess.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TopProcess.class);
 
 //	@Autowired
 //	private TipiFacade tipiFacade;

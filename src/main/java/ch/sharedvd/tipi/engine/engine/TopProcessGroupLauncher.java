@@ -5,7 +5,8 @@ import ch.sharedvd.tipi.engine.infos.ActivityThreadInfos;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.utils.Assert;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
@@ -21,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class TopProcessGroupLauncher {
 
-	private static final Logger LOGGER = Logger.getLogger(TopProcessGroupLauncher.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TopProcessGroupLauncher.class);
 
 	// public pour que les UNIT TESTS puissent changer cette valeur
 	public static int CACHE_SIZE = 1000;

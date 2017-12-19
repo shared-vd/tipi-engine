@@ -3,8 +3,6 @@ package ch.sharedvd.tipi.engine.client;
 import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 
-import java.util.List;
-
 public interface TipiFacade {
 
     /**
@@ -61,7 +59,7 @@ public interface TipiFacade {
     boolean isResumable(long pid);
 
     /**
-     * Passe le processus spécifié à l'état {@link ActivityState#ABORTED}. <b>Attention !</b> Cette méthode n'a aucun effet sur les sous-processus.
+     * Passe le processus spécifié à l'état {@link ch.sharedvd.tipi.engine.model.ActivityState#ABORTED}. <b>Attention !</b> Cette méthode n'a aucun effet sur les sous-processus.
      *
      * @param topPid l'id d'un top-processus.
      * @param delete s'il faut effacer le processus après l'avoir arrêté.
@@ -77,26 +75,6 @@ public interface TipiFacade {
 
     boolean isTipiStarted() throws Exception;
 
-    //TipiActivityInfos getActivityInfos(long id);
-    //TipiActivityInfos getActivityInfos(long id, boolean loadVariables);
-
-    /**
-     * Recherche les activités selon le criteria passé (recherche en HQL)
-     *
-     * @param criteria
-     * @param maxHits
-     * @return le liste des activités
-     */
-    //ResultListWithCount<TipiActivityInfos> searchActivities(TipiCriteria criteria, int maxHits);
-
-    /**
-     * Renvoie la liste des activités dont le correlationId est spécifié
-     *
-     * @param aCorrelationId
-     * @return
-     */
-    List<Long> getActivitiesForCorrelationId(String aCorrelationId);
-
     // Groupes
     void startAllGroups() throws Exception;
 
@@ -107,16 +85,6 @@ public interface TipiFacade {
     void restartGroup(String fqn, int nbMax, int priority) throws Exception;
 
     void stopGroup(String fqn) throws Exception;
-
-    /**
-     * Renvoie la liste des Threads actives pour le moteur TiPi
-     *
-     * @return
-     */
-    //List<ActivityThreadInfos> getThreadsInfos();
-
-    // Connections cup
-    //List<ConnectionCapInfos> getAllConnectionCupInfos();
 
     void setMaxConnections(String aConnectionType, int aNbMaxConnections);
 

@@ -7,14 +7,15 @@ import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.utils.Assert;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 
 public abstract class Command implements InitializingBean {
 
-	private static final Logger LOGGER = Logger.getLogger(Command.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Command.class);
 
 	@Autowired
 	protected ActivityRepository activityRepository;

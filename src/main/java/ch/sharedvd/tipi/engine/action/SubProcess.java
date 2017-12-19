@@ -2,12 +2,13 @@ package ch.sharedvd.tipi.engine.action;
 
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 public abstract class SubProcess extends Activity {
 
-    private static final Logger LOGGER = Logger.getLogger(SubProcess.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SubProcess.class);
 
     // On ne peut ajouter des children que dans le execute()
     private boolean canAddChilren = true;

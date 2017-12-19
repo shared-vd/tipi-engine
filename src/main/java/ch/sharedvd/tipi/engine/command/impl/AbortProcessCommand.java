@@ -2,13 +2,14 @@ package ch.sharedvd.tipi.engine.command.impl;
 
 import ch.sharedvd.tipi.engine.engine.ActivityServiceImpl;
 import ch.sharedvd.tipi.engine.engine.TopProcessGroupManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class AbortProcessCommand extends ActivityCommand {
 
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = Logger.getLogger(AbortProcessCommand.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbortProcessCommand.class);
 
     @Autowired
     private ActivityServiceImpl activityService;

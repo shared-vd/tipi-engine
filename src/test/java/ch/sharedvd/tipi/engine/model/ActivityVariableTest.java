@@ -8,7 +8,7 @@ import org.junit.Test;
 import java.io.InputStream;
 import java.time.LocalDate;
 
-import static org.junit.Assert.fail;
+import static ch.sharedvd.tipi.engine.utils.Assert.fail;
 
 public class ActivityVariableTest extends AbstractTipiPersistenceTest {
 
@@ -28,8 +28,7 @@ public class ActivityVariableTest extends AbstractTipiPersistenceTest {
         while (tipiFacade.isRunning(pid)) {
             Thread.sleep(100);
         }
-
-        fail();
+        fail("");
         //TipiActivityInfos infos = tipiFacade.getActivityInfos(pid);
         //assertEquals(ActivityState.FINISHED, infos.getState());
     }

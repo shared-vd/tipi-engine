@@ -4,7 +4,8 @@ import ch.sharedvd.tipi.engine.client.AbortManager;
 import ch.sharedvd.tipi.engine.utils.ArrayLong;
 import ch.sharedvd.tipi.engine.utils.Assert;
 import ch.sharedvd.tipi.engine.utils.InputStreamHolder;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.io.Serializable;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public abstract class Activity {
 
-    private static final Logger LOGGER = Logger.getLogger(Activity.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Activity.class);
 
     protected ActivityFacade facade;
 
