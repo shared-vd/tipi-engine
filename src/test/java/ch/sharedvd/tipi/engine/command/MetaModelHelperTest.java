@@ -1,18 +1,15 @@
-package ch.vd.registre.tipi.command;
+package ch.sharedvd.tipi.engine.command;
 
-import ch.sharedvd.tipi.engine.command.MetaModelHelper;
+import ch.sharedvd.tipi.engine.action.parentChild.TstParentProcess;
+import ch.sharedvd.tipi.engine.command.annotated.AnnotatedSubProcess;
+import ch.sharedvd.tipi.engine.command.annotated.AnnotatedTopProcess;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
 import ch.sharedvd.tipi.engine.meta.SubProcessMetaModel;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
-import ch.vd.registre.tipi.action.parentChild.TstParentProcess;
-import ch.vd.registre.tipi.command.annotated.AnnotatedSubProcess;
-import ch.vd.registre.tipi.command.annotated.AnnotatedTopProcess;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
-
-;
 
 public class MetaModelHelperTest {
 

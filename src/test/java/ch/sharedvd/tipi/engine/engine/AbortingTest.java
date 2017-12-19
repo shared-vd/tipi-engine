@@ -1,13 +1,13 @@
-package ch.vd.registre.tipi.engine;
+package ch.sharedvd.tipi.engine.engine;
 
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
+import ch.sharedvd.tipi.engine.engine.aborting.AbortManagerActivity;
+import ch.sharedvd.tipi.engine.engine.aborting.AbortManagerProcess;
+import ch.sharedvd.tipi.engine.engine.aborting.AbortingActivity;
+import ch.sharedvd.tipi.engine.engine.aborting.AbortingProcess;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
-import ch.vd.registre.tipi.engine.aborting.AbortManagerActivity;
-import ch.vd.registre.tipi.engine.aborting.AbortManagerProcess;
-import ch.vd.registre.tipi.engine.aborting.AbortingActivity;
-import ch.vd.registre.tipi.engine.aborting.AbortingProcess;
 import org.junit.Assert;
 import org.junit.Test;
 

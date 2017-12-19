@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.engine.stopStartGroup;
+package ch.sharedvd.tipi.engine.engine.stopStartGroup;
 
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;

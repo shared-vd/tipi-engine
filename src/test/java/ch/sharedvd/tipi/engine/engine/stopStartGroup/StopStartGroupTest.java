@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.engine.stopStartGroup;
+package ch.sharedvd.tipi.engine.engine.stopStartGroup;
 
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import org.junit.Assert;

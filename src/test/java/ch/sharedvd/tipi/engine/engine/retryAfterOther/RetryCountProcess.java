@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.engine.retryAfterOther;
+package ch.sharedvd.tipi.engine.engine.retryAfterOther;
 
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;

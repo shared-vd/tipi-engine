@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.testing.ut;
+package ch.sharedvd.tipi.engine.testing.ut;
 
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;

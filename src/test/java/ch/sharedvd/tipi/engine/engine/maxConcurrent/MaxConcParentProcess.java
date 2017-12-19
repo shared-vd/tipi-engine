@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.engine.maxConcurrent;
+package ch.sharedvd.tipi.engine.engine.maxConcurrent;
 
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;

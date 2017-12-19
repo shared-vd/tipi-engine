@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.engine.aborting;
+package ch.sharedvd.tipi.engine.engine.aborting;
 
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;

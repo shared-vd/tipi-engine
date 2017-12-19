@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.command.stats;
+package ch.sharedvd.tipi.engine.command.stats;
 
 import ch.sharedvd.tipi.engine.command.CommandConsumer;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;

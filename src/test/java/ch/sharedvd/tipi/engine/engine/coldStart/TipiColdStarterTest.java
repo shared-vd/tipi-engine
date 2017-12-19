@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.engine.coldStart;
+package ch.sharedvd.tipi.engine.engine.coldStart;
 
 import ch.sharedvd.tipi.engine.command.impl.ColdRestartCommand;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;

@@ -1,6 +1,5 @@
-package ch.vd.registre.tipi.command;
+package ch.sharedvd.tipi.engine.command;
 
-import ch.sharedvd.tipi.engine.command.Command;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import org.junit.Assert;
 import org.junit.Test;

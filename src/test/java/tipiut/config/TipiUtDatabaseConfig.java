@@ -1,6 +1,6 @@
 package tipiut.config;
 
-import ch.vd.registre.tipi.testing.TipiTestingService;
+import ch.sharedvd.tipi.engine.testing.TipiTestingService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

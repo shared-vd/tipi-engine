@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.testing;
+package ch.sharedvd.tipi.engine.testing;
 
 import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.command.CommandConsumer;

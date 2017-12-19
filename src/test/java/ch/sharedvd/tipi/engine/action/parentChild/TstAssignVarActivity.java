@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.action.parentChild;
+package ch.sharedvd.tipi.engine.action.parentChild;
 
 import ch.sharedvd.tipi.engine.action.Activity;
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;

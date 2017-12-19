@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.engine.resumeall;
+package ch.sharedvd.tipi.engine.engine.resumeall;
 
 import ch.sharedvd.tipi.engine.action.*;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;

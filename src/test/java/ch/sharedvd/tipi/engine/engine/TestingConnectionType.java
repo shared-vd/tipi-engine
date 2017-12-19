@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.engine;
+package ch.sharedvd.tipi.engine.engine;
 
 import org.junit.Ignore;
 

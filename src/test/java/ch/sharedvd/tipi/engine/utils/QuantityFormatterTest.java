@@ -3,8 +3,6 @@ package ch.sharedvd.tipi.engine.utils;
 import org.junit.Assert;
 import org.junit.Test;
 
-;
-
 public class QuantityFormatterTest {
 
     @Test

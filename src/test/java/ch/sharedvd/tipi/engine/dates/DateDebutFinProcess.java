@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.dates;
+package ch.sharedvd.tipi.engine.dates;
 
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;

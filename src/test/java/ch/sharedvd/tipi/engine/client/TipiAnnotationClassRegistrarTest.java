@@ -1,10 +1,8 @@
-package ch.vd.registre.tipi.client;
+package ch.sharedvd.tipi.engine.client;
 
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;
 import ch.sharedvd.tipi.engine.action.TopProcess;
-import ch.sharedvd.tipi.engine.client.AnnotationActivityRegistrar;
-import ch.sharedvd.tipi.engine.client.TipiTopProcess;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.registry.TipiRegistry;
 import ch.sharedvd.tipi.engine.registry.TipiRegistryImpl;

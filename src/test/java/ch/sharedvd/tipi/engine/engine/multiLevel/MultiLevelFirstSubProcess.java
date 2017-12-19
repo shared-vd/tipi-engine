@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.engine.multiLevel;
+package ch.sharedvd.tipi.engine.engine.multiLevel;
 
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;

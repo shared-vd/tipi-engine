@@ -1,11 +1,11 @@
-package ch.vd.registre.tipi.action;
+package ch.sharedvd.tipi.engine.action;
 
+import ch.sharedvd.tipi.engine.action.parentChild.*;
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
-import ch.vd.registre.tipi.action.parentChild.*;
 import org.junit.Assert;
 import org.junit.Test;
 

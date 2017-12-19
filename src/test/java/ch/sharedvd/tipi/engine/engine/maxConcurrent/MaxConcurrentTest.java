@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.engine.maxConcurrent;
+package ch.sharedvd.tipi.engine.engine.maxConcurrent;
 
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import org.junit.Assert;

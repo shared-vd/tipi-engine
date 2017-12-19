@@ -1,6 +1,5 @@
-package ch.vd.registre.tipi.command.impl;
+package ch.sharedvd.tipi.engine.command.impl;
 
-import ch.sharedvd.tipi.engine.command.impl.ResumeAllActivitiesCommand;
 import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;

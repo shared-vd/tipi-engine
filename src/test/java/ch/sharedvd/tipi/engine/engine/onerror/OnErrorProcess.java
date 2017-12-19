@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.engine.onerror;
+package ch.sharedvd.tipi.engine.engine.onerror;
 
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;

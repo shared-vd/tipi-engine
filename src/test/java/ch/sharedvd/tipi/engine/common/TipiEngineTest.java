@@ -7,7 +7,7 @@ import ch.sharedvd.tipi.engine.command.CommandService;
 import ch.sharedvd.tipi.engine.runner.TipiStarter;
 import ch.sharedvd.tipi.engine.runner.TopProcessGroupLauncher;
 import ch.sharedvd.tipi.engine.runner.TopProcessGroupManager;
-import ch.vd.registre.tipi.testing.TipiTestingService;
+import ch.sharedvd.tipi.engine.testing.TipiTestingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 

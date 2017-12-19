@@ -1,4 +1,4 @@
-package ch.vd.registre.tipi.command.annotated;
+package ch.sharedvd.tipi.engine.command.annotated;
 
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;
