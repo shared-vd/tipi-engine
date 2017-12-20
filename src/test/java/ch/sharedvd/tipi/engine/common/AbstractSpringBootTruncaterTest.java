@@ -4,7 +4,6 @@ import ch.qos.logback.classic.Level;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
 import org.hibernate.boot.spi.MetadataImplementor;
-import org.hibernate.dialect.H2Dialect;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
 
@@ -43,7 +43,8 @@ public abstract class AbstractSpringBootTruncaterTest implements ApplicationCont
     // To be overriden by sub-classes
     protected void afterContextInitialization() {
         this.dataSource = applicationContext.getBean(DataSource.class);
-        final String dialect = H2Dialect.class.getName();
+        final Environment env = applicationContext.getBean(Environment.class);
+        final String dialect = env.getRequiredProperty("spring.jpa.database-platform");
         final String[] hibernatePackagesToScan = new String[]{DbActivity.class.getPackage().getName()};
         final MetadataImplementor metadataImplementor = HibernateMetaDataHelper.createMetadataImplementor(dialect, hibernatePackagesToScan);
         truncater = new HibernateMetaDataTruncater(dataSource, metadataImplementor);

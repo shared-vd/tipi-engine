@@ -12,7 +12,6 @@ import static ch.sharedvd.tipi.engine.model.DbActivity.*;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "DbActivity.findTopProcessNamesByStateAndReqEnd", query = FIND_TP_BY_STATE_AND_REQ_END),
         @NamedQuery(name = "DbActivity.findExecutingActivities", query = FIND_EXEC_ACTIVITIES),
         @NamedQuery(name = "DbActivity.findChildren", query = FIND_CHILDREN),
         @NamedQuery(name = "DbActivity.findByGroupAndState", query = FIND_GROUP_STATE),
@@ -23,7 +22,7 @@ import static ch.sharedvd.tipi.engine.model.DbActivity.*;
         @Index(name = "TP_ACT_DTYPE_IDX", columnList = "DTYPE"),
         @Index(name = "TP_ACT_PARENT_FK_IDX", columnList = "PARENT_FK"),
         @Index(name = "TP_ACT_PROCESS_FK_IDX", columnList = "PROCESS_FK"),
-        @Index(name = "TP_ACT_PROCESS_NAME_IDX", columnList = "PROCESS_NAME"),
+        @Index(name = "TP_ACT_FQN_IDX", columnList = "FQN"),
         @Index(name = "TP_ACTIVITY_CORRELATION_IDX", columnList = "CORRELATION_ID"),
         @Index(name = "TP_ACTIVITY_STATE_IDX", columnList = "STATE"),
         @Index(name = "TP_ACTIVITY_NAME_IDX", columnList = "NAME"),
@@ -48,10 +47,6 @@ public class DbActivity extends DbBaseEntity {
 
     static final String FIND_CHILDREN = "from DbActivity a " +
             "where a.parent = (?1)";
-
-    static final String FIND_TP_BY_STATE_AND_REQ_END = "select distinct p.fqn from DbTopProcess p " +
-            "where p.state = (?1)" +
-            "   and p.requestEndExecution = (?2)";
 
     static final String FIND_EXEC_ACTIVITIES = "" +
             "select a from DbActivity a " +
@@ -120,7 +115,7 @@ public class DbActivity extends DbBaseEntity {
         this.parent = parent;
     }
 
-    @Column(name = "PROCESS_NAME")
+    @Column(name = "FQN")
     public String getProcessName() {
         if (this instanceof DbTopProcess) {
             // Si on n'a pas de process, on EST le process.
