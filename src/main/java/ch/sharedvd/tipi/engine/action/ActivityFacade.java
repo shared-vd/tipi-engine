@@ -15,14 +15,14 @@ import java.util.List;
 
 public class ActivityFacade {
 
-    private ActivityPersisterService activityPersistenceService;
+    private ActivityPersisterService activityPersisterService;
     private long activityId;
 
     public ActivityFacade(long activityId, ActivityPersisterService manager) {
         Assert.notNull(activityId);
         Assert.notNull(manager);
         this.activityId = activityId;
-        this.activityPersistenceService = manager;
+        this.activityPersisterService = manager;
     }
 
     public long getId() {
@@ -38,32 +38,32 @@ public class ActivityFacade {
     }
 
     public Object getVariable(long id, String key) {
-        DbActivity m = activityPersistenceService.getModel(id);
+        DbActivity m = activityPersisterService.getModel(id);
         return getVariable(m, key);
     }
 
     public List<ActivityFacade> getChildren() {
-        return activityPersistenceService.getChildren(getModel().getId());
+        return activityPersisterService.getChildren(getModel().getId());
     }
 
     public void putVariable(String key, Serializable value) {
-        activityPersistenceService.putVariable(activityPersistenceService.getModel(activityId), key, value);
+        activityPersisterService.putVariable(activityPersisterService.getModel(activityId), key, value);
     }
 
     public long addChildActivity(final ActivityMetaModel meta, Long previousId, VariableMap vars) {
         final DbSubProcess parent = (DbSubProcess) getModel();
-        return activityPersistenceService.addChildActivity(meta, parent, previousId, vars, null);
+        return activityPersisterService.addChildActivity(meta, parent, previousId, vars, null);
     }
 
     public long addChildActivity(final Class<? extends Activity> clazz, Long previousId, VariableMap vars) {
         final DbSubProcess parent = (DbSubProcess) getModel();
-        return activityPersistenceService.addChildActivity(MetaModelHelper.getActivityMetaModel(clazz), parent, previousId, vars, null);
+        return activityPersisterService.addChildActivity(MetaModelHelper.getActivityMetaModel(clazz), parent, previousId, vars, null);
     }
 
     public long addChildActivity(final Class<? extends Activity> clazz, Long previousId, VariableMap vars, String correlationId) {
         final DbSubProcess parent = (DbSubProcess) getModel();
         final ActivityMetaModel meta = MetaModelHelper.getActivityMetaModel(clazz);
-        return activityPersistenceService.addChildActivity(meta, parent, previousId, vars, correlationId);
+        return activityPersisterService.addChildActivity(meta, parent, previousId, vars, correlationId);
     }
 
     public boolean isAborted() {
@@ -76,7 +76,7 @@ public class ActivityFacade {
             p = (DbTopProcess) m;
         }
         Assert.notNull(p);
-        ActivityState dbState = activityPersistenceService.getDbActivityState(p.getId());
+        ActivityState dbState = activityPersisterService.getDbActivityState(p.getId());
         return dbState == ActivityState.ABORTED;
     }
 
@@ -84,7 +84,7 @@ public class ActivityFacade {
     // --- private ---
 
     private DbActivity getModel() {
-        return activityPersistenceService.getModel(activityId);
+        return activityPersisterService.getModel(activityId);
     }
 
     private Object getVariable(DbActivity m, String key) {

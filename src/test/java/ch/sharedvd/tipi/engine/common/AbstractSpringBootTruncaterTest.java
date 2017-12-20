@@ -1,8 +1,10 @@
 package ch.sharedvd.tipi.engine.common;
 
 import ch.qos.logback.classic.Level;
+import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
 import org.hibernate.boot.spi.MetadataImplementor;
+import org.hibernate.dialect.H2Dialect;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,6 +23,7 @@ public abstract class AbstractSpringBootTruncaterTest implements ApplicationCont
     private HibernateMetaDataTruncater truncater;
     private ApplicationContext applicationContext;
 
+    private DataSource dataSource;
     protected abstract TxTemplate getTxTemplate();
 
     public ApplicationContext getApplicationContext() {
@@ -39,8 +42,11 @@ public abstract class AbstractSpringBootTruncaterTest implements ApplicationCont
 
     // To be overriden by sub-classes
     protected void afterContextInitialization() {
-        truncater = new HibernateMetaDataTruncater(applicationContext.getBean(DataSource.class),
-                applicationContext.getBean(MetadataImplementor.class));
+        this.dataSource = applicationContext.getBean(DataSource.class);
+        final String dialect = H2Dialect.class.getName();
+        final String[] hibernatePackagesToScan = new String[]{DbActivity.class.getPackage().getName()};
+        final MetadataImplementor metadataImplementor = HibernateMetaDataHelper.createMetadataImplementor(dialect, hibernatePackagesToScan);
+        truncater = new HibernateMetaDataTruncater(dataSource, metadataImplementor);
     }
 
     /**

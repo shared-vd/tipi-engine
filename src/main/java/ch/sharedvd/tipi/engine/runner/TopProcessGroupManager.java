@@ -31,7 +31,6 @@ public class TopProcessGroupManager implements Startable {
     public void start() throws Exception {
         synchronized (launchers) {
             launchers.clear();
-
         }
     }
 
