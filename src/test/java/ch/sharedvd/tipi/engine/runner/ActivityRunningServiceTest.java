@@ -15,9 +15,6 @@ import java.util.List;
 
 public class ActivityRunningServiceTest extends AbstractTipiPersistenceTest {
 
-    private static Long ID1;
-    private static Long ID2;
-
     @Test
     public void getTopProcessNamesWithExecutingActivities() throws Exception {
         txTemplate.txWithout(s -> {
@@ -158,6 +155,8 @@ public class ActivityRunningServiceTest extends AbstractTipiPersistenceTest {
         });
     }
 
+    private static Long ID1;
+    private static Long ID2;
     @Test
     public void getExecutingActivities() throws Exception {
 
@@ -174,6 +173,7 @@ public class ActivityRunningServiceTest extends AbstractTipiPersistenceTest {
                 am.setProcess(tp);
                 am.setParent(tp);
                 am.setFqn("abcd");
+                am.setNbRetryDone(1); // Retry -> 1
                 am.setState(ActivityState.EXECUTING);
                 am.setVersion(1);
                 em.persist(am);
@@ -185,6 +185,7 @@ public class ActivityRunningServiceTest extends AbstractTipiPersistenceTest {
                 am.setProcess(tp);
                 am.setParent(tp);
                 am.setFqn("abcd");
+                am.setNbRetryDone(0);
                 am.setState(ActivityState.EXECUTING);
                 am.setVersion(1);
                 em.persist(am);
@@ -200,10 +201,10 @@ public class ActivityRunningServiceTest extends AbstractTipiPersistenceTest {
             // ID1 a un retry count > ID2 donc passe après
 
             List<DbActivity> ams = activityRunningService.getExecutingActivities("abc", new ArrayList<>(), 10);
+            Assert.assertEquals(2, ams.size());
             Assert.assertEquals(ID2, ams.get(0).getId());
             Assert.assertEquals(ID1, ams.get(1).getId());
         });
 
     }
-
 }

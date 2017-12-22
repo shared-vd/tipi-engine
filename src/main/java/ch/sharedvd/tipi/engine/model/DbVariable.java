@@ -11,7 +11,11 @@ import javax.persistence.*;
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING)
 public abstract class DbVariable<T> extends DbBaseEntity {
 
+    @Column(name = "KEY", nullable = false)
     private String key; //Le nom de la variable
+
+    @ManyToOne
+    @JoinColumn(name = "OWNER_FK", nullable = false)
     private DbActivity owner;
 
     protected DbVariable() {
@@ -22,7 +26,6 @@ public abstract class DbVariable<T> extends DbBaseEntity {
         this.key = key;
     }
 
-    @Column(name = "KEY", nullable = false)
     public String getKey() {
         return key;
     }
@@ -34,12 +37,9 @@ public abstract class DbVariable<T> extends DbBaseEntity {
     @Transient
     public abstract T getValue();
 
-    @ManyToOne
-    @JoinColumn(name = "OWNER_FK", nullable = false)
     public DbActivity getOwner() {
         return owner;
     }
-
     public void setOwner(DbActivity activity) {
         this.owner = activity;
     }

@@ -11,42 +11,41 @@ public class DbBaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 6734035143688829890L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipiEntitySeqGen")
+    @SequenceGenerator(name = "tipiEntitySeqGen", sequenceName = "TP_SEQ")
+    @Column(name = "ID")
 	private Long id;
+
+    @Version
+    @Column(name = "OPTLOCK")
 	private Integer version;
+
+    @Column(name = "DATE_CREATION")
+    @Temporal(TemporalType.TIMESTAMP)
 	private Date creation;
 
 	public DbBaseEntity() {
 		creation = new Date();
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipiEntitySeqGen")
-	@SequenceGenerator(name = "tipiEntitySeqGen", sequenceName = "TP_SEQ")
-	@Column(name = "ID")
 	public Long getId() {
 		return id;
 	}
-
 	public void setId(Long id) {
 		this.id = id;
 	}
 
-	@Version
-	@Column(name = "OPTLOCK")
 	public Integer getVersion() {
 		return version;
 	}
-
 	public void setVersion(Integer aVersion) {
 		this.version = aVersion;
 	}
 
-	@Column(name = "DATE_CREATION")
-	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreationDate() {
 		return creation;
 	}
-
 	public void setCreationDate(Date aCreation) {
 		this.creation = aCreation;
 	}

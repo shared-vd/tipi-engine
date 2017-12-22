@@ -25,7 +25,7 @@ import static ch.sharedvd.tipi.engine.model.DbActivity.*;
         @Index(name = "TP_ACT_FQN_IDX", columnList = "FQN"),
         @Index(name = "TP_ACTIVITY_CORRELATION_IDX", columnList = "CORRELATION_ID"),
         @Index(name = "TP_ACTIVITY_STATE_IDX", columnList = "STATE"),
-        @Index(name = "TP_ACTIVITY_NAME_IDX", columnList = "NAME"),
+        @Index(name = "TP_ACTIVITY_NAME_IDX", columnList = "FQN"),
         @Index(name = "TP_ACTIVITY_REQUEST_END_EXEC", columnList = "REQUEST_END_EXECUTION"),
         @Index(name = "TP_ACT_PREVIOUS_FK_IDX", columnList = "PREVIOUS_FK")
 })
@@ -34,46 +34,57 @@ import static ch.sharedvd.tipi.engine.model.DbActivity.*;
 @DiscriminatorValue("activity")
 public class DbActivity extends DbBaseEntity {
 
-    static final String FIND_BY_STATE =
-            "select a from DbActivity a " +
-                    "where a.requestEndExecution = false " +
-                    "  and a.state = (?1)";
-
-    static final String FIND_GROUP_STATE =
-            "select a from DbActivity a join a.process p " +
-                    "where p in (select pi from DbTopProcess pi where pi.fqn = (?1)) " +
-                    "  and a.requestEndExecution = false " +
-                    "  and a.state = (?2)";
-
-    static final String FIND_CHILDREN = "from DbActivity a " +
-            "where a.parent = (?1)";
-
-    static final String FIND_EXEC_ACTIVITIES = "" +
-            "select a from DbActivity a " +
-            "where (a.process in (from DbTopProcess p where p.fqn = (?1)) " +
-            "       or a in (from DbTopProcess p where p.fqn = (?1)) ) " +
-            "   and a.state = ch.sharedvd.tipi.engine.model.ActivityState.EXECUTING " +
-            "   and a.requestEndExecution = false " +
-            "order by nbRetryDone, id";
-
+    @Column(name = "FQN", nullable = false)
     private String fqn; // Le nom de l'activité
-    private ActivityState state; // L'état de l'activité
-
-    private DbTopProcess process;
-    private DbSubProcess parent;
-    private DbActivity previous;
-
+    @Column(name = "PROCESS_NAME", nullable = true)
     private String processName;
 
+    @Column(name = "STATE", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ActivityState state; // L'état de l'activité
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PROCESS_FK", nullable = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private DbTopProcess process;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PARENT_FK", nullable = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private DbSubProcess parent;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PREVIOUS_FK", nullable = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private DbActivity previous;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @MapKey(name = "key")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Map<String, DbVariable<?>> variables = new HashMap<String, DbVariable<?>>();
 
+    @Column(name = "DATE_START_EXECUTE")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateStartExecute; // La date de début d'execute() de l'activité
+
+    @Column(name = "DATE_END_EXECUTE")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateEndExecute; // la date de fin d'execute() de l'activité
+
+    @Column(name = "DATE_END_ACTIVITY")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateEndActivity; // la date ou l'activité est passé à l'état FINISHED
+
+    @Column(name = "CORRELATION_ID")
     private String correlationId; // Espace pour stocker un id permettant une corrélation quelconque avec cette activité
+
+    @Column(name = "REQUEST_END_EXECUTION", nullable = false)
     private boolean requestEndExecution = false;
+
+    @Column(name = "NB_RETRY", nullable = false)
     private int nbRetryDone = 0;
 
+    @Column(name = "CALLSTACK", length = 2000)
     private String callstack;
 
 
@@ -81,13 +92,9 @@ public class DbActivity extends DbBaseEntity {
         this.state = ActivityState.INITIAL;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PROCESS_FK", nullable = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     public DbTopProcess getProcess() {
         return process;
     }
-
     public void setProcess(DbTopProcess process) {
         this.process = process;
         if (process != null) {
@@ -95,27 +102,13 @@ public class DbActivity extends DbBaseEntity {
         }
     }
 
-    @Transient
-    public DbTopProcess getProcessOrThis() {
-        if (process == null) {
-            // Si on n'a pas de process, on EST le process.
-            return (DbTopProcess) this;
-        }
-        return process;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PARENT_FK", nullable = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     public DbSubProcess getParent() {
         return parent;
     }
-
     public void setParent(DbSubProcess parent) {
         this.parent = parent;
     }
 
-    @Column(name = "FQN")
     public String getProcessName() {
         if (this instanceof DbTopProcess) {
             // Si on n'a pas de process, on EST le process.
@@ -123,23 +116,17 @@ public class DbActivity extends DbBaseEntity {
         }
         return processName;
     }
-
     public void setProcessName(String processName) {
         this.processName = processName;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PREVIOUS_FK", nullable = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     public DbActivity getPrevious() {
         return previous;
     }
-
     public void setPrevious(DbActivity previous) {
         this.previous = previous;
     }
 
-    @Column(name = "REQUEST_END_EXECUTION")
     public boolean isRequestEndExecution() {
         return requestEndExecution;
     }
@@ -148,20 +135,16 @@ public class DbActivity extends DbBaseEntity {
         this.requestEndExecution = aRequestEndExecution;
     }
 
-    @Column(name = "NB_RETRY", nullable = false)
     public int getNbRetryDone() {
         return nbRetryDone;
     }
-
     public void setNbRetryDone(int nbRetryDone) {
         this.nbRetryDone = nbRetryDone;
     }
 
-    @Column(name = "NAME", nullable = false)
     public String getFqn() {
         return fqn;
     }
-
     public void setFqn(String name) {
         this.fqn = name;
     }
@@ -171,12 +154,9 @@ public class DbActivity extends DbBaseEntity {
      *
      * @return
      */
-    @Column(name = "DATE_START_EXECUTE")
-    @Temporal(TemporalType.TIMESTAMP)
     public Date getDateStartExecute() {
         return dateStartExecute;
     }
-
     public void setDateStartExecute(Date aDateStartExecute) {
         this.dateStartExecute = aDateStartExecute;
     }
@@ -186,8 +166,6 @@ public class DbActivity extends DbBaseEntity {
      *
      * @return
      */
-    @Column(name = "DATE_END_EXECUTE")
-    @Temporal(TemporalType.TIMESTAMP)
     public Date getDateEndExecute() {
         return dateEndExecute;
     }
@@ -201,40 +179,30 @@ public class DbActivity extends DbBaseEntity {
      *
      * @return
      */
-    @Column(name = "DATE_END_ACTIVITY")
-    @Temporal(TemporalType.TIMESTAMP)
     public Date getDateEndActivity() {
         return dateEndActivity;
     }
-
     public void setDateEndActivity(Date dateEndActivity) {
         this.dateEndActivity = dateEndActivity;
     }
 
-    @Column(name = "STATE", nullable = false)
-    @Enumerated(EnumType.STRING)
     public ActivityState getState() {
         return state;
     }
-
     public void setState(ActivityState state) {
         this.state = state;
     }
 
-    @Column(name = "CORRELATION_ID")
     public String getCorrelationId() {
         return correlationId;
     }
-
     public void setCorrelationId(String aCorrelationId) {
         correlationId = aCorrelationId;
     }
 
-    @Column(name = "CALLSTACK", length = 2000)
     public String getCallstack() {
         return callstack;
     }
-
     public void setCallstack(String cs) {
         if (cs != null && cs.length() > 2000) {
             this.callstack = cs.substring(0, 2000);
@@ -243,21 +211,16 @@ public class DbActivity extends DbBaseEntity {
         }
     }
 
-    @Transient
-    public void setCallstack() {
-    }
-
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    @MapKey(name = "key")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Map<String, DbVariable<?>> getVariables() {
         return variables;
     }
-
     @SuppressWarnings("unused")
     private void setVariables(Map<String, DbVariable<?>> variables) {
         this.variables = variables;
     }
+
+
+
 
     // === Transient ===
 
@@ -337,23 +300,6 @@ public class DbActivity extends DbBaseEntity {
         return ActivityState.EXECUTING.equals(this.getState()) && !isRequestEndExecution();
     }
 
-    @Override
-    public String toString() {
-        StringBuilder str = new StringBuilder();
-        str.append("name=").append(fqn);
-        str.append(",processName=").append(getProcessName());
-        str.append(",parent=");
-        if (parent != null) {
-            str.append(parent.getId());
-        } else {
-            str.append("null");
-        }
-        str.append(",state=").append(getState());
-        str.append(",reqEnd=").append(requestEndExecution);
-        str.append(",retry=").append(getNbRetryDone());
-        return super.toString(str.toString());
-    }
-
     /**
      * Convert a package name with a class name
      * Exemple : ch.vd.rcpers.eve.svc.event.bd.BaseDeliveryTopProcess => BaseDeliveryTopProcess
@@ -372,4 +318,51 @@ public class DbActivity extends DbBaseEntity {
         }
     }
 
+    @Transient
+    public DbTopProcess getProcessOrThis() {
+        if (process == null) {
+            // Si on n'a pas de process, on EST le process.
+            return (DbTopProcess) this;
+        }
+        return process;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        str.append("name=").append(fqn);
+        str.append(",processName=").append(getProcessName());
+        str.append(",parent=");
+        if (parent != null) {
+            str.append(parent.getId());
+        } else {
+            str.append("null");
+        }
+        str.append(",state=").append(getState());
+        str.append(",reqEnd=").append(requestEndExecution);
+        str.append(",retry=").append(getNbRetryDone());
+        return super.toString(str.toString());
+    }
+
+    static final String FIND_BY_STATE =
+            "select a from DbActivity a " +
+                    "where a.requestEndExecution = false " +
+                    "  and a.state = (?1)";
+
+    static final String FIND_GROUP_STATE =
+            "select a from DbActivity a join a.process p " +
+                    "where p in (select pi from DbTopProcess pi where pi.fqn = (?1)) " +
+                    "  and a.requestEndExecution = false " +
+                    "  and a.state = (?2)";
+
+    static final String FIND_CHILDREN = "from DbActivity a " +
+            "where a.parent = (?1)";
+
+    static final String FIND_EXEC_ACTIVITIES = "" +
+            "select a from DbActivity a " +
+            "where (a.process in (from DbTopProcess p where p.fqn = (?1)) " +
+            "       or a in (from DbTopProcess p where p.fqn = (?1)) ) " +
+            "   and a.state = ch.sharedvd.tipi.engine.model.ActivityState.EXECUTING " +
+            "   and a.requestEndExecution = false " +
+            "order by nbRetryDone asc, id asc";
 }
