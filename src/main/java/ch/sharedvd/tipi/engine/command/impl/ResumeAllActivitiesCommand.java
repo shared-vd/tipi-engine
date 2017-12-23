@@ -36,7 +36,6 @@ public class ResumeAllActivitiesCommand extends Command {
         final List<DbActivity> models;
         if (StringUtils.isNotBlank(groupName)) {
             models = activityRepository.findByGroupAndState(groupName, state);
-
         } else {
             models = activityRepository.findByState(state);
         }

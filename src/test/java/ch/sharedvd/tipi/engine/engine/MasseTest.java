@@ -30,40 +30,31 @@ public class MasseTest extends TipiEngineTest {
 
         @Override
         protected ActivityResultContext execute() throws Exception {
-
             for (int i = 0; i < NB_TO_START; i++) {
                 addChildActivity(MasseTestActivity.meta, null);
             }
-
             return new FinishedActivityResultContext();
         }
     }
 
     public static class MasseTestActivity extends Activity {
-
         public static AtomicInteger count = new AtomicInteger(0);
-
         public static final ActivityMetaModel meta = new ActivityMetaModel(MasseTestActivity.class);
 
         @Override
         protected ActivityResultContext execute() throws Exception {
-
             count.incrementAndGet();
-
             return new FinishedActivityResultContext();
         }
     }
 
     @Test
     public void startUneMasseActivities() throws Exception {
-
         log.info("Début du run ...");
         long begin = System.currentTimeMillis();
 
         final long pid = tipiFacade.launch(MasseTestProcess.meta, null);
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(2);
-        }
+        waitWhileRunning(pid, 30000);
         Assert.assertEquals(MasseTestProcess.NB_TO_START, MasseTestActivity.count.get());
         long diff = System.currentTimeMillis() - begin;
         log.info("Temps: " + (int) (diff / 1000.0) + " secondes pour " + MasseTestProcess.NB_TO_START + " activités");

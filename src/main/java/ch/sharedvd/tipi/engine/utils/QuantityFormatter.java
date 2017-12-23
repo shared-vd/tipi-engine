@@ -50,15 +50,6 @@ public class QuantityFormatter {
 
 			str = ""+mins+"[m]"+secs+"[s]";
 		}
-//		else if (milliseconds > SEC_IN_MILLIS) {
-			// Formattage xx[s]yy[ms]
-//			long secs = milliseconds / SEC_IN_MILLIS;
-//			long secsInMillis  = secs * SEC_IN_MILLIS;
-//
-//			long ms = (milliseconds - secsInMillis);
-//
-//			str = ""+secs+"[s]"+ms+"[ms]";
-//		}
 		else if (milliseconds > SEC_IN_MILLIS) {
 			// Formattage x.yy[s]
 			str = formatWithThreeSign(milliseconds / 1.0 / SEC_IN_MILLIS)+"[s]";

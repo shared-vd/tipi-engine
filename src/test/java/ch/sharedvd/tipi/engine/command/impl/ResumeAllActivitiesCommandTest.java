@@ -77,8 +77,9 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
     public void createCriteria_All() throws Exception {
         txTemplate.txWithout(s -> {
             final ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR);
+            cmd.setActivityRepository(activityRepository);
 
-            List<DbActivity> actis = cmd.getActivities();
+            final List<DbActivity> actis = cmd.getActivities();
             Assert.assertEquals(3, actis.size());
             Assert.assertTrue(actis.get(0) instanceof DbActivity);
             Assert.assertEquals(ActivityState.ERROR, actis.get(0).getState());
@@ -92,8 +93,9 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
 
         txTemplate.txWithout(s -> {
             final ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR, "bla");
+            cmd.setActivityRepository(activityRepository);
 
-            List<DbActivity> actis = cmd.getActivities();
+            final List<DbActivity> actis = cmd.getActivities();
             Assert.assertEquals(1, actis.size());
             Assert.assertTrue(actis.get(0) instanceof DbActivity);
             Assert.assertEquals(ActivityState.ERROR, actis.get(0).getState());
@@ -107,8 +109,9 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
 
         txTemplate.txWithout(s -> {
             final ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR, "bli");
+            cmd.setActivityRepository(activityRepository);
 
-            List<DbActivity> actis = cmd.getActivities();
+            final List<DbActivity> actis = cmd.getActivities();
             Assert.assertEquals(2, actis.size());
             Assert.assertTrue(actis.get(0) instanceof DbActivity);
             Assert.assertEquals(ActivityState.ERROR, actis.get(0).getState());

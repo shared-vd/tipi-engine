@@ -28,9 +28,7 @@ public class NbRetryTest extends TipiEngineTest {
             @Override
             public Long execute() throws Exception {
                 final long pid = tipiFacade.launch(NbRetryProcess.meta, null);
-                while (tipiFacade.isRunning(pid)) {
-                    Thread.sleep(100);
-                }
+                waitWhileRunning(pid, 5000);
                 return pid;
             }
         });

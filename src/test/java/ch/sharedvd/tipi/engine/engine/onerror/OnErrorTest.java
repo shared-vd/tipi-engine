@@ -15,9 +15,7 @@ public class OnErrorTest extends TipiEngineTest {
             @Override
             public Object execute() throws Exception {
                 long pid = tipiFacade.launch(OnErrorProcess.meta, null);
-                while (tipiFacade.isRunning(pid)) {
-                    Thread.sleep(10);
-                }
+                waitWhileRunning(pid, 5000);
                 return null;
             }
         });

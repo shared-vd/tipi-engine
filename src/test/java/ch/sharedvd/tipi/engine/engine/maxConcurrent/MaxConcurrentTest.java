@@ -99,9 +99,7 @@ public class MaxConcurrentTest extends TipiEngineTest {
             Assert.assertEquals(1, MaxConcParentProcess.terminatedStep.get());
         }
 
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(100);
-        }
+        waitWhileRunning(pid, 5000);
     }
 
 }

@@ -58,13 +58,11 @@ public class MaxTopConcurrentTest extends TipiEngineTest {
     public void testLaunchOneTopProcess() throws Exception {
 
         // on démarre le process
-        final long id = tipiFacade.launch(MaxTopOneJob.class, new VariableMap(
+        final long pid = tipiFacade.launch(MaxTopOneJob.class, new VariableMap(
                 RESULTS_KEY, "testLaunchOneTopProcess"));
 
         // on attend le fin d'exécution
-        while (tipiFacade.isRunning(id)) {
-            Thread.sleep(100);
-        }
+        waitWhileRunning(pid, 5000);
 
         // on vérifie que tout s'est bien passé
         final Boolean runned = (Boolean) datastore.get("testLaunchOneTopProcess");
@@ -84,9 +82,7 @@ public class MaxTopConcurrentTest extends TipiEngineTest {
                     RESULTS_KEY, "testLaunchTwoTopProcessesSequentially1"));
 
             // on attend le fin d'exécution
-            while (tipiFacade.isRunning(id)) {
-                Thread.sleep(100);
-            }
+            waitWhileRunning(id, 5000);
 
             // on vérifie que tout s'est bien passé
             final Boolean runned = (Boolean) datastore.get("testLaunchTwoTopProcessesSequentially1");
@@ -100,9 +96,7 @@ public class MaxTopConcurrentTest extends TipiEngineTest {
                     RESULTS_KEY, "testLaunchTwoTopProcessesSequentially2"));
 
             // on attend le fin d'exécution
-            while (tipiFacade.isRunning(id)) {
-                Thread.sleep(100);
-            }
+            waitWhileRunning(id, 5000);
 
             // on vérifie que tout s'est bien passé
             final Boolean runned = (Boolean) datastore.get("testLaunchTwoTopProcessesSequentially2");
@@ -143,14 +137,10 @@ public class MaxTopConcurrentTest extends TipiEngineTest {
         }
 
         // on attend le fin d'exécution du premier process
-        while (tipiFacade.isRunning(id1)) {
-            Thread.sleep(100);
-        }
+        waitWhileRunning(id1, 5000);
 
         // on attend le fin d'exécution du second process
-        while (tipiFacade.isRunning(id2)) {
-            Thread.sleep(100);
-        }
+        waitWhileRunning(id2, 5000);
 
         // on vérifie que tout s'est bien passé pour le premier process
         final Boolean runned1 = (Boolean) datastore.get("testLaunchTwoTopProcessesSequentially1");

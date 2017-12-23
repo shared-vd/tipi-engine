@@ -123,14 +123,8 @@ public class TipiColdStarterTest extends TipiEngineTest {
         group2();
 
         // Attente de la fin du process
-        while (tipiFacade.isRunning(pid))
-
-        {
-            Thread.sleep(10);
-        }
-        while (tipiFacade.hasActivityPending())
-
-        {
+        waitWhileRunning(pid, 5000);
+        while (tipiFacade.hasActivityPending()) {
             Thread.sleep(10);
         }
 

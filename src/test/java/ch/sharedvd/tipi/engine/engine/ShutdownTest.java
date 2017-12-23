@@ -106,9 +106,7 @@ public class ShutdownTest extends TipiEngineTest {
         Assert.assertEquals(1, ShutProcess.endStep.get());
 
         // Fin du process
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(10);
-        }
+        waitWhileRunning(pid, 5000);
         while (tipiFacade.hasActivityPending()) {
             Thread.sleep(10);
         }
@@ -150,9 +148,7 @@ public class ShutdownTest extends TipiEngineTest {
         Assert.assertEquals(1, ShutProcess.endStep.get());
 
         // Fin du process
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(10);
-        }
+        waitWhileRunning(pid, 5000);
         while (tipiFacade.hasActivityPending()) {
             Thread.sleep(10);
         }
@@ -167,9 +163,7 @@ public class ShutdownTest extends TipiEngineTest {
 
         {
             final long pid = tipiFacade.launch(ShutProcess.meta, null);
-            while (tipiFacade.isRunning(pid)) {
-                Thread.sleep(10);
-            }
+            waitWhileRunning(pid, 5000);
         }
 
         starter.stop();
@@ -194,9 +188,7 @@ public class ShutdownTest extends TipiEngineTest {
             Assert.assertEquals(1, ShutProcess.endStep.get());
 
             // Fin du process
-            while (tipiFacade.isRunning(pid)) {
-                Thread.sleep(10);
-            }
+            waitWhileRunning(pid, 5000);
         }
     }
 

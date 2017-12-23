@@ -11,9 +11,7 @@ public class DateDebutFinExecutionTest extends TipiEngineTest {
     public void diffDebutFin() throws Exception {
 
         final long pid = tipiFacade.launch(DateDebutFinProcess.meta, null);
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(2);
-        }
+        waitWhileRunning(pid, 5000);
 
         txTemplate.txWithout(s -> {
             DbTopProcess process = topProcessRepository.findOne(pid);

@@ -11,9 +11,7 @@ public class RetryAfterOtherExecutingTest extends TipiEngineTest {
     public void retryCount() throws Exception {
 
         long pid = tipiFacade.launch(RetryCountProcess.meta, null);
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(100);
-        }
+        waitWhileRunning(pid, 5000);
     }
 
 }

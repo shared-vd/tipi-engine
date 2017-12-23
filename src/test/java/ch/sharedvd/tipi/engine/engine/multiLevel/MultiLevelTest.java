@@ -9,9 +9,7 @@ public class MultiLevelTest extends TipiEngineTest {
     public void runMultiLevelProcess() throws Exception {
 
         long pid = tipiFacade.launch(MultiLevelTopProcess.meta, null);
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(200);
-        }
+        waitWhileRunning(pid, 30000);
     }
 
 }

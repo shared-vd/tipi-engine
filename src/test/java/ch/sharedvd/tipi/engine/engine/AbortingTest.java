@@ -29,9 +29,7 @@ public class AbortingTest extends TipiEngineTest {
         // On abort le process
         tipiFacade.abortProcess(pid, false);
         // On attends qu'il se finisse
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(10);
-        }
+        waitWhileRunning(pid, 5000);
 
         // On attends que toutes les activités se finissent
         boolean end = false;
@@ -62,9 +60,7 @@ public class AbortingTest extends TipiEngineTest {
 
         // Abort
         tipiFacade.abortProcess(pid, false);
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(10);
-        }
+        waitWhileRunning(pid, 5000);
 
         // Vérification
         txTemplate.txWithout(s -> {

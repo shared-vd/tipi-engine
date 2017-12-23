@@ -45,9 +45,7 @@ public class ResumingTest extends TipiEngineTest {
     public void resume() throws Exception {
 
         final long pid = tipiFacade.launch(ResumingProcess.meta, null);
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(10);
-        }
+        waitWhileRunning(pid, 5000);
         Assert.assertEquals(1, ResumingProcess.value);
 
         txTemplate.txWithout(s -> {
@@ -60,17 +58,13 @@ public class ResumingTest extends TipiEngineTest {
         final VariableMap vars = new VariableMap();
         vars.put("correl", 42);
         tipiFacade.resume(pid, vars);
-        while (!tipiFacade.isRunning(pid)) {
-            Thread.sleep(10);
-        }
+        waitWhileRunning(pid, 5000);
         while (ResumingProcess.value < 2) {
             Thread.sleep(10);
         }
         Assert.assertEquals(2, ResumingProcess.value);
         ResumingProcess.value = 3;
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(10);
-        }
+        waitWhileRunning(pid, 5000);
 
         txTemplate.txWithout(s -> {
             DbActivity model = activityRepository.findOne(pid);

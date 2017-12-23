@@ -67,9 +67,7 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
         });
         Assert.assertEquals(2, ProcTstSubProcess.nb.get());
 
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(10);
-        }
+        waitWhileRunning(pid, 5000);
 
         txTemplate.txWithout(s -> {
             DbTopProcess model = topProcessRepository.findOne(pid);
@@ -86,9 +84,7 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
         VariableMap vars = new VariableMap();
         vars.put("mode", 2);
         final long pid = tipiFacade.launch(ProcTstSubProcess.meta, vars);
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(10);
-        }
+        waitWhileRunning(pid, 5000);
 
         txTemplate.txWithout(s -> {
             DbTopProcess model = topProcessRepository.findOne(pid);
@@ -106,9 +102,7 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
         VariableMap vars = new VariableMap();
         vars.put("mode", 3);
         final long pid = tipiFacade.launch(ProcTstSubProcess.meta, vars);
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(10);
-        }
+        waitWhileRunning(pid, 5000);
 
         txTemplate.txWithout(s -> {
             DbTopProcess model = topProcessRepository.findOne(pid);
@@ -129,9 +123,7 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
                 VariableMap vars = new VariableMap();
                 vars.put("mode", 1);
                 final long pid = tipiFacade.launch(ProcTstSubProcess.meta, vars);
-                while (tipiFacade.isRunning(pid)) {
-                    Thread.sleep(10);
-                }
+                waitWhileRunning(pid, 5000);
                 return pid;
             }
         });

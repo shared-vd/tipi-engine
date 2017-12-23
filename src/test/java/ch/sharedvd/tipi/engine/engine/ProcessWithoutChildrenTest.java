@@ -30,9 +30,7 @@ public class ProcessWithoutChildrenTest extends TipiEngineTest {
     public void nbRetry() throws Exception {
 
         final long pid = tipiFacade.launch(ProcessWithoutChildren.meta, null);
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(100);
-        }
+        waitWhileRunning(pid, 5000);
         Assert.assertEquals(42, ProcessWithoutChildren.value);
     }
 

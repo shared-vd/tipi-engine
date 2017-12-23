@@ -46,6 +46,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    @Ignore
     public void countProcess() throws Exception {
 
         txTemplate.txWithout(s -> {
@@ -69,6 +70,63 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
     }
 
     @Test
+    @Ignore
+    public void searchByVariableName() throws Exception {
+
+        txTemplate.txWithout(s -> {
+
+            {
+                DbTopProcess model = new DbTopProcess();
+                model.setFqn("ch.vd.registre.tipi.model.SearchActivitiesTest$SearchTopProcess");
+                activityPersisterService.putVariable(model, "bla", "bli");
+                em.persist(model);
+            }
+            Thread.sleep(100); // Pour que Creation date soit plus grande
+            {
+                DbTopProcess model = new DbTopProcess();
+                model.setFqn("ch.vd.registre.tipi.model.SearchActivitiesTest$SearchTopProcess");
+                activityPersisterService.putVariable(model, "bla", "blo");
+                em.persist(model);
+            }
+
+        });
+
+        {
+            TipiCriteria criteria = new TipiCriteria();
+            criteria.setVariableName("bla");
+            ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
+            Assert.assertEquals(2L, results.getCount());
+            Assert.assertEquals(2, results.getResult().size());
+        }
+        {
+            TipiCriteria criteria = new TipiCriteria();
+            criteria.setVariableName("bla");
+            ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, 1);
+            Assert.assertEquals(2L, results.getCount());
+            Assert.assertEquals(1, results.getResult().size());
+            TipiActivityInfos infos = results.getResult().get(0);
+            Assert.assertEquals("SearchActivitiesTest$SearchTopProcess", infos.getNameOrProcessName());
+        }
+    }
+
+    public static class SearchTopProcess extends TopProcess {
+
+        public final static TopProcessMetaModel meta = new TopProcessMetaModel(SearchTopProcess.class, 100, -1, 10, null) {
+            @Override
+            protected void init() {
+                setDeleteWhenFinished(false);
+            }
+        };
+
+        @Override
+        protected ActivityResultContext execute() throws Exception {
+            Assert.fail("ne sera jamais appelé");
+            return null;
+        }
+    }
+
+    @Test
+    @Ignore
     public void searchActivities_inexistantClassShouldNotCrash() throws Exception {
 
         txTemplate.txWithout(s -> {

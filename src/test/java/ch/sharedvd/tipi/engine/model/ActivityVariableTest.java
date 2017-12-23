@@ -25,9 +25,7 @@ public class ActivityVariableTest extends TipiEngineTest {
         vars.put("file", new InputStreamHolder(is));
 
         final long pid = tipiFacade.launch(ActivityVariableProcess.meta, vars);
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(100);
-        }
+        waitWhileRunning(pid, 5000);
         final TipiActivityInfos infos = tipiQueryFacade.getActivityInfos(pid);
         Assert.assertEquals(ActivityState.FINISHED, infos.getState());
     }

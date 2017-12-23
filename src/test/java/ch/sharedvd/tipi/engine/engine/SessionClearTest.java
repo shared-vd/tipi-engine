@@ -40,9 +40,7 @@ public class SessionClearTest extends TipiEngineTest {
     public void clear() throws Exception {
 
         final long pid = tipiFacade.launch(SessionClearProcess.meta, null);
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(10);
-        }
+        waitWhileRunning(pid, 5000);
 
         txTemplate.txWithout(s -> {
             DbActivity model = activityRepository.findOne(pid);

@@ -97,9 +97,7 @@ public class ParentChildTest extends TipiEngineTest {
             Assert.assertEquals(1, TstListVarsSubProcess.endStep.get());
         }
 
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(10);
-        }
+        waitWhileRunning(pid, 5000);
 
         String concat = tipiFacade.getStringVariable(pid, "concat");
         Assert.assertEquals("10,8,6,4", concat);

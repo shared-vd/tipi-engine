@@ -87,9 +87,11 @@ public class MaxConcurrentTopProcessTest extends TipiEngineTest {
             Assert.assertEquals(2, MyProcess.endStep.get());
 
             // On attend la fin de la fin
-            while (tipiFacade.isRunning(p1) || tipiFacade.isRunning(p2)) {
-                Thread.sleep(10);
-            }
+            waitWhileRunning(p1, 5000);
+            waitWhileRunning(p2, 5000);
+//            while (tipiFacade.isRunning(p1) || tipiFacade.isRunning(p2)) {
+//                Thread.sleep(10);
+//            }
             Assert.assertEquals(2, MyProcess.terminatedStep.get());
         }
     }

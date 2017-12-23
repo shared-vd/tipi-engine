@@ -8,6 +8,7 @@ import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
 import ch.sharedvd.tipi.engine.runner.ActivityRunningService;
 import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
+import ch.sharedvd.tipi.engine.utils.QuantityFormatter;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
@@ -53,7 +54,7 @@ public abstract class AbstractTipiPersistenceTest extends AbstractSpringBootTrun
         return txTemplate;
     }
 
-    protected void waitActivityRunning(long pid, int maxWait) throws InterruptedException {
+    protected void waitWhileRunning(long pid, int maxWait) throws InterruptedException {
         int loopWait = 10;
         int maxLoop = maxWait / loopWait;
 
@@ -62,6 +63,6 @@ public abstract class AbstractTipiPersistenceTest extends AbstractSpringBootTrun
             Thread.sleep(loopWait);
             count++;
         }
-        Assert.assertFalse(tipiFacade.isRunning(pid));
+        Assert.assertFalse("Aborting wait on " + pid + " after " + QuantityFormatter.formatMillis(maxWait), tipiFacade.isRunning(pid));
     }
 }

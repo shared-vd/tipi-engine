@@ -67,9 +67,7 @@ public class ResumeAllTest extends TipiEngineTest {
             tipiFacade.resumeAllError();
         }
         Thread.sleep(50);
-        while (tipiFacade.isRunning(pid)) {
-            Thread.sleep(10);
-        }
+        waitWhileRunning(pid, 5000);
         Thread.sleep(50);
         while (ResumeAllActivity.nbFinished.get() < 2) {
             Thread.sleep(10);

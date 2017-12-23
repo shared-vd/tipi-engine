@@ -96,9 +96,7 @@ public class ActivityRunner_Activity_Test extends TipiEngineTest {
                 VariableMap vars = new VariableMap();
                 vars.put("mode", 4);
                 final long pid = tipiFacade.launch(ActTstSubProcess.meta, vars);
-                while (tipiFacade.isRunning(pid)) {
-                    Thread.sleep(10);
-                }
+                waitWhileRunning(pid, 5000);
                 return pid;
             }
         });

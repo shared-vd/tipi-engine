@@ -20,7 +20,7 @@ public class ActivityGetVariableTest extends TipiEngineTest {
         vars.put("var", 42);
         vars.put("id", aId);
         final long pid = tipiFacade.launch(TstStoreNumberProcess.meta, vars);
-        waitActivityRunning(pid, 5000);
+        waitWhileRunning(pid, 5000);
         Assert.assertEquals(42, TstStoreNumberProcess.number);
 
         txTemplate.txWithout((s) -> {
