@@ -125,7 +125,7 @@ public abstract class AbstractSpringBootTruncaterTest implements ApplicationCont
         T execute() throws Exception;
     }
 
-    protected <T> T doWithLog4jBlocking(String log4jLoggerStr, Log4jBlockingCallback<T> cb) throws Exception {
+    protected <T> T doWithLoggingBlocked(String log4jLoggerStr, Log4jBlockingCallback<T> cb) throws Exception {
 
         ch.qos.logback.classic.Logger logger = null;
         Level loggerLevel = null;

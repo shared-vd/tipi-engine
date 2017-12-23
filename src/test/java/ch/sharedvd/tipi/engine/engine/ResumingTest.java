@@ -52,13 +52,12 @@ public class ResumingTest extends TipiEngineTest {
             DbActivity model = activityRepository.findOne(pid);
             Assert.assertEquals(ActivityState.SUSPENDED, model.getState());
             Assert.assertEquals("blabla", model.getCorrelationId());
-
         });
 
         final VariableMap vars = new VariableMap();
         vars.put("correl", 42);
         tipiFacade.resume(pid, vars);
-        waitWhileRunning(pid, 5000);
+        waitWhileRunning(pid, 10000);
         while (ResumingProcess.value < 2) {
             Thread.sleep(10);
         }

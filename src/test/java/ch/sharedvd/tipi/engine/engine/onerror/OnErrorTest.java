@@ -11,7 +11,7 @@ public class OnErrorTest extends TipiEngineTest {
 
         Assert.assertFalse(OnErrorProcess.errorCalled);
 
-        doWithLog4jBlocking("ch.vd.registre.tipi", new Log4jBlockingCallback<Object>() {
+        doWithLoggingBlocked("ch.sharedvd.tipi.engine", new Log4jBlockingCallback<Object>() {
             @Override
             public Object execute() throws Exception {
                 long pid = tipiFacade.launch(OnErrorProcess.meta, null);

@@ -53,7 +53,7 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
     public void executeException_Mode4() throws Exception {
         ProcTstSubProcess.nb = new AtomicInteger(0);
 
-        final Long pid = doWithLog4jBlocking("ch.vd.registre.tipi", new Log4jBlockingCallback<Long>() {
+        final Long pid = doWithLoggingBlocked("ch.sharedvd.tipi.engine", new Log4jBlockingCallback<Long>() {
             @Override
             public Long execute() throws Exception {
                 VariableMap vars = new VariableMap();
@@ -117,7 +117,7 @@ public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
     public void executeNormal_Mode_1() throws Exception {
         ProcTstSubProcess.nb = new AtomicInteger(0);
 
-        final Long pid = doWithLog4jBlocking("ch.vd.registre.tipi", new Log4jBlockingCallback<Long>() {
+        final Long pid = doWithLoggingBlocked("ch.sharedvd.tipi.engine", new Log4jBlockingCallback<Long>() {
             @Override
             public Long execute() throws Exception {
                 VariableMap vars = new VariableMap();

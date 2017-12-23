@@ -21,7 +21,7 @@ public class CommandConsumerTest extends TipiEngineTest {
 
     @Test
     public void onExceptionRetry() throws Exception {
-        doWithLog4jBlocking("ch.vd.registre.tipi", () -> {
+        doWithLoggingBlocked("ch.sharedvd.tipi.engine", () -> {
             ExceptionCommand cmd = new ExceptionCommand();
             commandConsumer.addCommand(cmd);
             while (cmd.count < 2) {

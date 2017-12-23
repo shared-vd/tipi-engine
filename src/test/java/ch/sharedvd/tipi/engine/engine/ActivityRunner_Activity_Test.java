@@ -87,7 +87,7 @@ public class ActivityRunner_Activity_Test extends TipiEngineTest {
 
     @Test
     public void executeException_Mode4() throws Exception {
-        final Long pid = doWithLog4jBlocking("ch.vd.registre.tipi", new Log4jBlockingCallback<Long>() {
+        final Long pid = doWithLoggingBlocked("ch.sharedvd.tipi.engine", new Log4jBlockingCallback<Long>() {
             @Override
             public Long execute() throws Exception {
                 ActTstSubProcess.nb = new AtomicInteger(0);

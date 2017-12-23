@@ -17,7 +17,7 @@ public class TipiColdStarterTest extends TipiEngineTest {
 
     @Test
     public void testRunThenRestart() throws Exception {
-        doWithLog4jBlocking("ch.vd.registre.tipi", new Log4jBlockingCallback<Object>() {
+        doWithLoggingBlocked("ch.sharedvd.tipi.engine", new Log4jBlockingCallback<Object>() {
             @Override
             public Object execute() throws Exception {
                 doJob();

@@ -24,7 +24,7 @@ public class NbRetryTest extends TipiEngineTest {
 
     @Test
     public void nbRetry() throws Exception {
-        final Long pid = doWithLog4jBlocking("ch.vd.registre.tipi", new Log4jBlockingCallback<Long>() {
+        final Long pid = doWithLoggingBlocked("ch.sharedvd.tipi.engine", new Log4jBlockingCallback<Long>() {
             @Override
             public Long execute() throws Exception {
                 final long pid = tipiFacade.launch(NbRetryProcess.meta, null);
