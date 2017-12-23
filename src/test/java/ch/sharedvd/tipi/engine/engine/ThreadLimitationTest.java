@@ -47,7 +47,7 @@ public class ThreadLimitationTest extends TipiEngineTest {
         public static AtomicInteger begin = new AtomicInteger();
         public static AtomicInteger end = new AtomicInteger();
 
-        public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity1.class, new String[]{"ESB", "MAINFRAME_DB"}, null);
+        public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity1.class, new String[]{TestingConnectionType.MAINFRAME_DB.name()}, null);
 
         @Override
         protected ActivityResultContext execute() throws Exception {
@@ -69,8 +69,7 @@ public class ThreadLimitationTest extends TipiEngineTest {
         public static AtomicInteger begin = new AtomicInteger();
         public static AtomicInteger end = new AtomicInteger();
 
-        public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity2.class,
-                new String[]{TestingConnectionType.ESB.name(), TestingConnectionType.WS.name()}, null);
+        public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity2.class, new String[]{TestingConnectionType.ESB.name(), TestingConnectionType.WS.name()}, null);
 
         @Override
         protected ActivityResultContext execute() throws Exception {
@@ -92,8 +91,7 @@ public class ThreadLimitationTest extends TipiEngineTest {
         public static AtomicInteger begin = new AtomicInteger();
         public static AtomicInteger end = new AtomicInteger();
 
-        public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity3.class,
-                new String[]{TestingConnectionType.MAINFRAME_DB.name(), TestingConnectionType.WS.name()}, null);
+        public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity3.class, new String[]{TestingConnectionType.MAINFRAME_DB.name(), TestingConnectionType.WS.name()}, null);
 
         @Override
         protected ActivityResultContext execute() throws Exception {

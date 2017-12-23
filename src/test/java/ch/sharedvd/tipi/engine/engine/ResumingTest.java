@@ -43,7 +43,6 @@ public class ResumingTest extends TipiEngineTest {
 
     @Test
     public void resume() throws Exception {
-
         final long pid = tipiFacade.launch(ResumingProcess.meta, null);
         waitWhileRunning(pid, 5000);
         Assert.assertEquals(1, ResumingProcess.value);
@@ -57,7 +56,9 @@ public class ResumingTest extends TipiEngineTest {
         final VariableMap vars = new VariableMap();
         vars.put("correl", 42);
         tipiFacade.resume(pid, vars);
-        waitWhileRunning(pid, 10000);
+        while (!tipiFacade.isRunning(pid)) {
+            Thread.sleep(10);
+        }
         while (ResumingProcess.value < 2) {
             Thread.sleep(10);
         }
@@ -70,8 +71,6 @@ public class ResumingTest extends TipiEngineTest {
             Assert.assertEquals(ActivityState.FINISHED, model.getState());
             Assert.assertEquals("blabla", model.getCorrelationId());
             Assert.assertEquals(42, model.getVariable("correl"));
-
         });
     }
-
 }

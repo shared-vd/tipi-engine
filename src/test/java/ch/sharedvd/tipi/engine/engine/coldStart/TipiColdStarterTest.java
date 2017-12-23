@@ -58,16 +58,16 @@ public class TipiColdStarterTest extends TipiEngineTest {
                 Thread.sleep(100);
                 end = txTemplate.txWith(s -> {
                     DbActivity g1a2 = activityRepository.findOne(ColdGroup1Activity2.id);
-                        if ((g1a2 != null)
-                                &&
-                                g1a2.getState() == ActivityState.ERROR
-                                &&
-                                !g1a2.isRequestEndExecution()) {
+                    if ((g1a2 != null)
+                            &&
+                            g1a2.getState() == ActivityState.ERROR
+                            &&
+                            !g1a2.isRequestEndExecution()) {
 
-                            log.info(g1a2);
-                            return Boolean.TRUE;
-                        }
-                        return Boolean.FALSE;
+                        log.info(g1a2);
+                        return Boolean.TRUE;
+                    }
+                    return Boolean.FALSE;
 
                 });
             }
@@ -92,7 +92,6 @@ public class TipiColdStarterTest extends TipiEngineTest {
             final DbActivity g1a2 = activityRepository.findOne(ColdGroup1Activity2.id);
             g1a2.setState(ActivityState.EXECUTING);
             g1a2.setRequestEndExecution(false);
-
         });
         ColdGroup1Activity2.sendException = false;
 
@@ -212,9 +211,8 @@ public class TipiColdStarterTest extends TipiEngineTest {
             while (ColdGroup1Activity2.endStep.get() < 1) {
                 Thread.sleep(10);
             }
-            Assert.assertEquals(2, ColdGroup1Activity2.beginStep.get());
+            Assert.assertEquals(7, ColdGroup1Activity2.beginStep.get());
             Assert.assertEquals(1, ColdGroup1Activity2.endStep.get());
         }
     }
-
 }

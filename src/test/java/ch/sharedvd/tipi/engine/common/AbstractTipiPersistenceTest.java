@@ -12,6 +12,8 @@ import ch.sharedvd.tipi.engine.utils.QuantityFormatter;
 import ch.sharedvd.tipi.engine.utils.TxTemplate;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -27,6 +29,8 @@ import javax.persistence.EntityManager;
 }, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = "classpath:tipi-ut.properties")
 public abstract class AbstractTipiPersistenceTest extends AbstractSpringBootTruncaterTest {
+
+    private static final Logger log = LoggerFactory.getLogger(AbstractTipiPersistenceTest.class);
 
     @Autowired
     protected ActivityPersisterService activityPersisterService;
@@ -57,14 +61,18 @@ public abstract class AbstractTipiPersistenceTest extends AbstractSpringBootTrun
     }
 
     protected void waitWhileRunning(long pid, int maxWait) throws InterruptedException {
-        int loopWait = 10;
-        int maxLoop = maxWait / loopWait;
+        final int loopWait = 10;
+        final int maxLoop = maxWait / loopWait;
+        final int ONE_SECOND_COUNT = 1000 / loopWait;
 
         int count = 0;
         while (tipiFacade.isRunning(pid) && count < maxLoop) {
             Thread.sleep(loopWait);
             count++;
+            if (count % ONE_SECOND_COUNT == 0) {
+                log.info("Waiting on process=" + pid + " ...");
+            }
         }
-        Assert.assertFalse("Aborting wait on " + pid + " after " + QuantityFormatter.formatMillis(maxWait), tipiFacade.isRunning(pid));
+        Assert.assertFalse("Aborting wait on process=" + pid + " after " + QuantityFormatter.formatMillis(maxWait), tipiFacade.isRunning(pid));
     }
 }

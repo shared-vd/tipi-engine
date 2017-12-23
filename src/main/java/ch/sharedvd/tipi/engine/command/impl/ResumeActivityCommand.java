@@ -35,5 +35,4 @@ public class ResumeActivityCommand extends ActivityCommand {
 			LOGGER.info("Activity " + aActivity.getId() + " is not in a resumable state (" + aActivity.getState() + ")");
 		}
 	}
-
 }
