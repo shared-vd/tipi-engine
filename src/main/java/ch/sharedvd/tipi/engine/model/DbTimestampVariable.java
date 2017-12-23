@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.Transient;
 import java.util.Date;
 
-
 @Entity
 @DiscriminatorValue("timestamp")
 public class DbTimestampVariable extends DbVariable<Date> {

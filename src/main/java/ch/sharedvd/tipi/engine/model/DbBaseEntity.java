@@ -9,92 +9,92 @@ import java.util.Date;
 @MappedSuperclass
 public class DbBaseEntity implements Serializable {
 
-	private static final long serialVersionUID = 6734035143688829890L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipiEntitySeqGen")
     @SequenceGenerator(name = "tipiEntitySeqGen", sequenceName = "TP_SEQ")
     @Column(name = "ID")
-	private Long id;
+    private Long id;
 
     @Version
     @Column(name = "OPTLOCK")
-	private Integer version;
+    private Integer version;
 
     @Column(name = "DATE_CREATION")
     @Temporal(TemporalType.TIMESTAMP)
-	private Date creation;
+    private Date creation;
 
-	public DbBaseEntity() {
-		creation = new Date();
-	}
+    public DbBaseEntity() {
+        creation = new Date();
+    }
 
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Integer getVersion() {
-		return version;
-	}
-	public void setVersion(Integer aVersion) {
-		this.version = aVersion;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public Date getCreationDate() {
-		return creation;
-	}
-	public void setCreationDate(Date aCreation) {
-		this.creation = aCreation;
-	}
+    public Integer getVersion() {
+        return version;
+    }
 
-	@Override
-	public int hashCode() {
-		return (null == getId()) ? 0 : getId().hashCode();
-	}
+    public void setVersion(Integer aVersion) {
+        this.version = aVersion;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		DbBaseEntity other = (DbBaseEntity) obj;
-		if (getId() == null) {
-			return false;
-		}
-		else if (other.getId() == null) {
-			return false;
-		}
-		else {
-			return getId().equals(other.getId());
-		}
-	}
+    public Date getCreationDate() {
+        return creation;
+    }
 
-	@Override
-	public String toString() {
-		return toString("");
-	}
+    public void setCreationDate(Date aCreation) {
+        this.creation = aCreation;
+    }
 
-	protected String toString(String suffix) {
-		StringBuilder str = new StringBuilder();
-		str.append(getClass().getSimpleName());
-		str.append("(").append("id=").append(getId());
-		if (StringUtils.isNotBlank(suffix)) {
-			str.append(",").append(suffix);
-		}
-		str.append(")");
-		if (getCreationDate() == null) {
-			str.append("/new");
-		}
-		return str.toString();
-	}
+    @Override
+    public int hashCode() {
+        return (null == getId()) ? 0 : getId().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        DbBaseEntity other = (DbBaseEntity) obj;
+        if (getId() == null) {
+            return false;
+        } else if (other.getId() == null) {
+            return false;
+        } else {
+            return getId().equals(other.getId());
+        }
+    }
+
+
+    @Override
+    public String toString() {
+        return toString("");
+    }
+
+    protected String toString(String suffix) {
+        StringBuilder str = new StringBuilder();
+        str.append(getClass().getSimpleName());
+        str.append("(").append("id=").append(getId());
+        if (StringUtils.isNotBlank(suffix)) {
+            str.append(",").append(suffix);
+        }
+        str.append(")");
+        if (getCreationDate() == null) {
+            str.append("/new");
+        }
+        return str.toString();
+    }
 
 }

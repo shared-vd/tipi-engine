@@ -40,6 +40,7 @@ public abstract class DbVariable<T> extends DbBaseEntity {
     public DbActivity getOwner() {
         return owner;
     }
+
     public void setOwner(DbActivity activity) {
         this.owner = activity;
     }

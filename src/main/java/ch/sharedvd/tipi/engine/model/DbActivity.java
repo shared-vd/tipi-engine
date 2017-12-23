@@ -95,6 +95,7 @@ public class DbActivity extends DbBaseEntity {
     public DbTopProcess getProcess() {
         return process;
     }
+
     public void setProcess(DbTopProcess process) {
         this.process = process;
         if (process != null) {
@@ -105,6 +106,7 @@ public class DbActivity extends DbBaseEntity {
     public DbSubProcess getParent() {
         return parent;
     }
+
     public void setParent(DbSubProcess parent) {
         this.parent = parent;
     }
@@ -116,6 +118,7 @@ public class DbActivity extends DbBaseEntity {
         }
         return processName;
     }
+
     public void setProcessName(String processName) {
         this.processName = processName;
     }
@@ -123,6 +126,7 @@ public class DbActivity extends DbBaseEntity {
     public DbActivity getPrevious() {
         return previous;
     }
+
     public void setPrevious(DbActivity previous) {
         this.previous = previous;
     }
@@ -138,6 +142,7 @@ public class DbActivity extends DbBaseEntity {
     public int getNbRetryDone() {
         return nbRetryDone;
     }
+
     public void setNbRetryDone(int nbRetryDone) {
         this.nbRetryDone = nbRetryDone;
     }
@@ -145,6 +150,7 @@ public class DbActivity extends DbBaseEntity {
     public String getFqn() {
         return fqn;
     }
+
     public void setFqn(String name) {
         this.fqn = name;
     }
@@ -157,6 +163,7 @@ public class DbActivity extends DbBaseEntity {
     public Date getDateStartExecute() {
         return dateStartExecute;
     }
+
     public void setDateStartExecute(Date aDateStartExecute) {
         this.dateStartExecute = aDateStartExecute;
     }
@@ -182,6 +189,7 @@ public class DbActivity extends DbBaseEntity {
     public Date getDateEndActivity() {
         return dateEndActivity;
     }
+
     public void setDateEndActivity(Date dateEndActivity) {
         this.dateEndActivity = dateEndActivity;
     }
@@ -189,6 +197,7 @@ public class DbActivity extends DbBaseEntity {
     public ActivityState getState() {
         return state;
     }
+
     public void setState(ActivityState state) {
         this.state = state;
     }
@@ -196,6 +205,7 @@ public class DbActivity extends DbBaseEntity {
     public String getCorrelationId() {
         return correlationId;
     }
+
     public void setCorrelationId(String aCorrelationId) {
         correlationId = aCorrelationId;
     }
@@ -203,6 +213,7 @@ public class DbActivity extends DbBaseEntity {
     public String getCallstack() {
         return callstack;
     }
+
     public void setCallstack(String cs) {
         if (cs != null && cs.length() > 2000) {
             this.callstack = cs.substring(0, 2000);
@@ -214,12 +225,11 @@ public class DbActivity extends DbBaseEntity {
     private Map<String, DbVariable<?>> getVariables() {
         return variables;
     }
+
     @SuppressWarnings("unused")
     private void setVariables(Map<String, DbVariable<?>> variables) {
         this.variables = variables;
     }
-
-
 
 
     // === Transient ===

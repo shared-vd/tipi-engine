@@ -21,6 +21,7 @@ public class DbSubProcess extends DbActivity {
     public boolean isExecuted() {
         return executed;
     }
+
     public void setExecuted(boolean aExecuted) {
         executed = aExecuted;
     }
@@ -33,6 +34,7 @@ public class DbSubProcess extends DbActivity {
     public Date getDateStartTerminate() {
         return dateStartTerminate;
     }
+
     public void setDateStartTerminate(Date aDateStartTerminate) {
         this.dateStartTerminate = aDateStartTerminate;
     }
@@ -45,6 +47,7 @@ public class DbSubProcess extends DbActivity {
     public Date getDateEndTerminate() {
         return dateEndTerminate;
     }
+
     public void setDateEndTerminate(Date aDateEndTerminate) {
         this.dateEndTerminate = aDateEndTerminate;
     }

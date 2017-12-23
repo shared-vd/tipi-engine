@@ -7,21 +7,21 @@ import java.sql.Blob;
 @Entity
 public abstract class DbBlobVariable<T> extends DbVariable<T> {
 
-	protected DbBlobVariable() {
-	}
+    protected DbBlobVariable() {
+    }
 
-	protected DbBlobVariable(String key) {
-		super(key);
-	}
+    protected DbBlobVariable(String key) {
+        super(key);
+    }
 
-	private Blob blob;
+    private Blob blob;
 
-	@Column(name = "BLOB_VALUE")
-	public Blob getBlob() {
-		return blob;
-	}
+    @Column(name = "BLOB_VALUE")
+    public Blob getBlob() {
+        return blob;
+    }
 
-	public void setBlob(Blob b) {
-		blob = b;
-	}
+    public void setBlob(Blob b) {
+        blob = b;
+    }
 }
