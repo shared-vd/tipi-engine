@@ -13,8 +13,6 @@ import org.junit.Test;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-;
-
 public class ActivityRunner_Activity_Test extends TipiEngineTest {
 
     public static class ActTstSubProcess extends TopProcess {

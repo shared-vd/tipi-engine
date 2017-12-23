@@ -1,7 +1,7 @@
 package ch.sharedvd.tipi.engine.model;
 
 import ch.sharedvd.tipi.engine.client.VariableMap;
-import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
+import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.infos.TipiActivityInfos;
 import ch.sharedvd.tipi.engine.utils.InputStreamHolder;
 import org.junit.Assert;
@@ -10,9 +10,7 @@ import org.junit.Test;
 import java.io.InputStream;
 import java.time.LocalDate;
 
-;
-
-public class ActivityVariableTest extends AbstractTipiPersistenceTest {
+public class ActivityVariableTest extends TipiEngineTest {
 
     @Test
     public void putGetVariables() throws Exception {

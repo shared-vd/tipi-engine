@@ -56,7 +56,7 @@ public class ActivityRunningService {
 
     @SuppressWarnings("unchecked")
     public List<String> getTopProcessNamesWithExecutingActivities() {
-        return activityRepository.findTopProcessNamesByStateAndReqEnd(ActivityState.EXECUTING, false);
+        return activityRepository.findTopProcessNamesByStateAndReqEnd(ActivityState.EXECUTING.name());
     }
 
     // package

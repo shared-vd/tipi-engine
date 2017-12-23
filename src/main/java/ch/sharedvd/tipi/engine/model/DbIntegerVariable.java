@@ -7,40 +7,33 @@ import javax.persistence.Transient;
 
 @Entity
 @DiscriminatorValue("int")
-public class DbIntegerVariable extends DbSimpleVariable<Integer> {
+public class DbIntegerVariable extends DbVariable<Integer> {
 
-	private static final long serialVersionUID = -3784790510891895361L;
+    private static final long serialVersionUID = -3784790510891895361L;
 
-	protected DbIntegerVariable() {
-	}
+    @Column(name = "INT_VALUE")
+    protected Integer intValue; // La valeur
 
-	public DbIntegerVariable(String key, Integer value) {
-		super(key, value);
-	}
+    protected DbIntegerVariable() {
+    }
 
-	/**
-	 * Nécessaire pour que Hibernate crée une colonne de type LONG et pas INT (mutualisation avec DbLongVariable)
-	 */
-	@Column(name="LONG_VALUE")
-	public Long getLongValue() {
-		return (long)value;
-	}
-	public void setLongValue(Long v) {
-		if (v != null) {
-			value = v.intValue();
-		}
-		else {
-			value = null;
-		}
-	}
-	
-	@Transient
-	public Integer getIntValue() {
-		return value;
-	}
-	@Transient
-	public void setIntValue(Integer i) {
-		value = i;
-	}
+    public DbIntegerVariable(String key, Integer value) {
+        super(key);
+        this.intValue = value;
+    }
+
+    @Transient
+    @Override
+    public Integer getValue() {
+        return intValue;
+    }
+
+    public Integer getIntValue() {
+        return intValue;
+    }
+
+    public void setIntValue(Integer i) {
+        intValue = i;
+    }
 
 }

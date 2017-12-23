@@ -42,7 +42,7 @@ public class TipiAnnotationClassRegistrarTest {
 
         TipiRegistry registry = new TipiRegistryImpl();
         AnnotationActivityRegistrar registrar = new AnnotationActivityRegistrar();
-        registrar.setaPackage("ch.vd.registre.tipi.client");
+        registrar.setaPackage("ch.sharedvd.tipi.engine.client");
         registrar.setRegistry(registry);
         registrar.afterPropertiesSet();
 
@@ -79,7 +79,7 @@ public class TipiAnnotationClassRegistrarTest {
 
         TipiRegistry registry = new TipiRegistryImpl();
         AnnotationActivityRegistrar registrar = new AnnotationActivityRegistrar();
-        registrar.setaPackage("ch.vd.registre.tipi.client");
+        registrar.setaPackage("ch.sharedvd.tipi.engine.client");
         registrar.setRegistry(registry);
         registrar.setExcludeFilters(Arrays.asList(new AssignableTypeFilter(AnnotedTopProcess2.class)));
         registrar.afterPropertiesSet();

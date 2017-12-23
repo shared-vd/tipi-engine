@@ -11,8 +11,6 @@ import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-;
-
 public class TipiColdStarterTest extends TipiEngineTest {
 
     private static final Logger log = Logger.getLogger(TipiColdStarterTest.class);

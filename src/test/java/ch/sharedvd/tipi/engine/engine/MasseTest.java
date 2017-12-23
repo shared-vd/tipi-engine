@@ -13,8 +13,6 @@ import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-;
-
 public class MasseTest extends TipiEngineTest {
 
     private static final Logger log = Logger.getLogger(MasseTest.class);

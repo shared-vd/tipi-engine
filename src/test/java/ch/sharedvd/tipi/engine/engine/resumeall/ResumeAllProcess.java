@@ -12,8 +12,6 @@ public class ResumeAllProcess extends TopProcess {
         protected void init() {
             setDeleteWhenFinished(false);
         }
-
-        ;
     };
 
     @Override

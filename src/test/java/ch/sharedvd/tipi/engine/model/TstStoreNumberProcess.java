@@ -14,8 +14,6 @@ public class TstStoreNumberProcess extends TopProcess {
         protected void init() {
             setDeleteWhenFinished(false);
         }
-
-        ;
     };
 
     @Autowired

@@ -15,8 +15,6 @@ import org.junit.Test;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-;
-
 public class ThreadLimitationTest extends TipiEngineTest {
 
     public static class ThreadLimitationTestProcess extends TopProcess {
@@ -29,8 +27,6 @@ public class ThreadLimitationTest extends TipiEngineTest {
             protected void init() {
                 setDeleteWhenFinished(false);
             }
-
-            ;
         };
 
         @Override

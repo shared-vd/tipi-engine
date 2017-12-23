@@ -10,6 +10,7 @@ import ch.sharedvd.tipi.engine.utils.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +24,11 @@ public class EndActivityCommand extends ActivityCommand {
 
     @Override
     public void execute() {
-
-
         final DbActivity finishedActivity = getModel();
         // Pas supprimée pour une autre raison?
         if (finishedActivity != null) {
             if (!finishedActivity.isRequestEndExecution()) {
-                LOGGER.error("Activité " + finishedActivity + " en reqEnd = false!");
+                LOGGER.error("Activité " + finishedActivity.getId() + " en reqEnd = false!");
                 return;
             }
 
@@ -168,7 +167,6 @@ public class EndActivityCommand extends ActivityCommand {
 
     private boolean areAllOtherChildrenFinished(DbSubProcess aSub, DbActivity finishedActivity) {
         final long begin = System.currentTimeMillis();
-        Assert.fail("");
 
 //        DbActivityCriteria crit = new DbActivityCriteria();
 //        // Les activités qui sont enfants de SubProcess
@@ -188,30 +186,29 @@ public class EndActivityCommand extends ActivityCommand {
 //        crit.restrictSelect(crit.id());
 //        crit.activateRowCount();
 
-//        if (LOGGER.isTraceEnabled()) {
-//            LOGGER.trace("HQL: " + crit.buildHqlQuery().getHqlQuery());
-//        }
-//        final Long notFinished = hqlBuilder.getSingleResult(Long.class, crit);
+        String hql = "" +
+                "select count(*) " +
+                "from DbActivity a " +
+                "where a.parent = :parent " +
+                "   and a <> :act " +
+                "   and not (a.state = :state and a.requestEndExecution = false)";
+
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("HQL: " + hql);
+        }
+        final Query q = em.createQuery(hql);
+        q.setParameter("parent", aSub);
+        q.setParameter("act", finishedActivity);
+        q.setParameter("state", ActivityState.FINISHED);
+        final Long notFinished = (Long) q.getSingleResult();
 
         final long diff = System.currentTimeMillis() - begin;
         if (diff > 100 && LOGGER.isDebugEnabled()) {
             LOGGER.debug("Temps: " + diff + "[ms] pour savoir s'il reste des children a !FINISHED de " + aSub.getId() + "/" + aSub.getFqn());
         }
 
-        //return notFinished == 0;
-        return true;
+        return notFinished == 0;
     }
-
-//	private boolean areAllChildrenFinished_OLD(List<DbActivity> aChildren) {
-//		boolean allFinished = true;
-//		for (DbActivity act : aChildren) {
-//			if (!act.isTerminated()) {
-//				allFinished = false;
-//				break;
-//			}
-//		}
-//		return allFinished;
-//	}
 
     @SuppressWarnings("unchecked")
     private List<DbActivity> getNexts(DbActivity aAct) {
@@ -226,8 +223,17 @@ public class EndActivityCommand extends ActivityCommand {
 //        }
 //        List<DbActivity> nexts = hqlBuilder.getResultList(crit);
 //        return nexts;
-        Assert.fail("");
-        return null;
+
+        String hql = "" +
+                "from DbActivity a " +
+                "where a.previous = :previous " +
+                "   and a.state = :state";
+
+        final Query q = em.createQuery(hql);
+        q.setParameter("previous", aAct);
+        q.setParameter("state", ActivityState.INITIAL);
+        final List<DbActivity> nexts = q.getResultList();
+        return nexts;
     }
 
 }

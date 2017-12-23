@@ -13,8 +13,6 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-;
-
 /**
  * Cette classe teste le comportement du paramètre <i>nbMaxTopConcurrent</i> des top-process Tipi.
  */

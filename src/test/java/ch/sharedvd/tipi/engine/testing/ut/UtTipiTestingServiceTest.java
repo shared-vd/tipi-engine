@@ -5,8 +5,6 @@ import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import org.junit.Assert;
 import org.junit.Test;
 
-;
-
 public class UtTipiTestingServiceTest extends TipiEngineTest {
 
     @Test

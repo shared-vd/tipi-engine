@@ -3,8 +3,6 @@ package ch.sharedvd.tipi.engine.engine.multiLevel;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import org.junit.Test;
 
-;
-
 public class MultiLevelTest extends TipiEngineTest {
 
     @Test

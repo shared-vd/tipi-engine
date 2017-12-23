@@ -6,16 +6,10 @@ import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 
 public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest {
-
-    @Autowired
-    @Qualifier("hibernateDialect")
-    private String hibernateDialect;
 
     @Override
     protected void doLoadDatabase() throws Exception {
@@ -82,9 +76,7 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
     @Test
     public void createCriteria_All() throws Exception {
         txTemplate.txWithout(s -> {
-            ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR);
-            //cmd.setPersist(persist);
-            cmd.setDialect(hibernateDialect);
+            final ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR);
 
             List<DbActivity> actis = cmd.getActivities();
             Assert.assertEquals(3, actis.size());
@@ -99,9 +91,7 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
     public void createCriteria_Bla() throws Exception {
 
         txTemplate.txWithout(s -> {
-            ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR, "bla");
-            //cmd.set(persist);
-            cmd.setDialect(hibernateDialect);
+            final ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR, "bla");
 
             List<DbActivity> actis = cmd.getActivities();
             Assert.assertEquals(1, actis.size());
@@ -116,9 +106,7 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
     public void createCriteria_Bli() throws Exception {
 
         txTemplate.txWithout(s -> {
-            ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR, "bli");
-            //cmd.setPersist(persist);
-            cmd.setDialect(hibernateDialect);
+            final ResumeAllActivitiesCommand cmd = new ResumeAllActivitiesCommand(ActivityState.ERROR, "bli");
 
             List<DbActivity> actis = cmd.getActivities();
             Assert.assertEquals(2, actis.size());

@@ -11,8 +11,6 @@ import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-;
-
 public class MaxConcurrentTopProcessTest extends TipiEngineTest {
 
     public static class MyProcess extends TopProcess {

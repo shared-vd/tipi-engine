@@ -6,31 +6,29 @@ import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.DbActivity;
-import org.hibernate.SessionFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.persistence.EntityManager;
 
 public class SessionClearTest extends TipiEngineTest {
 
     public static class SessionClearProcess extends TopProcess {
 
         @Autowired
-        private SessionFactory sessionFactory;
+        private EntityManager em;
 
         public static final TopProcessMetaModel meta = new TopProcessMetaModel(SessionClearProcess.class, 2, -1, 10, null) {
             @Override
             protected void init() {
                 setDeleteWhenFinished(false);
             }
-
-            ;
         };
 
         @Override
         protected ActivityResultContext execute() throws Exception {
-
-            sessionFactory.getCurrentSession().clear();
+            em.clear();
 
             facade.putVariable("bla", "bli");
 

@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.persistence.EntityManager;
+
 public abstract class Command {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Command.class);
@@ -21,6 +23,8 @@ public abstract class Command {
 
 	@Autowired
 	protected PlatformTransactionManager txManager;
+	@Autowired
+	protected EntityManager em;
 
 	@Autowired
 	protected TopProcessGroupManager groupManager;

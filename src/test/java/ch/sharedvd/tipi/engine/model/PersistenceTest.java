@@ -9,14 +9,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
-;
-
 public class PersistenceTest extends AbstractTipiPersistenceTest {
-
-    @Override
-    public void onSetUp() throws Exception {
-        super.onSetUp();
-    }
 
     @Test
     public void processName_is_helpful_in_ui() {

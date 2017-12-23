@@ -13,8 +13,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-;
-
 public class AbortingTest extends TipiEngineTest {
 
     @Test

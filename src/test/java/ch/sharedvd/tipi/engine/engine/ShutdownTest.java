@@ -7,15 +7,12 @@ import ch.sharedvd.tipi.engine.command.CommandConsumer;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-;
-
-@Ignore
+//@Ignore
 public class ShutdownTest extends TipiEngineTest {
 
     @Autowired

@@ -23,8 +23,8 @@ public interface ActivityRepository extends JpaRepository<DbActivity, Long> {
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT p.FQN FROM TP_ACTIVITY a "
             + "	JOIN TP_ACTIVITY p ON (p.ID = a.PROCESS_FK OR p.ID = a.ID) "
-            + "WHERE p.DTYPE='process' AND a.STATE = ?1 AND a.REQUEST_END_EXECUTION = ?2")
-    List<String> findTopProcessNamesByStateAndReqEnd(ActivityState state, boolean reqEnd);
+            + "WHERE p.DTYPE='process' AND a.STATE = ?1 AND a.REQUEST_END_EXECUTION = false")
+    List<String> findTopProcessNamesByStateAndReqEnd(String state);
 
     List<DbActivity> findByParentId(long parentId);
 

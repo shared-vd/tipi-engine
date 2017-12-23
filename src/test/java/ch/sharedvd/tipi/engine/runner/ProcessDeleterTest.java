@@ -7,8 +7,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-;
-
 public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
 
     private long PID = -1L;

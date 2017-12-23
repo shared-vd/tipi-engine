@@ -8,8 +8,6 @@ import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import org.junit.Assert;
 import org.junit.Test;
 
-;
-
 public class ProcessWithoutChildrenTest extends TipiEngineTest {
 
     public static class ProcessWithoutChildren extends TopProcess {
