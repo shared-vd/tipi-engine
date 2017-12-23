@@ -47,9 +47,8 @@ public class RunExecutingActivitiesCommand extends Command {
 		}
 
 		final long diff = System.currentTimeMillis() - begin;
-
 		if (LOGGER.isDebugEnabled()) {
-			//TODO DGO registry existe plus	LOGGER.debug("Places dans " + nbGroups + " / " + registry.getAllTopProcesses().size() + " groupes. Started: " + nbActivitiesStarted + String.format(" (Duree: %.3f [secs])", (diff / 1000.0)));
+			LOGGER.debug("Places dans " + nbGroups + " / groupes. Started: " + nbActivitiesStarted + String.format(" (Duree: %.3f [secs])", (diff / 1000.0)));
 		}
 	}
 

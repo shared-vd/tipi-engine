@@ -121,7 +121,9 @@ public class ConnectionCapManager {
     }
 
     public ConnectionCap getCap(String name) {
-        return caps.get(name);
+        final ConnectionCap cap = caps.get(name);
+        Assert.notNull(cap, "Cap not found: " + name);
+        return cap;
     }
 
     private int getFreeConnections(ConnectionCap cap) {

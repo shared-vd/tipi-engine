@@ -14,16 +14,18 @@ import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import tipiut.config.TipiUtDatabaseConfig;
+import tipiut.config.TipiUtTestingConfig;
 
 import javax.persistence.EntityManager;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {
         TipiTestingApplication.class,
-        TipiUtDatabaseConfig.class
+        TipiUtTestingConfig.class
 }, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@TestPropertySource(locations = "classpath:tipi-ut.properties")
 public abstract class AbstractTipiPersistenceTest extends AbstractSpringBootTruncaterTest {
 
     @Autowired

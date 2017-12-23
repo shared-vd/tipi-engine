@@ -25,11 +25,9 @@ public class TipiStarterImpl implements TipiStarter, Startable, InitializingBean
     @Autowired
     protected ConnectionCapManager connectionCapManager;
 
-    private String tipiContext = "TBD";
-
     private ApplicationContext applicationContext;
 
-    private Boolean autostart;
+    private Boolean startAtBoot;
 
     private boolean alreadyStartedBySpring = false;
 
@@ -41,7 +39,7 @@ public class TipiStarterImpl implements TipiStarter, Startable, InitializingBean
                 // il ne faut pas démarrer tipi.
                 ((ContextRefreshedEvent) applicationEvent).getApplicationContext() == applicationContext) {
 
-            if (autostart == null || autostart) {
+            if (startAtBoot == null || startAtBoot) {
                 boolean pauseGroups = false;
 
                 String value = System.getProperty("tipi.pause");
@@ -91,7 +89,7 @@ public class TipiStarterImpl implements TipiStarter, Startable, InitializingBean
 
     @Override
     public void destroy() throws Exception {
-        LOGGER.info("Destroy de TiPi - " + tipiContext);
+        LOGGER.info("Destroying TiPi");
         commandConsumer.destroy();
         topProcessGroupManager.destroy();
     }
@@ -107,20 +105,21 @@ public class TipiStarterImpl implements TipiStarter, Startable, InitializingBean
     }
 
     public void start(boolean pauseGroups) throws Exception {
-        LOGGER.info("Démarrage de TiPi - " + tipiContext);
+        LOGGER.info("Starting TiPi ...");
         topProcessGroupManager.start();
         commandConsumer.start();
+        LOGGER.info("TiPi started and ready to execute.");
     }
 
     @Override
     public void stop() throws Exception {
-        LOGGER.info("Arret de TiPi - " + tipiContext);
+        LOGGER.info("Stopping TiPi ...");
         topProcessGroupManager.stop();
         commandConsumer.destroy();
     }
 
-    public void setAutostart(Boolean autostart) {
-        this.autostart = autostart;
+    public void setStartAtBoot(Boolean startAtBoot) {
+        this.startAtBoot = startAtBoot;
     }
 
     @Override

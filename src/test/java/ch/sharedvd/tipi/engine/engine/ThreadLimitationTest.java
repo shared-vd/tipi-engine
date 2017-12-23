@@ -47,21 +47,18 @@ public class ThreadLimitationTest extends TipiEngineTest {
         public static AtomicInteger begin = new AtomicInteger();
         public static AtomicInteger end = new AtomicInteger();
 
-        public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity1.class, new String[]{"DB_ORACLE_PROD", "DB_HOST"}, null);
+        public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity1.class, new String[]{"ESB", "MAINFRAME_DB"}, null);
 
         @Override
         protected ActivityResultContext execute() throws Exception {
-
             begin.incrementAndGet();
 
             int value = count.get();
-
             while (count.get() <= value) {
                 Thread.sleep(10);
             }
 
             end.incrementAndGet();
-
             return new FinishedActivityResultContext();
         }
     }
@@ -73,21 +70,18 @@ public class ThreadLimitationTest extends TipiEngineTest {
         public static AtomicInteger end = new AtomicInteger();
 
         public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity2.class,
-                new String[]{TestingConnectionType.ESB.name(), TestingConnectionType.UPI_WS.name()}, null);
+                new String[]{TestingConnectionType.ESB.name(), TestingConnectionType.WS.name()}, null);
 
         @Override
         protected ActivityResultContext execute() throws Exception {
-
             begin.incrementAndGet();
 
             int value = count.get();
-
             while (count.get() <= value) {
                 Thread.sleep(10);
             }
 
             end.incrementAndGet();
-
             return new FinishedActivityResultContext();
         }
     }
@@ -99,50 +93,41 @@ public class ThreadLimitationTest extends TipiEngineTest {
         public static AtomicInteger end = new AtomicInteger();
 
         public static final ActivityMetaModel meta = new ActivityMetaModel(TLTActivity3.class,
-                new String[]{TestingConnectionType.DB_HOST.name(), TestingConnectionType.UPI_WS.name()}, null);
+                new String[]{TestingConnectionType.MAINFRAME_DB.name(), TestingConnectionType.WS.name()}, null);
 
         @Override
         protected ActivityResultContext execute() throws Exception {
-
             begin.incrementAndGet();
 
             int value = count.get();
-
             while (count.get() <= value) {
                 Thread.sleep(10);
             }
 
             end.incrementAndGet();
-
             return new FinishedActivityResultContext();
         }
     }
 
     @Test
     public void limitedByConnectionTest() throws Exception {
-
-        tipiFacade.setMaxConnections(TestingConnectionType.DB_ORACLE_PROD.name(), 1);
-        tipiFacade.setMaxConnections(TestingConnectionType.DB_HOST.name(), 1);
-        tipiFacade.setMaxConnections(TestingConnectionType.ESB.name(), 1);
-        tipiFacade.setMaxConnections(TestingConnectionType.UPI_WS.name(), 1);
-
         tipiFacade.launch(ThreadLimitationTestProcess.meta, null);
-        while (TLTActivity1.begin.get() < 1) {    // ok: DB_ORACLE_PROD et DB_HOST sont libres
+        while (TLTActivity1.begin.get() < 1) {    // ok: DB_ORACLE_PROD et MAINFRAME_DB sont libres
             Thread.sleep(10);
         }
         while (TLTActivity2.begin.get() < 1) {    // ok: ESB et UPI_WS sont libres
             Thread.sleep(10);
         }
-        Assert.assertEquals(0, TLTActivity3.begin.get());    // bloqué: ni DB_HOST ni UPI_WS n'est libre
+        Assert.assertEquals(0, TLTActivity3.begin.get());    // bloqué: ni MAINFRAME_DB ni UPI_WS n'est libre
         Assert.assertEquals(0, TLTActivity1.end.get());
         Assert.assertEquals(0, TLTActivity2.end.get());
         Assert.assertEquals(0, TLTActivity3.end.get());
 
-        TLTActivity1.count.incrementAndGet();        // Termine l'activité 1 => libère DB_ORACLE_PROD et DB_HOST
+        TLTActivity1.count.incrementAndGet();        // Termine l'activité 1 => libère DB_ORACLE_PROD et MAINFRAME_DB
 
         Assert.assertEquals(1, TLTActivity1.begin.get());
         Assert.assertEquals(1, TLTActivity2.begin.get());
-        Assert.assertEquals(0, TLTActivity3.begin.get());    // bloqué: DB_HOST est libre, UPI_WS n'est pas libre
+        Assert.assertEquals(0, TLTActivity3.begin.get());    // bloqué: MAINFRAME_DB est libre, UPI_WS n'est pas libre
         while (TLTActivity1.end.get() < 1) {
             Thread.sleep(10);
         }
@@ -153,7 +138,7 @@ public class ThreadLimitationTest extends TipiEngineTest {
 
         Assert.assertEquals(1, TLTActivity1.begin.get());
         Assert.assertEquals(1, TLTActivity2.begin.get());
-        while (TLTActivity3.begin.get() < 1) {    // ok: DB_HOST et UPI_WS sont libres
+        while (TLTActivity3.begin.get() < 1) {    // ok: MAINFRAME_DB et UPI_WS sont libres
             Thread.sleep(10);
         }
         Assert.assertEquals(1, TLTActivity1.end.get());
