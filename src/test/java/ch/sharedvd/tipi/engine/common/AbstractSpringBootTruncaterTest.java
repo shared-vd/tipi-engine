@@ -7,6 +7,7 @@ import org.hibernate.boot.spi.MetadataImplementor;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -18,6 +19,12 @@ import javax.sql.DataSource;
 public abstract class AbstractSpringBootTruncaterTest implements ApplicationContextAware {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractSpringBootTruncaterTest.class);
+
+    @BeforeClass
+    public static void beforeClass() {
+        // Must be set very early, so tipi-ut.properties is not an option
+        System.setProperty("spring.main.banner-mode", "off");
+    }
 
     private boolean onSetUpWasRun = false;
     private HibernateMetaDataTruncater truncater;
