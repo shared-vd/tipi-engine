@@ -121,7 +121,31 @@
                     <!-- Tests were already run during prepare phase -->
                     <releaseProfiles>not</releaseProfiles>
                     <tagNameFormat>@{project.version}</tagNameFormat>
-                    <arguments>-Dmaven.javadoc.skip=true</arguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
         </plugins>
@@ -129,13 +153,13 @@
 
     <distributionManagement>
         <repository>
-            <id>sonatype</id>
-            <name>Sonatype Repository</name>
+            <id>ossrh</id>
+            <name>OSSRH Sonatype Repository</name>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
         <snapshotRepository>
-            <id>sonatype</id>
-            <name>Sonatype Snapshots</name>
+            <id>ossrh</id>
+            <name>OSSRH Sonatype Snapshots</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <uniqueVersion>true</uniqueVersion>
         </snapshotRepository>
