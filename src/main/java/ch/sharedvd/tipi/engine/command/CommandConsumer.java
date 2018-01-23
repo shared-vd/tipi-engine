@@ -6,7 +6,7 @@ import ch.sharedvd.tipi.engine.command.impl.StopConsumerCommand;
 import ch.sharedvd.tipi.engine.utils.BeanAutowirer;
 import ch.sharedvd.tipi.engine.utils.QuantityFormatter;
 import ch.sharedvd.tipi.engine.utils.Startable;
-import ch.sharedvd.tipi.engine.utils.TxTemplate;
+import ch.sharedvd.tipi.engine.utils.TixTemplate;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class CommandConsumer implements Startable, Runnable {
     private BeanAutowirer autowirer;
 
     @Autowired
-    private TxTemplate tt;
+    private TixTemplate tt;
 
     private boolean resumeTipiAtBoot = true;
 

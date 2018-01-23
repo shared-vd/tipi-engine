@@ -10,7 +10,7 @@ import ch.sharedvd.tipi.engine.runner.ConnectionCapManager;
 import ch.sharedvd.tipi.engine.runner.TopProcessGroupManager;
 import ch.sharedvd.tipi.engine.utils.Assert;
 import ch.sharedvd.tipi.engine.utils.ResultListWithCount;
-import ch.sharedvd.tipi.engine.utils.TxTemplate;
+import ch.sharedvd.tipi.engine.utils.TixTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.List;
 public class ActivityQueryService {
 
     @Autowired
-    private TxTemplate txTemplate;
+    private TixTemplate txTemplate;
     @Autowired
     private ActivityRepository activityRepository;
 

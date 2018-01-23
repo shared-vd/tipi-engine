@@ -8,7 +8,7 @@ import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
-import ch.sharedvd.tipi.engine.utils.TxTemplate;
+import ch.sharedvd.tipi.engine.utils.TixTemplate;
 import org.hibernate.SessionException;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ public class TipiTestingService {
     @Autowired
     private ActivityRepository activityRepository;
     @Autowired
-    private TxTemplate txTemplate;
+    private TixTemplate txTemplate;
     @Autowired
     private CommandConsumer commandConsumer;
 

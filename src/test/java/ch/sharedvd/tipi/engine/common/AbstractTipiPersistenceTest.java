@@ -9,7 +9,7 @@ import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
 import ch.sharedvd.tipi.engine.runner.ActivityRunningService;
 import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import ch.sharedvd.tipi.engine.utils.QuantityFormatter;
-import ch.sharedvd.tipi.engine.utils.TxTemplate;
+import ch.sharedvd.tipi.engine.utils.TixTemplate;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public abstract class AbstractTipiPersistenceTest extends AbstractSpringBootTrun
     protected ActivityRepository activityRepository;
 
     @Autowired
-    protected TxTemplate txTemplate;
+    protected TixTemplate txTemplate;
 
     @Autowired
     protected EntityManager em;
@@ -56,7 +56,7 @@ public abstract class AbstractTipiPersistenceTest extends AbstractSpringBootTrun
     protected TipiQueryFacade tipiQueryFacade;
 
     @Override
-    public TxTemplate getTxTemplate() {
+    public TixTemplate getTxTemplate() {
         return txTemplate;
     }
 

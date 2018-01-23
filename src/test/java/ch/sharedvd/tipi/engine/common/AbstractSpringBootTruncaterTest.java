@@ -2,7 +2,7 @@ package ch.sharedvd.tipi.engine.common;
 
 import ch.qos.logback.classic.Level;
 import ch.sharedvd.tipi.engine.model.DbActivity;
-import ch.sharedvd.tipi.engine.utils.TxTemplate;
+import ch.sharedvd.tipi.engine.utils.TixTemplate;
 import org.hibernate.boot.spi.MetadataImplementor;
 import org.junit.After;
 import org.junit.Assert;
@@ -24,7 +24,7 @@ public abstract class AbstractSpringBootTruncaterTest implements ApplicationCont
     private ApplicationContext applicationContext;
 
     private DataSource dataSource;
-    protected abstract TxTemplate getTxTemplate();
+    protected abstract TixTemplate getTxTemplate();
 
     public ApplicationContext getApplicationContext() {
         return applicationContext;

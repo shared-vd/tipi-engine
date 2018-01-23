@@ -20,7 +20,7 @@ import ch.sharedvd.tipi.engine.retry.RetryContext;
 import ch.sharedvd.tipi.engine.retry.RetryPolicy;
 import ch.sharedvd.tipi.engine.runner.stats.TipiThreadStats;
 import ch.sharedvd.tipi.engine.utils.Assert;
-import ch.sharedvd.tipi.engine.utils.TxTemplate;
+import ch.sharedvd.tipi.engine.utils.TixTemplate;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ public class ActivityRunner implements Runnable {
 
     private final long activityId;
     private final ActivityMetaModel meta;
-    private TxTemplate tt;
+    private TixTemplate tt;
 
     public ActivityRunner(ActivityRunnerContext context, long actiId, ActivityMetaModel meta) {
         this.activityId = actiId;
@@ -60,7 +60,7 @@ public class ActivityRunner implements Runnable {
         this.activityRepository = context.activityRepository;
         this.commandHelperService = context.commandHelperService;
         this.topProcessGroupLauncher = context.launcher;
-        this.tt = new TxTemplate(context.txManager);
+        this.tt = new TixTemplate(context.txManager);
     }
 
     public long getActivityId() {

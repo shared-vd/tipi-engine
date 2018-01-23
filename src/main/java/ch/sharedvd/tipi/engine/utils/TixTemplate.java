@@ -13,11 +13,11 @@ import org.springframework.util.Assert;
  * Classe identique au Transactiontemplate de Spring mais permettant un traitement
  * de TOUTES les exceptions pas seulement les Runtime
  */
-public class TxTemplate {
+public class TixTemplate {
 
     private final PlatformTransactionManager transactionManager;
 
-    public TxTemplate(PlatformTransactionManager txMgr) {
+    public TixTemplate(PlatformTransactionManager txMgr) {
         Assert.notNull(txMgr);
         transactionManager = txMgr;
     }

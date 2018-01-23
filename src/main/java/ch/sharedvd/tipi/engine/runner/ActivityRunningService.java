@@ -17,7 +17,7 @@ import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
 import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import ch.sharedvd.tipi.engine.utils.Assert;
-import ch.sharedvd.tipi.engine.utils.TxTemplate;
+import ch.sharedvd.tipi.engine.utils.TixTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class ActivityRunningService {
     @Autowired
     private EntityManager em;
     @Autowired
-    private TxTemplate txTemplate;
+    private TixTemplate txTemplate;
 
     @SuppressWarnings("unchecked")
     public List<String> getTopProcessNamesWithExecutingActivities() {

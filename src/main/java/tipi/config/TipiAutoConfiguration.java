@@ -14,7 +14,7 @@ import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.runner.*;
 import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import ch.sharedvd.tipi.engine.utils.BeanAutowirer;
-import ch.sharedvd.tipi.engine.utils.TxTemplate;
+import ch.sharedvd.tipi.engine.utils.TixTemplate;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -29,8 +29,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class TipiAutoConfiguration {
 
     @Bean
-    public TxTemplate txTemplate(PlatformTransactionManager ptm) {
-        return new TxTemplate(ptm);
+    public TixTemplate txTemplate(PlatformTransactionManager ptm) {
+        return new TixTemplate(ptm);
     }
 
     @Bean
