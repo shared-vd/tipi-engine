@@ -8,6 +8,8 @@
     <packaging>jar</packaging>
 
     <name>TiPi - Engine</name>
+    <description>TiPi - Transaction Processing Engine</description>
+    <url>http://www.sharedvd.ch</url>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -19,8 +21,25 @@
     <scm>
         <connection>scm:git:git@github.com::/shared-vd/tipi-engine.git</connection>
         <developerConnection>scm:git:git@github.com::/shared-vd/tipi-engine.git</developerConnection>
+        <url>https://github.com/shared-vd/tipi-engine.git</url>
         <tag>HEAD</tag>
     </scm>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Jean-Eric Cuendet</name>
+            <email>jec@jesc.ch</email>
+            <organization>JeSC</organization>
+            <organizationUrl>https://github.com/jecuendet</organizationUrl>
+        </developer>
+    </developers>
 
     <profiles>
         <profile>
