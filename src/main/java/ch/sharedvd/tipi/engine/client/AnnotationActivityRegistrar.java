@@ -14,7 +14,7 @@ import java.util.Set;
 
 /**
  * Registrer of tipi activities using annocations.
- * <p/>
+ * <p>
  * Example use:
  * <pre>{@code
  * <bean class="ch.vd.registre.tipi.client.AnnotationActivityRegistrar" lazy-init="false">

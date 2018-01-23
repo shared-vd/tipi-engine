@@ -311,7 +311,7 @@ public class DbActivity extends DbBaseEntity {
 
     /**
      * Convert a package name with a class name
-     * Exemple : ch.vd.rcpers.eve.svc.event.bd.BaseDeliveryTopProcess => BaseDeliveryTopProcess
+     * Exemple : ch.vd.rcpers.eve.svc.event.bd.BaseDeliveryTopProcess - BaseDeliveryTopProcess
      *
      * @return SimpleClassName
      */

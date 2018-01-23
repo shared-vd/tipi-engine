@@ -6,8 +6,8 @@ package ch.sharedvd.tipi.engine.utils;
  * Supporte le <i>temps</i> et les <i>bytes</i>
  *
  * Exemple:
- *  QuantityFormatter.formatMillis(1234123) -> 20[m]34[s]
- *  QuantityFormatter.formatBytes(1234123) -> 1.18[mb]
+ *  QuantityFormatter.formatMillis(1234123) -> 20m34s
+ *  QuantityFormatter.formatBytes(1234123) -> 1.18mb
  *
  */
 public class QuantityFormatter {
