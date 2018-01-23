@@ -3,11 +3,10 @@ package ch.sharedvd.tipi.engine.model;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 @MappedSuperclass
-public class DbBaseEntity implements Serializable {
+public class DbBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipiEntitySeqGen")

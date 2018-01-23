@@ -25,7 +25,6 @@ import static ch.sharedvd.tipi.engine.model.DbActivity.*;
         @Index(name = "TP_ACT_FQN_IDX", columnList = "FQN"),
         @Index(name = "TP_ACTIVITY_CORRELATION_IDX", columnList = "CORRELATION_ID"),
         @Index(name = "TP_ACTIVITY_STATE_IDX", columnList = "STATE"),
-        @Index(name = "TP_ACTIVITY_NAME_IDX", columnList = "FQN"),
         @Index(name = "TP_ACTIVITY_REQUEST_END_EXEC", columnList = "REQUEST_END_EXECUTION"),
         @Index(name = "TP_ACT_PREVIOUS_FK_IDX", columnList = "PREVIOUS_FK")
 })
