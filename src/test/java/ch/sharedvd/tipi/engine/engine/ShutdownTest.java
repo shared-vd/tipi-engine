@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-//@Ignore
 public class ShutdownTest extends TipiEngineTest {
 
     @Autowired
@@ -79,7 +78,9 @@ public class ShutdownTest extends TipiEngineTest {
         while (ShutProcess.endStep.get() < 1) {
             Thread.sleep(10);
         }
-        Assert.assertFalse(tipiFacade.hasActivityPending());
+        while (tipiFacade.hasActivityPending()) {
+            Thread.sleep(10);
+        }
 
         ShutProcess.throwException = false;
         ShutProcess.globalStep = new AtomicInteger(0);

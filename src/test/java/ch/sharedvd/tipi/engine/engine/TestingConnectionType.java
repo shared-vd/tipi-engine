@@ -1,8 +1,5 @@
 package ch.sharedvd.tipi.engine.engine;
 
-import org.junit.Ignore;
-
-@Ignore
 public enum TestingConnectionType {
 
     ESB("Enterprise Service Bus (ESB)"),
