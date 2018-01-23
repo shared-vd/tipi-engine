@@ -17,6 +17,12 @@
         <relativePath/>
     </parent>
 
+    <scm>
+        <connection>scm:git:git@github.com::/shared-vd/tipi-engine.git</connection>
+        <developerConnection>scm:git:git@github.com::/shared-vd/tipi-engine.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
     <profiles>
         <profile>
             <id>not</id>
