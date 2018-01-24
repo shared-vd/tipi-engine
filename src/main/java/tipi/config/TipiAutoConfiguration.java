@@ -29,7 +29,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class TipiAutoConfiguration {
 
     @Bean
-    public TixTemplate txTemplate(PlatformTransactionManager ptm) {
+    public TixTemplate tixTemplate(PlatformTransactionManager ptm) {
         return new TixTemplate(ptm);
     }
 
