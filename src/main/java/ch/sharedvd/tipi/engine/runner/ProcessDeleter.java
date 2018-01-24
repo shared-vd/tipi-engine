@@ -36,13 +36,13 @@ public class ProcessDeleter {
 		int nbActiInExec = q.getFirstResult();
 		if (nbActiInExec > 0) {
 			// Impossible d'effacer ce processus
-			log.error("Impossible d'effacer le processus " + process + ". Il y a des activités EXECUTING");
+			log.error("Impossible to delete process " + process + ". There are activities in state: EXECUTING");
 			return false;
 		}
 
 		// Delete du process en cascade
 		DbTopProcess p = topProcessRepository.findOne(pid);
-		log.info("Suppression du precessus " + p.getProcessName() + " [id:" + pid + "]");
+		log.info("Deleting process " + p.getProcessName() + " [id:" + pid + "]");
 		topProcessRepository.delete(p);
 
 		return true;
