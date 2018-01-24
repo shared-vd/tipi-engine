@@ -118,14 +118,6 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.5.3</version>
                 <configuration>
-                    <!--
-                    http://central.sonatype.org/pages/apache-maven.html
-                    -->
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <useReleaseProfile>false</useReleaseProfile>
-                    <releaseProfiles>release</releaseProfiles>
-                    <goals>deploy</goals>
-
                     <!-- Tests were already ran during release:prepare phase -->
                     <releaseProfiles>not</releaseProfiles>
                     <tagNameFormat>@{project.version}</tagNameFormat>
