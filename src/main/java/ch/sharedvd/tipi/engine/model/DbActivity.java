@@ -6,6 +6,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static ch.sharedvd.tipi.engine.model.DbActivity.*;
@@ -41,6 +42,11 @@ public class DbActivity extends DbBaseEntity {
     @Column(name = "STATE", nullable = false)
     @Enumerated(EnumType.STRING)
     private ActivityState state; // L'état de l'activité
+
+    // Utile seulement pour la requete:
+    //    ActivityRepository.findTopProcessNamesByStateAndReqEnd
+    @OneToMany(mappedBy = "process")
+    private List<DbActivity> children;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PROCESS_FK", nullable = true)
