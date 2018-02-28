@@ -44,6 +44,7 @@ public class MetaModelHelper {
             Assert.fail("Activity type not supported");
         }
         a.setFqn(meta.getFQN());
+        a.setProcessName(meta.getFQN()); // sera overridé par setProcess() appelé sur Activity
         aHelperService.putVariables(a, vars);
 
         return a;

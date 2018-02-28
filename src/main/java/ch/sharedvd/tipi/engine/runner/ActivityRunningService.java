@@ -154,7 +154,7 @@ public class ActivityRunningService {
         return txTemplate.txWith((status) -> {
             DbActivity act = activityRepository.findOne(id);
             Assert.notNull(act);
-            ActivityFacade facade = new ActivityFacade(act.getId(), activityPersistenceService);
+            ActivityFacade facade = new ActivityFacade(act.getId(), activityPersistenceService, activityRepository);
             return (String) facade.getVariable(key);
         });
     }

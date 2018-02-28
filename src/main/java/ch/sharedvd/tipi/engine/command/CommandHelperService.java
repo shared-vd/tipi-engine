@@ -29,7 +29,7 @@ public class CommandHelperService {
 		ActivityMetaModel meta = MetaModelHelper.getMeta(model.getFqn());
 		Activity act = meta.create();
 		autowirer.autowire(act);
-		act.setFacade(new ActivityFacade(model.getId(), activityHelper));
+		act.setFacade(new ActivityFacade(model.getId(), activityHelper, activityRepository));
 
 		verify(meta, act);
 		return act;

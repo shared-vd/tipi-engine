@@ -27,11 +27,6 @@ public class ActivityPersisterService {
     @Autowired
     private EntityManager em;
 
-    public ActivityState getDbActivityState(long activityId) {
-        DbActivity db = activityRepository.findOne(activityId);
-        return db.getState();
-    }
-
     private DbActivity persistModelFromMeta(final ActivityMetaModel meta, final boolean isProcess, final VariableMap vars) {
         DbActivity model = MetaModelHelper.createModelFromMeta(meta, isProcess, vars, this);
         em.persist(model);
@@ -65,7 +60,7 @@ public class ActivityPersisterService {
 
         final List<DbActivity> actis = activityRepository.findByParentId(parentId);
         for (DbActivity a : actis) {
-            activities.add(new ActivityFacade(a.getId(), this));
+            activities.add(new ActivityFacade(a.getId(), this, activityRepository));
         }
         return activities;
     }

@@ -12,6 +12,7 @@ public class ActivityGetVariableTest extends TipiEngineTest {
         final long aId = txTemplate.txWith(s -> {
             DbActivity model = new DbActivity();
             model.setFqn("act1");
+            model.setProcessName("act1");
             activityRepository.save(model);
             return model.getId();
         });

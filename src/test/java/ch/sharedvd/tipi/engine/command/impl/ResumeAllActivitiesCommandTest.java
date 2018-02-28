@@ -19,6 +19,7 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
             // Process
             DbTopProcess tp = new DbTopProcess();
             tp.setFqn("bla");
+            tp.setProcessName("bla");
             tp.setState(ActivityState.WAIT_ON_CHILDREN);
             em.persist(tp);
 
@@ -47,6 +48,7 @@ public class ResumeAllActivitiesCommandTest extends AbstractTipiPersistenceTest 
             // Process 2
             DbTopProcess tp = new DbTopProcess();
             tp.setFqn("bli");
+            tp.setProcessName("bli");
             tp.setState(ActivityState.WAIT_ON_CHILDREN);
             em.persist(tp);
 

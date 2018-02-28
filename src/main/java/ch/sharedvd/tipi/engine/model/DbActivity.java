@@ -36,8 +36,8 @@ public class DbActivity extends DbBaseEntity {
 
     @Column(name = "FQN", nullable = false)
     private String fqn; // Le nom de l'activité
-    @Column(name = "PROCESS_NAME", nullable = true)
-    private String processName;
+    @Column(name = "PROCESS_NAME", nullable = false)
+    private String processName; // Le nom du process ou FQN si on est le process
 
     @Column(name = "STATE", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -117,13 +117,8 @@ public class DbActivity extends DbBaseEntity {
     }
 
     public String getProcessName() {
-        if (this instanceof DbTopProcess) {
-            // Si on n'a pas de process, on EST le process.
-            return fqn;
-        }
         return processName;
     }
-
     public void setProcessName(String processName) {
         this.processName = processName;
     }

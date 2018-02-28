@@ -7,6 +7,7 @@ import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
+import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import ch.sharedvd.tipi.engine.utils.Assert;
 
@@ -15,14 +16,16 @@ import java.util.List;
 
 public class ActivityFacade {
 
-    private ActivityPersisterService activityPersisterService;
-    private long activityId;
+    private final ActivityPersisterService activityPersisterService;
+    private final long activityId;
+    private final ActivityRepository activityRepository;
 
-    public ActivityFacade(long activityId, ActivityPersisterService manager) {
+    public ActivityFacade(long activityId, ActivityPersisterService manager, ActivityRepository activityRepository) {
         Assert.notNull(activityId);
         Assert.notNull(manager);
         this.activityId = activityId;
         this.activityPersisterService = manager;
+        this.activityRepository = activityRepository;
     }
 
     public long getId() {
@@ -76,7 +79,8 @@ public class ActivityFacade {
             p = (DbTopProcess) m;
         }
         Assert.notNull(p);
-        ActivityState dbState = activityPersisterService.getDbActivityState(p.getId());
+        DbActivity db = activityRepository.findOne(activityId);
+        ActivityState dbState = db.getState();
         return dbState == ActivityState.ABORTED;
     }
 

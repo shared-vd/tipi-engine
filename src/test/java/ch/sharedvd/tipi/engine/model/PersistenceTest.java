@@ -21,6 +21,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         txTemplate.txWithout((s) -> {
             DbTopProcess parent = new DbTopProcess();
             parent.setFqn("Process1");
+            parent.setProcessName("Process1");
             em.persist(parent);
             TOP_PROCESS.set(parent.getId());
 
@@ -70,6 +71,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         txTemplate.txWithout((s) -> {
             DbActivity act = new DbActivity();
             act.setFqn("Bla");
+            act.setProcessName("Bla");
             em.persist(act);
             ID.set(act.getId());
 
@@ -98,6 +100,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         txTemplate.txWithout((s) -> {
             DbActivity act = new DbActivity();
             act.setFqn("Bla");
+            act.setProcessName("Bla");
             em.persist(act);
             ID.set(act.getId());
 
@@ -124,6 +127,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         txTemplate.txWithout((s) -> {
             DbTopProcess parent = new DbTopProcess();
             parent.setFqn("Process1");
+            parent.setProcessName("Process1");
             em.persist(parent);
             P_ID.set(parent.getId());
 
@@ -208,6 +212,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         txTemplate.txWithout((s) -> {
             DbActivity act = new DbActivity();
             act.setFqn("Bla");
+            act.setProcessName("Bla");
             em.persist(act);
             ID.set(act.getId());
 
@@ -265,6 +270,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         txTemplate.txWithout((s) -> {
             DbTopProcess p = new DbTopProcess();
             p.setFqn("Process1");
+            p.setProcessName("Process1");
             em.persist(p);
             P_ID.set(p.getId());
 
@@ -276,6 +282,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             {
                 DbActivity a = new DbActivity();
                 a.setFqn("act1");
+                a.setProcessName("act1");
                 a.setParent(p);
                 em.persist(a);
                 a1 = a;
@@ -288,6 +295,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             {
                 DbActivity a = new DbActivity();
                 a.setFqn("act2");
+                a.setProcessName("act2");
                 a.setParent(p);
                 a.setPrevious(a1);
                 em.persist(a);
@@ -347,12 +355,14 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         final long ID = txTemplate.txWith((s) -> {
             DbTopProcess p = new DbTopProcess();
             p.setFqn("Process1");
+            p.setProcessName("Process1");
             em.persist(p);
 
             DbActivity a1;
             {
                 DbActivity a = new DbActivity();
                 a.setFqn("act1");
+                a.setProcessName("act1");
                 a.setParent(p);
                 em.persist(a);
                 a1 = a;
@@ -360,6 +370,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             {
                 DbActivity a = new DbActivity();
                 a.setFqn("act2");
+                a.setProcessName("act2");
                 a.setParent(p);
                 a.setPrevious(a1);
                 em.persist(a);

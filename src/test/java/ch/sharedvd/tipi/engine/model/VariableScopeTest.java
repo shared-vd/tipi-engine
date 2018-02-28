@@ -29,6 +29,7 @@ public class VariableScopeTest extends AbstractTipiPersistenceTest {
             {
                 DbTopProcess parent = new DbTopProcess();
                 parent.setFqn("parent1");
+                parent.setProcessName("parent1");
                 parent = activityRepository.save(parent);
                 activityPersisterService.putVariable(parent, "parent", parent.getFqn());
                 activityPersisterService.putVariable(parent, parent.getFqn(), parent.getFqn());
@@ -39,6 +40,7 @@ public class VariableScopeTest extends AbstractTipiPersistenceTest {
                 {
                     DbActivity child = new DbActivity();
                     child.setFqn("p1_child1");
+                    child.setProcessName("p1_child1");
                     child.setParent(parent);
                     child = activityRepository.save(child);
                     activityPersisterService.putVariable(child, child.getFqn(), child.getFqn());
@@ -51,6 +53,7 @@ public class VariableScopeTest extends AbstractTipiPersistenceTest {
             {
                 DbTopProcess parent = new DbTopProcess();
                 parent.setFqn("parent2");
+                parent.setProcessName("parent2");
                 parent.setParent(parent1);
                 parent = activityRepository.save(parent);
                 activityPersisterService.putVariable(parent, "parent", parent.getFqn());
@@ -61,6 +64,7 @@ public class VariableScopeTest extends AbstractTipiPersistenceTest {
                 {
                     DbActivity child = new DbActivity();
                     child.setFqn("p2_child1");
+                    child.setProcessName("p2_child1");
                     child.setParent(parent);
                     child = activityRepository.save(child);
                     activityPersisterService.putVariable(child, child.getFqn(), child.getFqn());
@@ -71,6 +75,7 @@ public class VariableScopeTest extends AbstractTipiPersistenceTest {
                 {
                     DbActivity child = new DbActivity();
                     child.setFqn("p2_child2");
+                    child.setProcessName("p2_child2");
                     child.setParent(parent);
                     child = activityRepository.save(child);
                     activityPersisterService.putVariable(child, child.getFqn(), child.getFqn());
@@ -81,6 +86,7 @@ public class VariableScopeTest extends AbstractTipiPersistenceTest {
                 {
                     DbActivity child = new DbActivity();
                     child.setFqn("p2_child3");
+                    child.setProcessName("p2_child3");
                     child.setParent(parent);
                     child.setPrevious(child2);
                     child = activityRepository.save(child);
@@ -119,7 +125,7 @@ public class VariableScopeTest extends AbstractTipiPersistenceTest {
 
             DbActivity child3 = activityRepository.findOne(P2_C3_ID.get());
 
-            VariableGetter getter = new VariableGetter(new ActivityFacade(child3.getId(), activityPersisterService));
+            VariableGetter getter = new VariableGetter(new ActivityFacade(child3.getId(), activityPersisterService, activityRepository));
             getter.execute();
         });
     }

@@ -68,6 +68,7 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
         DbTopProcess process = new DbTopProcess();
         {
             process.setFqn("Proc");
+            process.setProcessName("Proc");
             activityRepository.save(process);
             addVars(process);
             PID = process.getId();

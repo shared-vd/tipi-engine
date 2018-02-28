@@ -20,15 +20,16 @@ public class ActivityRunningServiceTest extends AbstractTipiPersistenceTest {
             {
                 final DbTopProcess tp = new DbTopProcess();
                 tp.setFqn("xyz");
+                tp.setProcessName("xyz");
                 tp.setState(ActivityState.WAIT_ON_CHILDREN);
                 tp.setVersion(1);
                 em.persist(tp);
 
                 {
                     final DbActivity am = new DbActivity();
+                    am.setFqn("xyza");
                     am.setProcess(tp);
                     am.setParent(tp);
-                    am.setFqn("xyza");
                     am.setState(ActivityState.SUSPENDED);
                     am.setVersion(1);
                     em.persist(am);
@@ -38,6 +39,7 @@ public class ActivityRunningServiceTest extends AbstractTipiPersistenceTest {
             {
                 final DbTopProcess tp = new DbTopProcess();
                 tp.setFqn("ghj");
+                tp.setProcessName("ghj");
                 tp.setState(ActivityState.EXECUTING);
                 tp.setRequestEndExecution(true);
                 tp.setVersion(1);
@@ -45,9 +47,9 @@ public class ActivityRunningServiceTest extends AbstractTipiPersistenceTest {
 
                 {
                     final DbActivity am = new DbActivity();
+                    am.setFqn("ghjj");
                     am.setProcess(tp);
                     am.setParent(tp);
-                    am.setFqn("ghjj");
                     am.setState(ActivityState.INITIAL);
                     am.setVersion(1);
                     em.persist(am);
@@ -57,14 +59,15 @@ public class ActivityRunningServiceTest extends AbstractTipiPersistenceTest {
             {
                 final DbTopProcess tp = new DbTopProcess();
                 tp.setFqn("def");
+                tp.setProcessName("def");
                 tp.setState(ActivityState.EXECUTING);
                 tp.setVersion(1);
                 em.persist(tp);
                 {
                     final DbActivity am = new DbActivity();
+                    am.setFqn("defg");
                     am.setProcess(tp);
                     am.setParent(tp);
-                    am.setFqn("defg");
                     am.setState(ActivityState.INITIAL);
                     am.setVersion(1);
                     em.persist(am);
@@ -74,23 +77,24 @@ public class ActivityRunningServiceTest extends AbstractTipiPersistenceTest {
             {
                 final DbTopProcess tp = new DbTopProcess();
                 tp.setFqn("abc");
+                tp.setProcessName("abc");
                 tp.setState(ActivityState.WAIT_ON_CHILDREN);
                 tp.setVersion(1);
                 em.persist(tp);
                 {
                     final DbActivity am = new DbActivity();
+                    am.setFqn("abcd");
                     am.setProcess(tp);
                     am.setParent(tp);
-                    am.setFqn("abcd");
                     am.setState(ActivityState.EXECUTING);
                     am.setVersion(1);
                     em.persist(am);
                 }
                 {
                     final DbActivity am = new DbActivity();
+                    am.setFqn("abcd");
                     am.setProcess(tp);
                     am.setParent(tp);
-                    am.setFqn("abcd");
                     am.setState(ActivityState.EXECUTING);
                     am.setVersion(1);
                     em.persist(am);
@@ -100,22 +104,23 @@ public class ActivityRunningServiceTest extends AbstractTipiPersistenceTest {
             {
                 final DbTopProcess tp = new DbTopProcess();
                 tp.setFqn("tp3");
+                tp.setProcessName("tp3");
                 tp.setState(ActivityState.WAIT_ON_CHILDREN);
                 tp.setVersion(1);
                 em.persist(tp);
                 {
                     final DbSubProcess am = new DbSubProcess();
+                    am.setFqn("tp3.1");
                     am.setProcess(tp);
                     am.setParent(tp);
-                    am.setFqn("tp3.1");
                     am.setState(ActivityState.WAIT_ON_CHILDREN);
                     am.setVersion(1);
                     em.persist(am);
                     {
                         final DbActivity sub = new DbActivity();
+                        sub.setFqn("tp3.1.1");
                         sub.setProcess(tp);
                         sub.setParent(am);
-                        sub.setFqn("tp3.1.1");
                         sub.setState(ActivityState.EXECUTING);
                         sub.setVersion(1);
                         em.persist(sub);
@@ -126,15 +131,16 @@ public class ActivityRunningServiceTest extends AbstractTipiPersistenceTest {
             {
                 final DbTopProcess tp = new DbTopProcess();
                 tp.setFqn("mno");
+                tp.setProcessName("mno");
                 tp.setState(ActivityState.WAIT_ON_CHILDREN);
                 tp.setVersion(1);
                 em.persist(tp);
 
                 {
                     final DbActivity am = new DbActivity();
+                    am.setFqn("mnop");
                     am.setProcess(tp);
                     am.setParent(tp);
-                    am.setFqn("mnop");
                     am.setState(ActivityState.EXECUTING);
                     am.setRequestEndExecution(true);
                     am.setVersion(1);
@@ -162,15 +168,16 @@ public class ActivityRunningServiceTest extends AbstractTipiPersistenceTest {
         txTemplate.txWithout((s) -> {
             DbTopProcess tp = new DbTopProcess();
             tp.setFqn("abc");
+            tp.setProcessName("abc");
             tp.setState(ActivityState.WAIT_ON_CHILDREN);
             tp.setVersion(1);
             em.persist(tp);
 
             {
                 DbActivity am = new DbActivity();
+                am.setFqn("abcd");
                 am.setProcess(tp);
                 am.setParent(tp);
-                am.setFqn("abcd");
                 am.setNbRetryDone(1); // Retry -> 1
                 am.setState(ActivityState.EXECUTING);
                 am.setVersion(1);
@@ -180,9 +187,9 @@ public class ActivityRunningServiceTest extends AbstractTipiPersistenceTest {
 
             {
                 DbActivity am = new DbActivity();
+                am.setFqn("abcd");
                 am.setProcess(tp);
                 am.setParent(tp);
-                am.setFqn("abcd");
                 am.setNbRetryDone(0);
                 am.setState(ActivityState.EXECUTING);
                 am.setVersion(1);
