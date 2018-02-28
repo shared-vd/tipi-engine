@@ -1,11 +1,11 @@
-package ch.sharedvd.tipi.engine.model;
+package ch.sharedvd.tipi.engine.query;
 
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.infos.TipiActivityInfos;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
-import ch.sharedvd.tipi.engine.query.TipiCriteria;
+import ch.sharedvd.tipi.engine.model.*;
 import ch.sharedvd.tipi.engine.utils.ResultListWithCount;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -45,10 +45,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    @Ignore
-    public void countProcess() throws Exception {
-
+    public void countProcesses() throws Exception {
         txTemplate.txWithout(s -> {
             loadProcess();
         });
@@ -60,7 +57,6 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
 
         });
 
-        fail();
 //        ResultListWithCount<TipiTopProcessInfos> infos = activityQueryService.getAllProcesses(50);
 //        for (TipiTopProcessInfos ttpi : infos) {
 //            Assert.assertEquals(11L, ttpi.getNbActivitesTotal());
@@ -70,21 +66,22 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
     }
 
     @Test
-    @Ignore
     public void searchByVariableName() throws Exception {
 
         txTemplate.txWithout(s -> {
 
             {
-                DbTopProcess model = new DbTopProcess();
+                final DbTopProcess model = new DbTopProcess();
                 model.setFqn("ch.vd.registre.tipi.model.SearchActivitiesTest$SearchTopProcess");
+                model.setProcessName("ch.vd.registre.tipi.model.SearchActivitiesTest$SearchTopProcess");
                 activityPersisterService.putVariable(model, "bla", "bli");
                 em.persist(model);
             }
             Thread.sleep(100); // Pour que Creation date soit plus grande
             {
-                DbTopProcess model = new DbTopProcess();
+                final DbTopProcess model = new DbTopProcess();
                 model.setFqn("ch.vd.registre.tipi.model.SearchActivitiesTest$SearchTopProcess");
+                model.setProcessName("ch.vd.registre.tipi.model.SearchActivitiesTest$SearchTopProcess");
                 activityPersisterService.putVariable(model, "bla", "blo");
                 em.persist(model);
             }
@@ -126,7 +123,6 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
     }
 
     @Test
-    @Ignore
     public void searchActivities_inexistantClassShouldNotCrash() throws Exception {
 
         txTemplate.txWithout(s -> {
@@ -142,10 +138,11 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
 
     private void loadProcess() throws Exception {
 
-        DbTopProcess process = new DbTopProcess();
+        final DbTopProcess process = new DbTopProcess();
         {
             process.setState(ActivityState.WAIT_ON_CHILDREN);
             process.setFqn("ch.vd.registre.tipi.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            process.setProcessName("ch.vd.registre.tipi.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
             addVars(process);
             activityRepository.save(process);
         }
@@ -268,6 +265,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         {
             process.setState(ActivityState.WAIT_ON_CHILDREN);
             process.setFqn("ch.vd.registre.tipi.inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            process.setProcessName("ch.vd.registre.tipi.inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
             addVars(process);
             activityRepository.save(process);
         }

@@ -1,6 +1,10 @@
 package ch.sharedvd.tipi.engine.query;
 
-import ch.sharedvd.tipi.engine.infos.*;
+import ch.sharedvd.tipi.engine.infos.ActivityThreadInfos;
+import ch.sharedvd.tipi.engine.infos.ConnectionCapInfos;
+import ch.sharedvd.tipi.engine.infos.TipiActivityInfos;
+import ch.sharedvd.tipi.engine.infos.TipiTopProcessInfos;
+import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
@@ -13,7 +17,10 @@ import ch.sharedvd.tipi.engine.utils.ResultListWithCount;
 import ch.sharedvd.tipi.engine.utils.TixTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ActivityQueryService {
@@ -22,6 +29,8 @@ public class ActivityQueryService {
     private TixTemplate txTemplate;
     @Autowired
     private ActivityRepository activityRepository;
+    @Autowired
+    private EntityManager em;
 
     @Autowired
     private ConnectionCapManager connectionCapManager;
@@ -142,82 +151,78 @@ public class ActivityQueryService {
         }
     }
 
-    private TipiSubProcessInfos getRunningProcessInfos(DbSubProcess process, boolean loadVariables, boolean gatherChildActivities) {
+    private TipiTopProcessInfos getRunningProcessInfos(DbSubProcess process, boolean loadVariables, boolean gatherChildActivities) {
 
-        final TipiSubProcessInfos infos;
+        final TipiTopProcessInfos infos = new TipiTopProcessInfos(process, loadVariables);
         if (process instanceof DbTopProcess) {
-            infos = new TipiTopProcessInfos(process, loadVariables);
-            ((TipiTopProcessInfos) infos).incActivitiesFromState(process.getState(), process.isRequestEndExecution(),
-                    process.getNbRetryDone());
-        } else {
-            infos = new TipiSubProcessInfos(process, loadVariables);
+            infos.incActivitiesFromState(process.getState(), process.isRequestEndExecution(), process.getNbRetryDone());
         }
 
         if (gatherChildActivities) {
-            //Assert.fail("");
             // Tous les subProcess directs
-//            updateDateFinExecution(infos, getOlderProcessEndExecution(process.getId().longValue(), true));
-//            infos.incNbChildrenTotal(countActivitiesByState(process.getId().longValue(), null, true));
-//            infos.incNbChildrenInitial(countActivitiesByState(process.getId().longValue(), ActivityState.INITIAL, true));
-//            infos.incNbChildrenExecuting(countActivitiesByState(process.getId().longValue(), ActivityState.EXECUTING, true));
-//            infos.incNbChildrenRetry(countActivitiesRetry(process.getId().longValue(), true));
-//            infos.incNbChildrenAborted(countActivitiesByState(process.getId().longValue(), ActivityState.ABORTED, true));
-//            infos.incNbChildrenFinished(countActivitiesByState(process.getId().longValue(), ActivityState.FINISHED, true));
-//            infos.incNbChildrenError(countActivitiesByState(process.getId().longValue(), ActivityState.ERROR, true));
-//            infos.incNbChildrenWaiting(countActivitiesByState(process.getId().longValue(), ActivityState.WAIT_ON_CHILDREN, true));
-//            infos.incNbChildrenSuspended(countActivitiesByState(process.getId().longValue(), ActivityState.SUSPENDED, true));
-//            infos.incNbChildrenRequestEndExecution(countActivitiesRequestEndExecution(process.getId().longValue(), true));
-//
-//            // Toutes les activités de ce process
-//            if (process instanceof DbTopProcess) {
-//                TipiTopProcessInfos ttpi = (TipiTopProcessInfos) infos;
-//
-//                updateDateFinExecution(infos, getOlderProcessEndExecution(process.getId().longValue(), false));
-//                ttpi.incNbActivitesTotal(countActivitiesByState(process.getId().longValue(), null, false));
-//                ttpi.incNbActivitesInitial(countActivitiesByState(process.getId().longValue(), ActivityState.INITIAL, false));
-//                ttpi.incNbActivitesExecuting(countActivitiesByState(process.getId().longValue(), ActivityState.EXECUTING, false));
-//                ttpi.incNbActivitesRetry(countActivitiesRetry(process.getId().longValue(), false));
-//                ttpi.incNbActivitesAborted(countActivitiesByState(process.getId().longValue(), ActivityState.ABORTED, false));
-//                ttpi.incNbActivitesFinished(countActivitiesByState(process.getId().longValue(), ActivityState.FINISHED, false));
-//                ttpi.incNbActivitesError(countActivitiesByState(process.getId().longValue(), ActivityState.ERROR, false));
-//                ttpi.incNbActivitesWaiting(countActivitiesByState(process.getId().longValue(), ActivityState.WAIT_ON_CHILDREN, false));
-//                ttpi.incNbActivitesSuspended(countActivitiesByState(process.getId().longValue(), ActivityState.SUSPENDED, false));
-//                ttpi.incNbActivitesRequestEndExecution(countActivitiesRequestEndExecution(process.getId().longValue(), false));
-//            }
+            updateDateFinExecution(infos, getOlderProcessEndExecution(process.getId().longValue(), true));
+            infos.incNbChildrenTotal(countActivitiesByState(process.getId().longValue(), null, true));
+            infos.incNbChildrenInitial(countActivitiesByState(process.getId().longValue(), ActivityState.INITIAL, true));
+            infos.incNbChildrenExecuting(countActivitiesByState(process.getId().longValue(), ActivityState.EXECUTING, true));
+            infos.incNbChildrenRetry(countActivitiesRetry(process.getId().longValue(), true));
+            infos.incNbChildrenAborted(countActivitiesByState(process.getId().longValue(), ActivityState.ABORTED, true));
+            infos.incNbChildrenFinished(countActivitiesByState(process.getId().longValue(), ActivityState.FINISHED, true));
+            infos.incNbChildrenError(countActivitiesByState(process.getId().longValue(), ActivityState.ERROR, true));
+            infos.incNbChildrenWaiting(countActivitiesByState(process.getId().longValue(), ActivityState.WAIT_ON_CHILDREN, true));
+            infos.incNbChildrenSuspended(countActivitiesByState(process.getId().longValue(), ActivityState.SUSPENDED, true));
+            infos.incNbChildrenRequestEndExecution(countActivitiesRequestEndExecution(process.getId().longValue(), true));
+
+            // Toutes les activités de ce process
+            if (process instanceof DbTopProcess) {
+                TipiTopProcessInfos ttpi = infos;
+
+                updateDateFinExecution(infos, getOlderProcessEndExecution(process.getId().longValue(), false));
+                ttpi.incNbActivitesTotal(countActivitiesByState(process.getId().longValue(), null, false));
+                ttpi.incNbActivitesInitial(countActivitiesByState(process.getId().longValue(), ActivityState.INITIAL, false));
+                ttpi.incNbActivitesExecuting(countActivitiesByState(process.getId().longValue(), ActivityState.EXECUTING, false));
+                ttpi.incNbActivitesRetry(countActivitiesRetry(process.getId().longValue(), false));
+                ttpi.incNbActivitesAborted(countActivitiesByState(process.getId().longValue(), ActivityState.ABORTED, false));
+                ttpi.incNbActivitesFinished(countActivitiesByState(process.getId().longValue(), ActivityState.FINISHED, false));
+                ttpi.incNbActivitesError(countActivitiesByState(process.getId().longValue(), ActivityState.ERROR, false));
+                ttpi.incNbActivitesWaiting(countActivitiesByState(process.getId().longValue(), ActivityState.WAIT_ON_CHILDREN, false));
+                ttpi.incNbActivitesSuspended(countActivitiesByState(process.getId().longValue(), ActivityState.SUSPENDED, false));
+                ttpi.incNbActivitesRequestEndExecution(countActivitiesRequestEndExecution(process.getId().longValue(), false));
+            }
         }
         return infos;
     }
 
-//    public Date getOlderProcessEndExecution(final Long processId, final boolean subProcessOnly) {
-//        final Date infos = txTemplate.txWith((s) -> {
-//            Date result = null;
-//
-//            DbActivityCriteria crit = new DbActivityCriteria();
-//            EqualsExpr eqExpr = getSubProcessExpr(crit, processId, subProcessOnly);
-//
-//            crit.addAndExpression(eqExpr);
-//
-//            crit.addAndExpression(crit.dateEndExecute().isNotNull());
-//            List<DbActivity> resultSet = hqlBuilder.getResultList(DbActivity.class, crit, 1);
-//            if (resultSet.size() == 1) {
-//                result = null;
-//            } else {
-//                crit = new DbActivityCriteria();
-//                crit.addAndExpression(eqExpr);
-//                crit.addOrder(DbActivityProperty.DateEndExecute, true);
-//
-//                resultSet = hqlBuilder.getResultList(DbActivity.class, crit, 1);
-//                if (resultSet.size() == 1) {
-//                    DbActivity am = resultSet.get(0);
-//                    result = am.getDateEndExecute();
-//                }
-//            }
-//            return result;
-//        });
-//        return infos;
-//    }
+    public Date getOlderProcessEndExecution(final Long processId, final boolean subProcessOnly) {
+        final Date infos = txTemplate.txWith((s) -> {
+            {
+                final HqlQuery hq = new HqlQuery("select count(*) from DbActivity a where ");
+                addSubProcessExpr(hq, processId, subProcessOnly);
+                hq.append(" and a.dateEndExecute is not null");
+                final Query q = hq.createQuery(em);
+                List<DbActivity> resultSet = q.getResultList();
+                if (resultSet.size() == 1) {
+                    // Trouvé un seul
+                    return null;
+                }
+            }
+            {
+                final HqlQuery hq = new HqlQuery("select count(*) from DbActivity a where ");
+                addSubProcessExpr(hq, processId, subProcessOnly);
+                hq.append(" and a.dateEndExecute = true");
+                final Query q = hq.createQuery(em);
+                List<DbActivity> resultSet = q.getResultList();
+                if (resultSet.size() == 1) {
+                    // Trouvé un seul
+                    DbActivity am = resultSet.get(0);
+                    return am.getDateEndExecute();
+                }
+                return null;
+            }
+        });
+        return infos;
+    }
 
-//    private EqualsExpr getSubProcessExpr(DbActivityCriteria crit, Long processId, boolean subProcessOnly) {
+//    private EqualsExpr addSubProcessExpr(DbActivityCriteria crit, Long processId, boolean subProcessOnly) {
 //        EqualsExpr eqExpr;
 //        if (subProcessOnly) {
 //            eqExpr = crit.parent__Id().eq(processId);
@@ -226,14 +231,23 @@ public class ActivityQueryService {
 //        }
 //        return eqExpr;
 //    }
-//
-//    private void updateDateFinExecution(TipiSubProcessInfos aInfos, Date aChildDate) {
-//        if (null != aInfos.getDateEndExecute()) {
-//            if ((null != aChildDate) && (aInfos.getDateEndExecute().before(aChildDate))) {
-//                aInfos.dateEndExecute = aChildDate;
-//            }
-//        }
-//    }
+
+    private HqlQuery addSubProcessExpr(HqlQuery hq, Long processId, boolean subProcessOnly) {
+        if (subProcessOnly) {
+            hq.append(" a.parent.id = :parentId ", "parentId", processId);
+        } else {
+            hq.append(" a.process.id = :processId ", "processId", processId);
+        }
+        return hq;
+    }
+
+    private void updateDateFinExecution(TipiTopProcessInfos aInfos, Date aChildDate) {
+        if (null != aInfos.getDateEndExecute()) {
+            if ((null != aChildDate) && (aInfos.getDateEndExecute().before(aChildDate))) {
+                aInfos.setDateEndExecute(aChildDate);
+            }
+        }
+    }
 
     public List<ActivityThreadInfos> getThreadsInfos() {
         return topProcessGroupManager.getThreadsInfos();
@@ -258,7 +272,7 @@ public class ActivityQueryService {
 //
 //        final List<TipiTopProcessInfos> list = new ArrayList<TipiTopProcessInfos>();
 //        for (DbActivity am : results) {
-//            TipiSubProcessInfos i = getRunningProcessInfos((DbTopProcess) am, false, false);
+//            TipiTopProcessInfos i = getRunningProcessInfos((DbTopProcess) am, false, false);
 //            list.add((TipiTopProcessInfos) i);
 //        }
 //        return new ResultListWithCount<TipiTopProcessInfos>(list, results.getCount());
@@ -284,7 +298,7 @@ public class ActivityQueryService {
 //                count += results.getCount();
 //
 //                for (DbActivity am : results.getResult()) {
-//                    TipiSubProcessInfos i = getRunningProcessInfos((DbTopProcess) am, false, true);
+//                    TipiTopProcessInfos i = getRunningProcessInfos((DbTopProcess) am, false, true);
 //                    list.add((TipiTopProcessInfos) i);
 //                }
 //            }
@@ -300,7 +314,7 @@ public class ActivityQueryService {
 //                count += results.getCount();
 //
 //                for (DbActivity am : results.getResult()) {
-//                    TipiSubProcessInfos i = getRunningProcessInfos((DbTopProcess) am, false, true);
+//                    TipiTopProcessInfos i = getRunningProcessInfos((DbTopProcess) am, false, true);
 //                    list.add((TipiTopProcessInfos) i);
 //                }
 //            }
@@ -309,46 +323,41 @@ public class ActivityQueryService {
 //        return infos;
 //    }
 
-//    public Long countActivitiesByState(final Long processId, final ActivityState state, final boolean subProcessOnly) {
-//        final Long infos = txTemplate.txWith((s) -> {
-//            final DbActivityCriteria crit = new DbActivityCriteria();
-//            EqualsExpr eqExpr = getSubProcessExpr(crit, processId, subProcessOnly);
-//
-//            if (state == null) {
-//                crit.addAndExpression(eqExpr);
-//            } else {
-//                crit.addAndExpression(eqExpr, crit.state().eq(state));
-//            }
-//            crit.activateRowCount();
-//            final Long result = (Long) hqlBuilder.getSingleResult(crit);
-//            return result;
-//        });
-//        return infos;
-//    }
+    public Long countActivitiesByState(final Long processId, final ActivityState state, final boolean subProcessOnly) {
+        final Long infos = txTemplate.txWith((s) -> {
 
-//    public Long countActivitiesRequestEndExecution(final Long processId, final boolean subProcessOnly) {
-//        final Long infos = txTemplate.txWith((s) -> {
-//            final DbActivityCriteria crit = new DbActivityCriteria();
-//
-//            EqualsExpr eqExpr = getSubProcessExpr(crit, processId, subProcessOnly);
-//            crit.addAndExpression(eqExpr, crit.requestEndExecution().eq(true));
-//            crit.activateRowCount();
-//            final Long result = (Long) hqlBuilder.getSingleResult(crit);
-//            return result;
-//        });
-//        return infos;
-//    }
+            final HqlQuery hq = new HqlQuery("select count(*) from DbActivity a where ");
+            addSubProcessExpr(hq, processId, subProcessOnly);
+            if (state != null) {
+                hq.append(" and state = :state", "state", state);
+            }
 
-//    public Long countActivitiesRetry(final Long processId, final boolean subProcessOnly) {
-//        final Long infos = txTemplate.txWith((s) -> {
-//            final DbActivityCriteria crit = new DbActivityCriteria();
-//
-//            EqualsExpr eqExpr = getSubProcessExpr(crit, processId, subProcessOnly);
-//            crit.addAndExpression(eqExpr, crit.nbRetryDone().gt(0));
-//            crit.activateRowCount();
-//            final Long result = (Long) hqlBuilder.getSingleResult(crit);
-//            return result;
-//        });
-//        return infos;
-//    }
+            final Query q = hq.createQuery(em);
+            final Long result = (Long) q.getSingleResult();
+            return result;
+        });
+        return infos;
+    }
+
+    public Long countActivitiesRequestEndExecution(final Long processId, final boolean subProcessOnly) {
+        final Long infos = txTemplate.txWith((s) -> {
+            final HqlQuery hq = new HqlQuery("select count(*) from DbActivity a where ");
+            addSubProcessExpr(hq, processId, subProcessOnly);
+            hq.append(" and a.requestEndExecution = true");
+            final Query q = hq.createQuery(em);
+            return (Long) q.getSingleResult();
+        });
+        return infos;
+    }
+
+    public Long countActivitiesRetry(final Long processId, final boolean subProcessOnly) {
+        final Long infos = txTemplate.txWith((s) -> {
+            final HqlQuery hq = new HqlQuery("select count(*) from DbActivity a where ");
+            addSubProcessExpr(hq, processId, subProcessOnly);
+            hq.append(" and a.nbRetryDone > 0");
+            final Query q = hq.createQuery(em);
+            return (Long) q.getSingleResult();
+        });
+        return infos;
+    }
 }

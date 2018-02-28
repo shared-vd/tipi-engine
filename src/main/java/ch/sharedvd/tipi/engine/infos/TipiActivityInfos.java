@@ -15,63 +15,63 @@ public class TipiActivityInfos implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public long id;
-    public String type;
-    public String nameOrProcessName;
-    public long processId;
-    public String processName;
-    public long parentId;
-    public String parentName;
-    public String description;
-    public boolean requestEndExecution;
+    private long id;
+    private String type;
+    private String nameOrProcessName;
+    private long processId;
+    private String processName;
+    private long parentId;
+    private String parentName;
+    private String description;
+    private boolean requestEndExecution;
 
-    public Date dateCreation;
-    public Date dateStartExecute;
-    public Date dateEndExecute;
-    public Date dateEndActivity;
-    public ActivityState state;
-    public boolean terminated;
-    public String correlationId;
+    private Date dateCreation;
+    private Date dateStartExecute;
+    private Date dateEndExecute;
+    private Date dateEndActivity;
+    private ActivityState state;
+    private boolean terminated;
+    private String correlationId;
 
-    public Map<String, Object> variables;
-    public String callstack;
+    private Map<String, Object> variables;
+    private String callstack;
 
-    public TipiActivityInfos(DbActivity model, boolean loadVariables) {
+    public TipiActivityInfos(DbActivity db, boolean loadVariables) {
 
         // On doit résoudre tous les champs -> LazyInit
-        id = model.getId();
-        if (model instanceof DbTopProcess) {
+        id = db.getId();
+        if (db instanceof DbTopProcess) {
             type = "Process";
-        } else if (model instanceof DbSubProcess) {
+        } else if (db instanceof DbSubProcess) {
             type = "Sous-process";
-        } else if (model instanceof DbActivity) {
+        } else if (db instanceof DbActivity) {
             type = "Activité";
         } else {
             type = "Inconnu";
         }
-        nameOrProcessName = model.getSimpleName();
+        nameOrProcessName = db.getSimpleName();
         {
             // a refaire ici la description de l'activity
         }
-        processId = model.getProcessOrThis().getId();
-        processName = model.getProcessOrThis().getSimpleName();
-        if (null != model.getParent()) {
-            parentId = model.getParent().getId();
-            parentName = model.getParent().getFqn();
+        processId = db.getProcessOrThis().getId();
+        processName = db.getProcessOrThis().getSimpleName();
+        if (null != db.getParent()) {
+            parentId = db.getParent().getId();
+            parentName = db.getParent().getFqn();
         }
-        requestEndExecution = model.isRequestEndExecution();
+        requestEndExecution = db.isRequestEndExecution();
 
-        dateCreation = model.getCreationDate();
-        dateStartExecute = model.getDateStartExecute();
-        dateEndExecute = model.getDateEndExecute();
-        dateEndActivity = model.getDateEndActivity();
+        dateCreation = db.getCreationDate();
+        dateStartExecute = db.getDateStartExecute();
+        dateEndExecute = db.getDateEndExecute();
+        dateEndActivity = db.getDateEndActivity();
 
-        state = model.getState();
-        terminated = model.isTerminated();
-        correlationId = model.getCorrelationId();
-        callstack = model.getCallstack();
+        state = db.getState();
+        terminated = db.isTerminated();
+        correlationId = db.getCorrelationId();
+        callstack = db.getCallstack();
         if (loadVariables) {
-            variables = model.getAllVariables();
+            variables = db.getAllVariables();
         }
     }
 
@@ -83,8 +83,20 @@ public class TipiActivityInfos implements Serializable {
         return type;
     }
 
+    public String getProcessName() {
+        return processName;
+    }
+    // package
+    void setProcessName(String processName) {
+        this.processName = processName;
+    }
+
     public String getNameOrProcessName() {
         return nameOrProcessName;
+    }
+    // package
+    void setNameOrProcessName(String nameOrProcessName) {
+        this.nameOrProcessName = nameOrProcessName;
     }
 
     public String getCallstack() {
@@ -93,10 +105,6 @@ public class TipiActivityInfos implements Serializable {
 
     public long getProcessId() {
         return processId;
-    }
-
-    public String getProcessName() {
-        return processName;
     }
 
     public long getParentId() {
@@ -125,6 +133,9 @@ public class TipiActivityInfos implements Serializable {
 
     public Date getDateEndExecute() {
         return dateEndExecute;
+    }
+    public void setDateEndExecute(Date date) {
+        this.dateEndExecute = date;
     }
 
     public Date getDateEndActivity() {
