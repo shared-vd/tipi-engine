@@ -10,28 +10,46 @@ import java.util.Map;
 
 public class HqlQuery {
 
-    private final StringBuilder hql = new StringBuilder();
+    private final StringBuilder select = new StringBuilder();
+    private final StringBuilder from = new StringBuilder();
+    private final StringBuilder where = new StringBuilder();
     private final Map<String, Object> params = new HashMap<>();
+    private final StringBuilder order = new StringBuilder();
 
     public HqlQuery() {
     }
-    public HqlQuery(String hql) {
-        append(hql);
+    public HqlQuery(String select, String from ) {
+        this.select.append(select);
+        this.from.append(from);
     }
 
-    public HqlQuery append(String hql) {
-        this.hql.append(hql);
+    public HqlQuery select(String hql) {
+        this.select.append(hql);
         return this;
     }
 
-    public HqlQuery append(String hql, String paramName, Object paramValue) {
-        this.hql.append(hql);
+    public HqlQuery from(String hql) {
+        this.from.append(hql);
+        return this;
+    }
+
+    public HqlQuery where(String hql) {
+        this.where.append(hql);
+        return this;
+    }
+    public HqlQuery where(String hql, String paramName, Object paramValue) {
+        this.where.append(hql);
         this.params.put(paramName, paramValue);
         return this;
     }
 
+    public HqlQuery order(String hql) {
+        this.order.append(hql);
+        return this;
+    }
+
     private Query createQuery(EntityManager em) {
-        final Query q = em.createQuery(hql.toString());
+        final Query q = em.createQuery(concat(false));
         for (Map.Entry<String, Object> e : params.entrySet()) {
             q.setParameter(e.getKey(), e.getValue());
         }
@@ -39,7 +57,7 @@ public class HqlQuery {
     }
 
     private Query createCountQuery(EntityManager em) {
-        final Query q = em.createQuery("select count(*) "+hql.toString());
+        final Query q = em.createQuery(concat(true));
         for (Map.Entry<String, Object> e : params.entrySet()) {
             q.setParameter(e.getKey(), e.getValue());
         }
@@ -48,7 +66,7 @@ public class HqlQuery {
 
     public <T> ResultListWithCount<T> getResultListWithCount(EntityManager em, int maxHits) {
         final Query q1 = createCountQuery(em);
-        final long count = (Long)q1.getSingleResult();
+        final long count = (Long) q1.getSingleResult();
         final Query q2 = createQuery(em);
         if (maxHits > 0) {
             q2.setMaxResults(maxHits);
@@ -64,7 +82,30 @@ public class HqlQuery {
 
     public <T> T getSingleResult(EntityManager em) {
         Query q = createQuery(em);
-        return (T)q.getSingleResult();
+        return (T) q.getSingleResult();
     }
 
+    private String concat(boolean isForCount) {
+        final StringBuilder str = new StringBuilder();
+
+        if (isForCount) {
+            str.append("select count(*) ");
+        }
+        else if (select.length() > 0) {
+            str.append("select ").append(select).append(" ");
+        }
+
+        if (from.length() > 0) {
+            str.append("from ").append(from).append(" ");
+        }
+
+        if (where.length() > 0) {
+            str.append("where ").append(where).append(" ");
+        }
+
+        if (!isForCount && order.length() > 0) {
+            str.append("order by ").append(order);
+        }
+        return str.toString();
+    }
 }

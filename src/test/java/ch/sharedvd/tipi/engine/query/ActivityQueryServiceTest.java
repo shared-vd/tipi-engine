@@ -130,9 +130,9 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         });
 
         final TipiCriteria criteria = new TipiCriteria();
-        ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
+        final ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
         Assert.assertEquals(11l, results.getCount());
-        TipiActivityInfos infos = results.getResult().get(0);
+        final TipiActivityInfos infos = results.getResult().get(0);
         Assert.assertEquals("Unknown: ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess", infos.getNameOrProcessName());
     }
 

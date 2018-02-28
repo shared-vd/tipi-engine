@@ -60,7 +60,6 @@ public class ActivityQueryService {
         final ResultListWithCount<TipiActivityInfos> infos = txTemplate.txWith((s) -> {
             final HqlQuery hq = generateCriteria(criteria);
             final ResultListWithCount<DbActivity> results = hq.getResultListWithCount(em, maxHits);
-            // log.debug("Actis found: "+results.getCount()+" - "+crit.buildHqlQuery().getHqlQuery());
 
             final List<TipiActivityInfos> list = new ArrayList<>();
             for (DbActivity am : results.getResult()) {
@@ -73,38 +72,40 @@ public class ActivityQueryService {
         return infos;
     }
 
-    public HqlQuery generateCriteria(final TipiCriteria criteria) {
-        final HqlQuery hq = new HqlQuery("from DbActivity a where 1 = 1 ");
+    private HqlQuery generateCriteria(final TipiCriteria criteria) {
+        final HqlQuery hq = new HqlQuery();
+        hq.from("DbActivity a");
+        hq.where("1 = 1 ");
 
         // Préparation des conditions pour la recherche
 
         if (criteria.getProcessId() != null) {
-            hq.append(" and (a.process.id = :processId or a.id = :processId) ", "processId", criteria.getProcessId());
+            hq.where(" and (a.process.id = :processId or a.id = :processId) ", "processId", criteria.getProcessId());
         }
 
         if (criteria.getParentId() != null) {
-            hq.append(" and a.parent.id = :parentId ", "parentId", criteria.getParentId());
+            hq.where(" and a.parent.id = :parentId ", "parentId", criteria.getParentId());
         }
 
         if (criteria.getId() != null) {
-            hq.append(" and a.id = :id ", "id", criteria.getId());
+            hq.where(" and a.id = :id ", "id", criteria.getId());
         }
 
         if (StringUtils.isNotBlank(criteria.getNameOrProcessName())) {
             final String processName = criteria.getNameOrProcessName();
-            hq.append(" and a.processName like '%:id' ", "processName", processName);
+            hq.where(" and a.processName like '%:id' ", "processName", processName);
         }
 
         if (criteria.getDemandeFinExecution() != null) {
-            hq.append(" and a.requestEndExecution = :reqEnd ", "reqEnd", criteria.getDemandeFinExecution());
+            hq.where(" and a.requestEndExecution = :reqEnd ", "reqEnd", criteria.getDemandeFinExecution());
         }
 
         if (criteria.getStatesSelectionnes() != null && criteria.getStatesSelectionnes().length >= 1) {
-            hq.append(" and a.state in (:state) ", "state", criteria.getStatesSelectionnes());
+            hq.where(" and a.state in (:state) ", "state", criteria.getStatesSelectionnes());
         }
 
         if (StringUtils.isNotBlank(criteria.getIdCorrelation())) {
-            hq.append(" and a.correlationId = :correlationId ", "correlationId", criteria.getIdCorrelation());
+            hq.where(" and a.correlationId = :correlationId ", "correlationId", criteria.getIdCorrelation());
         }
 
         if (StringUtils.isNotBlank(criteria.getVariableName()) && criteria.getVariableValue() != null) {
@@ -126,7 +127,7 @@ public class ActivityQueryService {
 
         // On met un ordre par défaut pour être sûr d'avoir à peu près toujours la même liste et on choisit
         // la date de création pour avoir, par défaut, les plus anciens éléments en premier
-        hq.append(" order by a.creation");
+        hq.order("a.creation");
         return hq;
     }
 
@@ -184,9 +185,11 @@ public class ActivityQueryService {
     public Date getOlderProcessEndExecution(final Long processId, final boolean subProcessOnly) {
         final Date infos = txTemplate.txWith((s) -> {
             {
-                final HqlQuery hq = new HqlQuery("select count(*) from DbActivity a where ");
+                final HqlQuery hq = new HqlQuery();
+                hq.select("count(*)");
+                hq.from("DbActivity a");
                 addSubProcessExpr(hq, processId, subProcessOnly);
-                hq.append(" and a.dateEndExecute is not null");
+                hq.where(" and a.dateEndExecute is not null");
                 List<DbActivity> resultSet = hq.getResultList(em);
                 if (resultSet.size() == 1) {
                     // Trouvé un seul
@@ -194,9 +197,11 @@ public class ActivityQueryService {
                 }
             }
             {
-                final HqlQuery hq = new HqlQuery("select count(*) from DbActivity a where ");
+                final HqlQuery hq = new HqlQuery();
+                hq.select("count(*)");
+                hq.from("DbActivity a");
                 addSubProcessExpr(hq, processId, subProcessOnly);
-                hq.append(" and a.dateEndExecute = true");
+                hq.where(" and a.dateEndExecute = true");
                 List<DbActivity> resultSet = hq.getResultList(em);
                 if (resultSet.size() == 1) {
                     // Trouvé un seul
@@ -221,9 +226,9 @@ public class ActivityQueryService {
 
     private HqlQuery addSubProcessExpr(HqlQuery hq, Long processId, boolean subProcessOnly) {
         if (subProcessOnly) {
-            hq.append(" a.parent.id = :parentId ", "parentId", processId);
+            hq.where(" a.parent.id = :parentId ", "parentId", processId);
         } else {
-            hq.append(" a.process.id = :processId ", "processId", processId);
+            hq.where(" a.process.id = :processId ", "processId", processId);
         }
         return hq;
     }
@@ -313,10 +318,10 @@ public class ActivityQueryService {
     public Long countActivitiesByState(final Long processId, final ActivityState state, final boolean subProcessOnly) {
         final Long infos = txTemplate.txWith((s) -> {
 
-            final HqlQuery hq = new HqlQuery("select count(*) from DbActivity a where ");
+            final HqlQuery hq = new HqlQuery("count(*)", "DbActivity a");
             addSubProcessExpr(hq, processId, subProcessOnly);
             if (state != null) {
-                hq.append(" and state = :state", "state", state);
+                hq.where(" and state = :state", "state", state);
             }
 
             final Long result = hq.getSingleResult(em);
@@ -327,9 +332,9 @@ public class ActivityQueryService {
 
     public Long countActivitiesRequestEndExecution(final Long processId, final boolean subProcessOnly) {
         final Long infos = txTemplate.txWith((s) -> {
-            final HqlQuery hq = new HqlQuery("select count(*) from DbActivity a where ");
+            final HqlQuery hq = new HqlQuery("count(*)", "DbActivity a");
             addSubProcessExpr(hq, processId, subProcessOnly);
-            hq.append(" and a.requestEndExecution = true");
+            hq.where(" and a.requestEndExecution = true");
             return hq.getSingleResult(em);
         });
         return infos;
@@ -337,9 +342,9 @@ public class ActivityQueryService {
 
     public Long countActivitiesRetry(final Long processId, final boolean subProcessOnly) {
         final Long infos = txTemplate.txWith((s) -> {
-            final HqlQuery hq = new HqlQuery("select count(*) from DbActivity a where ");
+            final HqlQuery hq = new HqlQuery("count(*)", "DbActivity a");
             addSubProcessExpr(hq, processId, subProcessOnly);
-            hq.append(" and a.nbRetryDone > 0");
+            hq.where(" and a.nbRetryDone > 0");
             return hq.getSingleResult(em);
         });
         return infos;
