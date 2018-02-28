@@ -17,7 +17,7 @@ import java.util.Set;
  * <p>
  * Example use:
  * <pre>{@code
- * <bean class="ch.vd.registre.tipi.client.AnnotationActivityRegistrar" lazy-init="false">
+ * <bean class="ch.sharedvd.tipi.engine.client.AnnotationActivityRegistrar" lazy-init="false">
  * <property name="aPackage" value="ch.vd.refinf"/>
  * </bean>
  * }</pre>

@@ -72,16 +72,16 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
 
             {
                 final DbTopProcess model = new DbTopProcess();
-                model.setFqn("ch.vd.registre.tipi.model.SearchActivitiesTest$SearchTopProcess");
-                model.setProcessName("ch.vd.registre.tipi.model.SearchActivitiesTest$SearchTopProcess");
+                model.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$SearchTopProcess");
+                model.setProcessName("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$SearchTopProcess");
                 activityPersisterService.putVariable(model, "bla", "bli");
                 em.persist(model);
             }
             Thread.sleep(100); // Pour que Creation date soit plus grande
             {
                 final DbTopProcess model = new DbTopProcess();
-                model.setFqn("ch.vd.registre.tipi.model.SearchActivitiesTest$SearchTopProcess");
-                model.setProcessName("ch.vd.registre.tipi.model.SearchActivitiesTest$SearchTopProcess");
+                model.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$SearchTopProcess");
+                model.setProcessName("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$SearchTopProcess");
                 activityPersisterService.putVariable(model, "bla", "blo");
                 em.persist(model);
             }
@@ -102,7 +102,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             Assert.assertEquals(2L, results.getCount());
             Assert.assertEquals(1, results.getResult().size());
             TipiActivityInfos infos = results.getResult().get(0);
-            Assert.assertEquals("SearchActivitiesTest$SearchTopProcess", infos.getNameOrProcessName());
+            Assert.assertEquals("ActivityQueryServiceTest$SearchTopProcess", infos.getNameOrProcessName());
         }
     }
 
@@ -124,7 +124,6 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
 
     @Test
     public void searchActivities_inexistantClassShouldNotCrash() throws Exception {
-
         txTemplate.txWithout(s -> {
             loadProcessWithInexistantClassname();
         });
@@ -141,8 +140,8 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         final DbTopProcess process = new DbTopProcess();
         {
             process.setState(ActivityState.WAIT_ON_CHILDREN);
-            process.setFqn("ch.vd.registre.tipi.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
-            process.setProcessName("ch.vd.registre.tipi.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            process.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            process.setProcessName("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
             addVars(process);
             activityRepository.save(process);
         }
@@ -151,7 +150,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         {
             procAct1 = new DbActivity();
             procAct1.setState(ActivityState.FINISHED);
-            procAct1.setFqn("ch.vd.registre.tipi.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            procAct1.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
             procAct1.setProcess(process);
             procAct1.setParent(process);
             addVars(procAct1);
@@ -160,7 +159,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         {
             DbActivity procAct2 = new DbActivity();
             procAct2.setState(ActivityState.EXECUTING);
-            procAct2.setFqn("ch.vd.registre.tipi.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            procAct2.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
             procAct2.setProcess(process);
             procAct2.setParent(process);
             procAct2.setPrevious(procAct1);
@@ -173,7 +172,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             DbSubProcess sub = new DbSubProcess();
             {
                 sub.setState(ActivityState.EXECUTING);
-                sub.setFqn("ch.vd.registre.tipi.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                sub.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 sub.setProcess(process);
                 sub.setParent(process);
                 addVars(sub);
@@ -184,7 +183,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             DbActivity subAct1;
             {
                 subAct1 = new DbActivity();
-                subAct1.setFqn("ch.vd.registre.tipi.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct1.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 subAct1.setProcess(process);
                 subAct1.setParent(sub);
                 subAct1.setState(ActivityState.INITIAL);
@@ -195,7 +194,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             {
                 DbActivity subAct2 = new DbActivity();
                 sub.setState(ActivityState.INITIAL);
-                subAct2.setFqn("ch.vd.registre.tipi.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct2.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 subAct2.setProcess(process);
                 subAct2.setParent(sub);
                 subAct2.setPrevious(subAct1);
@@ -206,7 +205,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             {
                 DbActivity subAct3 = new DbActivity();
                 sub.setState(ActivityState.INITIAL);
-                subAct3.setFqn("ch.vd.registre.tipi.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct3.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 subAct3.setProcess(process);
                 subAct3.setParent(sub);
                 addVars(subAct3);
@@ -218,7 +217,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         {
             DbSubProcess sub = new DbSubProcess();
             {
-                sub.setFqn("ch.vd.registre.tipi.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                sub.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 sub.setProcess(process);
                 sub.setParent(process);
                 addVars(sub);
@@ -229,7 +228,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             DbActivity subAct1;
             {
                 subAct1 = new DbActivity();
-                subAct1.setFqn("ch.vd.registre.tipi.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct1.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 subAct1.setProcess(process);
                 subAct1.setParent(sub);
                 addVars(subAct1);
@@ -238,7 +237,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             // S2-Acti2
             {
                 DbActivity subAct2 = new DbActivity();
-                subAct2.setFqn("ch.vd.registre.tipi.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct2.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 subAct2.setProcess(process);
                 subAct2.setParent(sub);
                 subAct2.setPrevious(subAct1);
@@ -249,7 +248,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             // S2-Acti3
             {
                 DbActivity subAct3 = new DbActivity();
-                subAct3.setFqn("ch.vd.registre.tipi.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct3.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 subAct3.setProcess(process);
                 subAct3.setParent(sub);
                 subAct3.setState(ActivityState.ERROR);
@@ -264,8 +263,8 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         DbTopProcess process = new DbTopProcess();
         {
             process.setState(ActivityState.WAIT_ON_CHILDREN);
-            process.setFqn("ch.vd.registre.tipi.inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
-            process.setProcessName("ch.vd.registre.tipi.inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            process.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            process.setProcessName("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
             addVars(process);
             activityRepository.save(process);
         }
@@ -274,7 +273,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         {
             procAct1 = new DbActivity();
             procAct1.setState(ActivityState.FINISHED);
-            procAct1.setFqn("ch.vd.registre.tipi.inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            procAct1.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
             procAct1.setProcess(process);
             procAct1.setParent(process);
             addVars(procAct1);
@@ -283,7 +282,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         {
             DbActivity procAct2 = new DbActivity();
             procAct2.setState(ActivityState.EXECUTING);
-            procAct2.setFqn("ch.vd.registre.tipi.inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            procAct2.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
             procAct2.setProcess(process);
             procAct2.setParent(process);
             procAct2.setPrevious(procAct1);
@@ -296,7 +295,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             DbSubProcess sub = new DbSubProcess();
             {
                 sub.setState(ActivityState.EXECUTING);
-                sub.setFqn("ch.vd.registre.tipi.inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                sub.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 sub.setProcess(process);
                 sub.setParent(process);
                 addVars(sub);
@@ -307,7 +306,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             DbActivity subAct1;
             {
                 subAct1 = new DbActivity();
-                subAct1.setFqn("ch.vd.registre.tipi.inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct1.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 subAct1.setProcess(process);
                 subAct1.setParent(sub);
                 subAct1.setState(ActivityState.INITIAL);
@@ -318,7 +317,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             {
                 DbActivity subAct2 = new DbActivity();
                 sub.setState(ActivityState.INITIAL);
-                subAct2.setFqn("ch.vd.registre.tipi.inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct2.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 subAct2.setProcess(process);
                 subAct2.setParent(sub);
                 subAct2.setPrevious(subAct1);
@@ -329,7 +328,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             {
                 DbActivity subAct3 = new DbActivity();
                 sub.setState(ActivityState.INITIAL);
-                subAct3.setFqn("ch.vd.registre.tipi.inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct3.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 subAct3.setProcess(process);
                 subAct3.setParent(sub);
                 addVars(subAct3);
@@ -341,7 +340,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         {
             DbSubProcess sub = new DbSubProcess();
             {
-                sub.setFqn("ch.vd.registre.tipi.inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                sub.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 sub.setProcess(process);
                 sub.setParent(process);
                 addVars(sub);
@@ -352,7 +351,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             DbActivity subAct1;
             {
                 subAct1 = new DbActivity();
-                subAct1.setFqn("ch.vd.registre.tipi.inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct1.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 subAct1.setProcess(process);
                 subAct1.setParent(sub);
                 addVars(subAct1);
@@ -361,7 +360,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             // S2-Acti2
             {
                 DbActivity subAct2 = new DbActivity();
-                subAct2.setFqn("ch.vd.registre.tipi.inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct2.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 subAct2.setProcess(process);
                 subAct2.setParent(sub);
                 subAct2.setPrevious(subAct1);
@@ -372,7 +371,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             // S2-Acti3
             {
                 DbActivity subAct3 = new DbActivity();
-                subAct3.setFqn("ch.vd.registre.tipi.inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct3.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
                 subAct3.setProcess(process);
                 subAct3.setParent(sub);
                 subAct3.setState(ActivityState.ERROR);
