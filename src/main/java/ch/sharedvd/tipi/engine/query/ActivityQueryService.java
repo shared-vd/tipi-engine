@@ -15,10 +15,10 @@ import ch.sharedvd.tipi.engine.runner.TopProcessGroupManager;
 import ch.sharedvd.tipi.engine.utils.Assert;
 import ch.sharedvd.tipi.engine.utils.ResultListWithCount;
 import ch.sharedvd.tipi.engine.utils.TixTemplate;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,71 +57,60 @@ public class ActivityQueryService {
 
     @SuppressWarnings("unchecked")
     public ResultListWithCount<TipiActivityInfos> searchActivities(final TipiCriteria criteria, final int maxHits) {
-        Assert.fail("");
-        return null;
-//        final ResultListWithCount<TipiActivityInfos> infos = txTemplate.txWith((s) -> {
-//            final DbActivityCriteria crit = generateCriteria(criteria);
-//            final ResultListWithCount<DbActivity> results;
-//            if (maxHits > 0) {
-//                results = hqlBuilder.getResultListWithCount(crit, maxHits);
-//            } else {
-//                List<DbActivity> r = hqlBuilder.getResultList(crit);
-//                results = new ResultListWithCount<DbActivity>(r, r.size());
-//                results.setResult(r);
-//                results.setCount(r.size());
-//            }
-//            // log.debug("Actis found: "+results.getCount()+" - "+crit.buildHqlQuery().getHqlQuery());
-//
-//            final List<TipiActivityInfos> list = new ArrayList<TipiActivityInfos>();
-//            for (DbActivity am : results.getResult()) {
-//                list.add(buildActivityOrProcessInfos(am, false, false));
-//            }
-//            ResultListWithCount<TipiActivityInfos> l = new ResultListWithCount<TipiActivityInfos>(list, results.getCount());
-//            return l;
-//
-//        });
-//        return infos;
+        final ResultListWithCount<TipiActivityInfos> infos = txTemplate.txWith((s) -> {
+            final HqlQuery hq = generateCriteria(criteria);
+            final ResultListWithCount<DbActivity> results = hq.getResultListWithCount(em, maxHits);
+            // log.debug("Actis found: "+results.getCount()+" - "+crit.buildHqlQuery().getHqlQuery());
+
+            final List<TipiActivityInfos> list = new ArrayList<>();
+            for (DbActivity am : results.getResult()) {
+                list.add(buildActivityOrProcessInfos(am, false, false));
+            }
+            ResultListWithCount<TipiActivityInfos> l = new ResultListWithCount<TipiActivityInfos>(list, results.getCount());
+            return l;
+
+        });
+        return infos;
     }
 
-//    public DbActivityCriteria generateCriteria(final TipiCriteria criteria) {
-//        final DbActivityCriteria actCriteria = new DbActivityCriteria();
-//
-//        // Préparation des conditions pour la recherche
-//
-//        if (criteria.getProcessId() != null) {
-//            actCriteria.addAndExpression(Expr.or(actCriteria.process__Id().eq(criteria.getProcessId()),
-//                    actCriteria.id().eq(criteria.getProcessId())));
-//        }
-//
-//        if (criteria.getParentId() != null) {
-//            actCriteria.addAndExpression(actCriteria.parent__Id().eq(criteria.getParentId()));
-//        }
-//
-//        if (criteria.getId() != null) {
-//            actCriteria.addAndExpression(actCriteria.id().eq(criteria.getId()));
-//        }
-//
-//        if (StringUtils.isNotBlank(criteria.getNameOrProcessName())) {
-//            String processName = criteria.getNameOrProcessName();
-//            actCriteria.addAndExpression(Expr.or(actCriteria.fqn().compare(criteria.getOperatorForNameOrProcessName(), processName),
-//                    actCriteria.processName().compare(criteria.getOperatorForNameOrProcessName(), processName)));
-//        }
-//
-//        if (criteria.getDemandeFinExecution() != null) {
-//            actCriteria.addAndExpression(actCriteria.requestEndExecution().eq(criteria.getDemandeFinExecution()));
-//        }
-//
-//        if (criteria.getStatesSelectionnes() != null && criteria.getStatesSelectionnes().length >= 1) {
-//            actCriteria.addAndExpression(actCriteria.state().in(Arrays.asList(criteria.getStatesSelectionnes())));
-//        }
-//
-//        if (StringUtils.isNotBlank(criteria.getIdCorrelation())) {
-//            actCriteria.addAndExpression(actCriteria.correlationId().compare(criteria.getOperatorForIdCorrelation(),
-//                    criteria.getIdCorrelation()));
-//        }
-//
-//        if (StringUtils.isNotBlank(criteria.getVariableName()) && criteria.getVariableValue() != null) {
-//            VariableCriteria varCrit = actCriteria.newVariablesCriteria(JoinType.INNER);
+    public HqlQuery generateCriteria(final TipiCriteria criteria) {
+        final HqlQuery hq = new HqlQuery("from DbActivity a where 1 = 1 ");
+
+        // Préparation des conditions pour la recherche
+
+        if (criteria.getProcessId() != null) {
+            hq.append(" and (a.process.id = :processId or a.id = :processId) ", "processId", criteria.getProcessId());
+        }
+
+        if (criteria.getParentId() != null) {
+            hq.append(" and a.parent.id = :parentId ", "parentId", criteria.getParentId());
+        }
+
+        if (criteria.getId() != null) {
+            hq.append(" and a.id = :id ", "id", criteria.getId());
+        }
+
+        if (StringUtils.isNotBlank(criteria.getNameOrProcessName())) {
+            final String processName = criteria.getNameOrProcessName();
+            hq.append(" and a.processName like '%:id' ", "processName", processName);
+        }
+
+        if (criteria.getDemandeFinExecution() != null) {
+            hq.append(" and a.requestEndExecution = :reqEnd ", "reqEnd", criteria.getDemandeFinExecution());
+        }
+
+        if (criteria.getStatesSelectionnes() != null && criteria.getStatesSelectionnes().length >= 1) {
+            hq.append(" and a.state in (:state) ", "state", criteria.getStatesSelectionnes());
+        }
+
+        if (StringUtils.isNotBlank(criteria.getIdCorrelation())) {
+            hq.append(" and a.correlationId = :correlationId ", "correlationId", criteria.getIdCorrelation());
+        }
+
+        if (StringUtils.isNotBlank(criteria.getVariableName()) && criteria.getVariableValue() != null) {
+            Assert.fail("TODO");
+//            hq.append(" and a.correlationId = :correlationId ", "correlationId", criteria.getIdCorrelation());
+//            VariableCriteria varCrit = hq.newVariablesCriteria(JoinType.INNER);
 //
 //            EqualsExpr eq = null;
 //            if (criteria.getVariableValue() instanceof Long) {
@@ -133,13 +122,13 @@ public class ActivityQueryService {
 //            if (null != eq) {
 //                varCrit.addAndExpression(eq);
 //            }
-//        }
-//
-//        // On met un ordre par défaut pour être sûr d'avoir à peu près toujours la même liste et on choisit
-//        // la date de création pour avoir, par défaut, les plus anciens éléments
-//        actCriteria.addAscendingOrder(DbActivityProperty.CreationDate);
-//        return actCriteria;
-//    }
+        }
+
+        // On met un ordre par défaut pour être sûr d'avoir à peu près toujours la même liste et on choisit
+        // la date de création pour avoir, par défaut, les plus anciens éléments en premier
+        hq.append(" order by a.creation");
+        return hq;
+    }
 
     private TipiActivityInfos buildActivityOrProcessInfos(DbActivity am, boolean loadVariables, boolean gatherChildActivities) {
         if (null == am)
@@ -198,8 +187,7 @@ public class ActivityQueryService {
                 final HqlQuery hq = new HqlQuery("select count(*) from DbActivity a where ");
                 addSubProcessExpr(hq, processId, subProcessOnly);
                 hq.append(" and a.dateEndExecute is not null");
-                final Query q = hq.createQuery(em);
-                List<DbActivity> resultSet = q.getResultList();
+                List<DbActivity> resultSet = hq.getResultList(em);
                 if (resultSet.size() == 1) {
                     // Trouvé un seul
                     return null;
@@ -209,8 +197,7 @@ public class ActivityQueryService {
                 final HqlQuery hq = new HqlQuery("select count(*) from DbActivity a where ");
                 addSubProcessExpr(hq, processId, subProcessOnly);
                 hq.append(" and a.dateEndExecute = true");
-                final Query q = hq.createQuery(em);
-                List<DbActivity> resultSet = q.getResultList();
+                List<DbActivity> resultSet = hq.getResultList(em);
                 if (resultSet.size() == 1) {
                     // Trouvé un seul
                     DbActivity am = resultSet.get(0);
@@ -332,8 +319,7 @@ public class ActivityQueryService {
                 hq.append(" and state = :state", "state", state);
             }
 
-            final Query q = hq.createQuery(em);
-            final Long result = (Long) q.getSingleResult();
+            final Long result = hq.getSingleResult(em);
             return result;
         });
         return infos;
@@ -344,8 +330,7 @@ public class ActivityQueryService {
             final HqlQuery hq = new HqlQuery("select count(*) from DbActivity a where ");
             addSubProcessExpr(hq, processId, subProcessOnly);
             hq.append(" and a.requestEndExecution = true");
-            final Query q = hq.createQuery(em);
-            return (Long) q.getSingleResult();
+            return hq.getSingleResult(em);
         });
         return infos;
     }
@@ -355,8 +340,7 @@ public class ActivityQueryService {
             final HqlQuery hq = new HqlQuery("select count(*) from DbActivity a where ");
             addSubProcessExpr(hq, processId, subProcessOnly);
             hq.append(" and a.nbRetryDone > 0");
-            final Query q = hq.createQuery(em);
-            return (Long) q.getSingleResult();
+            return hq.getSingleResult(em);
         });
         return infos;
     }
