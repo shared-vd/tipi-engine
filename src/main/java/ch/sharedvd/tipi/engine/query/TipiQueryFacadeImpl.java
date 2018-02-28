@@ -3,6 +3,7 @@ package ch.sharedvd.tipi.engine.query;
 import ch.sharedvd.tipi.engine.infos.ActivityThreadInfos;
 import ch.sharedvd.tipi.engine.infos.ConnectionCapInfos;
 import ch.sharedvd.tipi.engine.infos.TipiActivityInfos;
+import ch.sharedvd.tipi.engine.infos.TipiTopProcessInfos;
 import ch.sharedvd.tipi.engine.utils.ResultListWithCount;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,6 +22,11 @@ public class TipiQueryFacadeImpl implements TipiQueryFacade {
     @Override
     public TipiActivityInfos getActivityInfos(long id, boolean loadVariables) {
         return activityQueryService.getActivityInfos(id, loadVariables);
+    }
+
+    @Override
+    public ResultListWithCount<TipiTopProcessInfos> getRunningProcesses(int maxHits) {
+        return activityQueryService.getRunningProcesses(maxHits);
     }
 
     @Override

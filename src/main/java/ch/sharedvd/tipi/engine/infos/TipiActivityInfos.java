@@ -17,7 +17,7 @@ public class TipiActivityInfos implements Serializable {
 
     private long id;
     private String type;
-    private String nameOrProcessName;
+    private String simpleName;
     private long processId;
     private String processName;
     private long parentId;
@@ -49,7 +49,7 @@ public class TipiActivityInfos implements Serializable {
         } else {
             type = "Inconnu";
         }
-        nameOrProcessName = db.getSimpleName();
+        simpleName = db.getSimpleName();
         {
             // a refaire ici la description de l'activity
         }
@@ -91,12 +91,12 @@ public class TipiActivityInfos implements Serializable {
         this.processName = processName;
     }
 
-    public String getNameOrProcessName() {
-        return nameOrProcessName;
+    public String getSimpleName() {
+        return simpleName;
     }
     // package
-    void setNameOrProcessName(String nameOrProcessName) {
-        this.nameOrProcessName = nameOrProcessName;
+    void setSimpleName(String simpleName) {
+        this.simpleName = simpleName;
     }
 
     public String getCallstack() {
@@ -179,12 +179,8 @@ public class TipiActivityInfos implements Serializable {
         return "0s";
     }
 
-    public String getSimpleProcessName() {
-        return getProcessName();
-    }
-
     @Override
     public String toString() {
-        return "id=" + id + " name=" + nameOrProcessName + " state=" + state;
+        return "id=" + id + " name=" + simpleName + " state=" + state;
     }
 }

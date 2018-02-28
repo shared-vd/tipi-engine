@@ -4,6 +4,7 @@ import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.infos.TipiActivityInfos;
+import ch.sharedvd.tipi.engine.infos.TipiTopProcessInfos;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.meta.VariableDescription;
 import ch.sharedvd.tipi.engine.meta.VariableType;
@@ -15,35 +16,44 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
 
     @Test
-    @Ignore("TODO(JEC) ce test peut pas passer et je sais pas comment corriger")
-    public void searchActivities_Waiting() throws Exception {
+    public void getActivitiesForCorrelationId() {
         txTemplate.txWithout(s -> {
             loadProcess();
         });
 
-        final TipiCriteria criteria = new TipiCriteria();
-        //	criteria.setGroupe("Proc");
-        ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
-        Assert.assertEquals(1, results.getCount());
+        final List<Long> list = activityQueryService.getActivitiesForCorrelationId("TheCorelId");
+        assertEquals(1, list.size());
     }
 
     @Test
-    @Ignore("TODO(JEC) ce test peut pas passer et je sais pas comment corriger")
-    public void searchActivities_Groupe() throws Exception {
-
+    public void getRunningProcesses() {
         txTemplate.txWithout(s -> {
             loadProcess();
         });
 
-        final TipiCriteria criteria = new TipiCriteria();
-        //	criteria.setGroupe("Proc");
-        ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
-        Assert.assertEquals(10, results.getCount());
+        final ResultListWithCount<TipiTopProcessInfos> results = activityQueryService.getRunningProcesses(-1);
+        assertEquals(1, results.getResult().size());
+        {
+            final TipiTopProcessInfos tpi = results.getResult().get(0);
+            assertEquals("ActivityQueryServiceTest$ActivityPersisterServiceTopProcess", tpi.getProcessName());
+            assertEquals("ActivityQueryServiceTest$ActivityPersisterServiceTopProcess", tpi.getSimpleName());
+            assertEquals("Process", tpi.getType());
+            assertEquals(15, tpi.getNbActivitesTotal());
+            assertEquals(1, tpi.getNbActivitesError());
+            assertEquals(3, tpi.getNbActivitesExecuting());
+            assertEquals(0, tpi.getNbActivitesAborted());
+            assertEquals(2, tpi.getNbActivitesFinished());
+            assertEquals(8, tpi.getNbActivitesInitial());
+            assertEquals(0, tpi.getNbActivitesRetry());
+            assertEquals(0, tpi.getNbActivitesSuspended());
+            assertEquals(1, tpi.getNbActivitesWaiting());
+        }
     }
 
     @Test
@@ -59,12 +69,12 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
 
         });
 
-//        ResultListWithCount<TipiTopProcessInfos> infos = activityQueryService.getAllProcesses(50);
-//        for (TipiTopProcessInfos ttpi : infos) {
-//            Assert.assertEquals(11L, ttpi.getNbActivitesTotal());
-//            Assert.assertEquals(1L, ttpi.getNbActivitesError());
-//            Assert.assertEquals(2L, ttpi.getNbActivitesExecuting());
-//        }
+        ResultListWithCount<TipiTopProcessInfos> infos = activityQueryService.getAllProcesses(50);
+        for (TipiTopProcessInfos ttpi : infos) {
+            Assert.assertEquals(11L, ttpi.getNbActivitesTotal());
+            Assert.assertEquals(1L, ttpi.getNbActivitesError());
+            Assert.assertEquals(2L, ttpi.getNbActivitesExecuting());
+        }
     }
 
     @Test
@@ -104,7 +114,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             Assert.assertEquals(2L, results.getCount());
             Assert.assertEquals(1, results.getResult().size());
             TipiActivityInfos infos = results.getResult().get(0);
-            Assert.assertEquals("ActivityQueryServiceTest$SearchTopProcess", infos.getNameOrProcessName());
+            Assert.assertEquals("ActivityQueryServiceTest$SearchTopProcess", infos.getSimpleName());
         }
     }
 
@@ -138,7 +148,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         final ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
         Assert.assertEquals(11l, results.getCount());
         final TipiActivityInfos infos = results.getResult().get(0);
-        Assert.assertEquals("Unknown: ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess", infos.getNameOrProcessName());
+        Assert.assertEquals("Unknown: ActivityQueryServiceTest$ActivityPersisterServiceTopProcess", infos.getSimpleName());
     }
 
     private void loadProcess() throws Exception {
@@ -146,8 +156,8 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         final DbTopProcess process = new DbTopProcess();
         {
             process.setState(ActivityState.WAIT_ON_CHILDREN);
-            process.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
-            process.setProcessName("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            process.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
+            process.setProcessName("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
             addVars(process);
             activityRepository.save(process);
         }
@@ -156,16 +166,17 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         {
             procAct1 = new DbActivity();
             procAct1.setState(ActivityState.FINISHED);
-            procAct1.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            procAct1.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
             procAct1.setProcess(process);
             procAct1.setParent(process);
+            procAct1.setCorrelationId("TheCorelId");
             addVars(procAct1);
             activityRepository.save(procAct1);
         }
         {
             DbActivity procAct2 = new DbActivity();
             procAct2.setState(ActivityState.EXECUTING);
-            procAct2.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            procAct2.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
             procAct2.setProcess(process);
             procAct2.setParent(process);
             procAct2.setPrevious(procAct1);
@@ -178,7 +189,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             DbSubProcess sub = new DbSubProcess();
             {
                 sub.setState(ActivityState.EXECUTING);
-                sub.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                sub.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 sub.setProcess(process);
                 sub.setParent(process);
                 addVars(sub);
@@ -189,7 +200,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             DbActivity subAct1;
             {
                 subAct1 = new DbActivity();
-                subAct1.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct1.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 subAct1.setProcess(process);
                 subAct1.setParent(sub);
                 subAct1.setState(ActivityState.INITIAL);
@@ -200,7 +211,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             {
                 DbActivity subAct2 = new DbActivity();
                 sub.setState(ActivityState.INITIAL);
-                subAct2.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct2.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 subAct2.setProcess(process);
                 subAct2.setParent(sub);
                 subAct2.setPrevious(subAct1);
@@ -211,7 +222,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             {
                 DbActivity subAct3 = new DbActivity();
                 sub.setState(ActivityState.INITIAL);
-                subAct3.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct3.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 subAct3.setProcess(process);
                 subAct3.setParent(sub);
                 addVars(subAct3);
@@ -223,7 +234,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         {
             DbSubProcess sub = new DbSubProcess();
             {
-                sub.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                sub.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 sub.setProcess(process);
                 sub.setParent(process);
                 addVars(sub);
@@ -234,7 +245,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             DbActivity subAct1;
             {
                 subAct1 = new DbActivity();
-                subAct1.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct1.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 subAct1.setProcess(process);
                 subAct1.setParent(sub);
                 addVars(subAct1);
@@ -243,7 +254,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             // S2-Acti2
             {
                 DbActivity subAct2 = new DbActivity();
-                subAct2.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct2.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 subAct2.setProcess(process);
                 subAct2.setParent(sub);
                 subAct2.setPrevious(subAct1);
@@ -254,7 +265,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             // S2-Acti3
             {
                 DbActivity subAct3 = new DbActivity();
-                subAct3.setFqn("ch.sharedvd.tipi.engine.model.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct3.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 subAct3.setProcess(process);
                 subAct3.setParent(sub);
                 subAct3.setState(ActivityState.ERROR);
@@ -269,8 +280,8 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         DbTopProcess process = new DbTopProcess();
         {
             process.setState(ActivityState.WAIT_ON_CHILDREN);
-            process.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
-            process.setProcessName("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            process.setFqn("inexistent.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
+            process.setProcessName("inexistent.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
             addVars(process);
             activityRepository.save(process);
         }
@@ -279,7 +290,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         {
             procAct1 = new DbActivity();
             procAct1.setState(ActivityState.FINISHED);
-            procAct1.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            procAct1.setFqn("inexistent.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
             procAct1.setProcess(process);
             procAct1.setParent(process);
             addVars(procAct1);
@@ -288,7 +299,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         {
             DbActivity procAct2 = new DbActivity();
             procAct2.setState(ActivityState.EXECUTING);
-            procAct2.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+            procAct2.setFqn("inexistent.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
             procAct2.setProcess(process);
             procAct2.setParent(process);
             procAct2.setPrevious(procAct1);
@@ -301,7 +312,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             DbSubProcess sub = new DbSubProcess();
             {
                 sub.setState(ActivityState.EXECUTING);
-                sub.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                sub.setFqn("inexistent.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 sub.setProcess(process);
                 sub.setParent(process);
                 addVars(sub);
@@ -312,7 +323,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             DbActivity subAct1;
             {
                 subAct1 = new DbActivity();
-                subAct1.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct1.setFqn("inexistent.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 subAct1.setProcess(process);
                 subAct1.setParent(sub);
                 subAct1.setState(ActivityState.INITIAL);
@@ -323,7 +334,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             {
                 DbActivity subAct2 = new DbActivity();
                 sub.setState(ActivityState.INITIAL);
-                subAct2.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct2.setFqn("inexistent.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 subAct2.setProcess(process);
                 subAct2.setParent(sub);
                 subAct2.setPrevious(subAct1);
@@ -334,7 +345,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             {
                 DbActivity subAct3 = new DbActivity();
                 sub.setState(ActivityState.INITIAL);
-                subAct3.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct3.setFqn("inexistent.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 subAct3.setProcess(process);
                 subAct3.setParent(sub);
                 addVars(subAct3);
@@ -346,7 +357,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         {
             DbSubProcess sub = new DbSubProcess();
             {
-                sub.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                sub.setFqn("inexistent.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 sub.setProcess(process);
                 sub.setParent(process);
                 addVars(sub);
@@ -357,7 +368,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             DbActivity subAct1;
             {
                 subAct1 = new DbActivity();
-                subAct1.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct1.setFqn("inexistent.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 subAct1.setProcess(process);
                 subAct1.setParent(sub);
                 addVars(subAct1);
@@ -366,7 +377,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             // S2-Acti2
             {
                 DbActivity subAct2 = new DbActivity();
-                subAct2.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct2.setFqn("inexistent.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 subAct2.setProcess(process);
                 subAct2.setParent(sub);
                 subAct2.setPrevious(subAct1);
@@ -377,7 +388,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             // S2-Acti3
             {
                 DbActivity subAct3 = new DbActivity();
-                subAct3.setFqn("inexistent.ActivityPersisterServiceTest$ActivityPersisterServiceTopProcess");
+                subAct3.setFqn("inexistent.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess");
                 subAct3.setProcess(process);
                 subAct3.setParent(sub);
                 subAct3.setState(ActivityState.ERROR);
@@ -413,4 +424,30 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         }
     }
 
+    @Test
+    @Ignore("TODO(JEC) ce test peut pas passer et je sais pas comment corriger")
+    public void searchActivities_Waiting() throws Exception {
+        txTemplate.txWithout(s -> {
+            loadProcess();
+        });
+
+        final TipiCriteria criteria = new TipiCriteria();
+        //	criteria.setGroupe("Proc");
+        ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
+        Assert.assertEquals(1, results.getCount());
+    }
+
+    @Test
+    @Ignore("TODO(JEC) ce test peut pas passer et je sais pas comment corriger")
+    public void searchActivities_Groupe() throws Exception {
+
+        txTemplate.txWithout(s -> {
+            loadProcess();
+        });
+
+        final TipiCriteria criteria = new TipiCriteria();
+        //	criteria.setGroupe("Proc");
+        ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
+        Assert.assertEquals(10, results.getCount());
+    }
 }

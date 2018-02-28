@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -39,12 +40,11 @@ public class ActivityQueryService {
     private TopProcessGroupManager topProcessGroupManager;
 
     public List<Long> getActivitiesForCorrelationId(String aCorrelationId) {
-//        DbActivityCriteria actc = new DbActivityCriteria();
-//        actc.addAndExpression(actc.correlationId().eq(aCorrelationId));
-//        actc.restrictSelect(DbActivityProperty.Id);
-//        return hqlBuilder.getResultList(Long.class, actc);
-        Assert.fail("");
-        return null;
+        final HqlQuery hq = new HqlQuery();
+        hq.select("a.id");
+        hq.from("DbActivity a");
+        hq.where("a.correlationId = :correlationId", "correlationId", aCorrelationId);
+        return hq.getResultList(em);
     }
 
     public TipiActivityInfos getActivityInfos(final long id, final boolean loadVariables) {
@@ -150,33 +150,33 @@ public class ActivityQueryService {
 
         if (gatherChildActivities) {
             // Tous les subProcess directs
-            updateDateFinExecution(infos, getOlderProcessEndExecution(process.getId().longValue(), true));
-            infos.incNbChildrenTotal(countActivitiesByState(process.getId().longValue(), null, true));
-            infos.incNbChildrenInitial(countActivitiesByState(process.getId().longValue(), ActivityState.INITIAL, true));
-            infos.incNbChildrenExecuting(countActivitiesByState(process.getId().longValue(), ActivityState.EXECUTING, true));
-            infos.incNbChildrenRetry(countActivitiesRetry(process.getId().longValue(), true));
-            infos.incNbChildrenAborted(countActivitiesByState(process.getId().longValue(), ActivityState.ABORTED, true));
-            infos.incNbChildrenFinished(countActivitiesByState(process.getId().longValue(), ActivityState.FINISHED, true));
-            infos.incNbChildrenError(countActivitiesByState(process.getId().longValue(), ActivityState.ERROR, true));
-            infos.incNbChildrenWaiting(countActivitiesByState(process.getId().longValue(), ActivityState.WAIT_ON_CHILDREN, true));
-            infos.incNbChildrenSuspended(countActivitiesByState(process.getId().longValue(), ActivityState.SUSPENDED, true));
-            infos.incNbChildrenRequestEndExecution(countActivitiesRequestEndExecution(process.getId().longValue(), true));
+            final long pid = process.getId().longValue();
+            updateDateFinExecution(infos, getOlderProcessEndExecution(pid, true));
+            infos.incNbActivitesTotal(countActivitiesByState(pid, null, true));
+            infos.incNbActivitesInitial(countActivitiesByState(pid, ActivityState.INITIAL, true));
+            infos.incNbActivitesExecuting(countActivitiesByState(pid, ActivityState.EXECUTING, true));
+            infos.incNbActivitesRetry(countActivitiesRetry(pid, true));
+            infos.incNbActivitesAborted(countActivitiesByState(pid, ActivityState.ABORTED, true));
+            infos.incNbActivitesFinished(countActivitiesByState(pid, ActivityState.FINISHED, true));
+            infos.incNbActivitesError(countActivitiesByState(pid, ActivityState.ERROR, true));
+            infos.incNbActivitesWaiting(countActivitiesByState(pid, ActivityState.WAIT_ON_CHILDREN, true));
+            infos.incNbActivitesSuspended(countActivitiesByState(pid, ActivityState.SUSPENDED, true));
+            infos.incNbActivitesRequestEndExecution(countActivitiesRequestEndExecution(pid, true));
 
             // Toutes les activités de ce process
             if (process instanceof DbTopProcess) {
-                TipiTopProcessInfos ttpi = infos;
-
-                updateDateFinExecution(infos, getOlderProcessEndExecution(process.getId().longValue(), false));
-                ttpi.incNbActivitesTotal(countActivitiesByState(process.getId().longValue(), null, false));
-                ttpi.incNbActivitesInitial(countActivitiesByState(process.getId().longValue(), ActivityState.INITIAL, false));
-                ttpi.incNbActivitesExecuting(countActivitiesByState(process.getId().longValue(), ActivityState.EXECUTING, false));
-                ttpi.incNbActivitesRetry(countActivitiesRetry(process.getId().longValue(), false));
-                ttpi.incNbActivitesAborted(countActivitiesByState(process.getId().longValue(), ActivityState.ABORTED, false));
-                ttpi.incNbActivitesFinished(countActivitiesByState(process.getId().longValue(), ActivityState.FINISHED, false));
-                ttpi.incNbActivitesError(countActivitiesByState(process.getId().longValue(), ActivityState.ERROR, false));
-                ttpi.incNbActivitesWaiting(countActivitiesByState(process.getId().longValue(), ActivityState.WAIT_ON_CHILDREN, false));
-                ttpi.incNbActivitesSuspended(countActivitiesByState(process.getId().longValue(), ActivityState.SUSPENDED, false));
-                ttpi.incNbActivitesRequestEndExecution(countActivitiesRequestEndExecution(process.getId().longValue(), false));
+                final TipiTopProcessInfos ttpi = infos;
+                updateDateFinExecution(infos, getOlderProcessEndExecution(pid, false));
+                ttpi.incNbActivitesTotal(countActivitiesByState(pid, null, false));
+                ttpi.incNbActivitesInitial(countActivitiesByState(pid, ActivityState.INITIAL, false));
+                ttpi.incNbActivitesExecuting(countActivitiesByState(pid, ActivityState.EXECUTING, false));
+                ttpi.incNbActivitesRetry(countActivitiesRetry(pid, false));
+                ttpi.incNbActivitesAborted(countActivitiesByState(pid, ActivityState.ABORTED, false));
+                ttpi.incNbActivitesFinished(countActivitiesByState(pid, ActivityState.FINISHED, false));
+                ttpi.incNbActivitesError(countActivitiesByState(pid, ActivityState.ERROR, false));
+                ttpi.incNbActivitesWaiting(countActivitiesByState(pid, ActivityState.WAIT_ON_CHILDREN, false));
+                ttpi.incNbActivitesSuspended(countActivitiesByState(pid, ActivityState.SUSPENDED, false));
+                ttpi.incNbActivitesRequestEndExecution(countActivitiesRequestEndExecution(pid, false));
             }
         }
         return infos;
@@ -214,15 +214,119 @@ public class ActivityQueryService {
         return infos;
     }
 
-//    private EqualsExpr addSubProcessExpr(DbActivityCriteria crit, Long processId, boolean subProcessOnly) {
-//        EqualsExpr eqExpr;
-//        if (subProcessOnly) {
-//            eqExpr = crit.parent__Id().eq(processId);
-//        } else {
-//            eqExpr = crit.process__Id().eq(processId);
-//        }
-//        return eqExpr;
-//    }
+    public List<ActivityThreadInfos> getThreadsInfos() {
+        return topProcessGroupManager.getThreadsInfos();
+    }
+
+    public List<ConnectionCapInfos> getAllConnectionCupInfos() {
+        List<ConnectionCapInfos> connCupInfos = new ArrayList<>();
+        for (ConnectionCap ct : connectionCapManager.getCaps()) {
+            connCupInfos.add(new ConnectionCapInfos(ct, connectionCapManager));
+        }
+        return connCupInfos;
+    }
+
+    @SuppressWarnings("unchecked")
+    public ResultListWithCount<TipiTopProcessInfos> getRunningProcesses(final int maxHits) {
+        return txTemplate.txWith((s) -> {
+            final HqlQuery hq = new HqlQuery();
+            hq.from("DbTopProcess p");
+
+            hq.where("p.parent.id is null ");// Process
+            hq.where(" and p.state in :state", "state", Arrays.asList(ActivityState.INITIAL, ActivityState.EXECUTING, ActivityState.WAIT_ON_CHILDREN));
+            hq.order("creation desc");
+            final ResultListWithCount<DbTopProcess> results = hq.getResultListWithCount(em, maxHits);
+
+            final List<TipiTopProcessInfos> list = new ArrayList<>();
+            for (DbTopProcess am : results) {
+                final TipiTopProcessInfos i = getRunningProcessInfos(am, false, true);
+                list.add(i);
+            }
+            return new ResultListWithCount<>(list, results.getCount());
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    public ResultListWithCount<TipiTopProcessInfos> getAllProcesses(final int maxHits) {
+        final ResultListWithCount<TipiTopProcessInfos> infos = txTemplate.txWith((s) -> {
+            final List<TipiTopProcessInfos> list = new ArrayList<>();
+
+            // On fait 2 requetes:
+            // - D'abord maxHits des process ABORTED et FINISHED
+            // - Ensuite maxHits de tous les processes
+
+            int count = 0;
+            // ABORTED et FINISHED
+            {
+                final HqlQuery hq = new HqlQuery();
+                hq.from("DbTopProcess p");
+                hq.where("p.parent.id is null");// Process
+
+                hq.where(" and p.state in :state", "state", Arrays.asList(ActivityState.ABORTED, ActivityState.FINISHED));
+                hq.order("creation asc");
+                ResultListWithCount<DbActivity> results = hq.getResultListWithCount(em, maxHits);
+                count += results.getCount();
+
+                for (DbActivity am : results.getResult()) {
+                    TipiTopProcessInfos i = getRunningProcessInfos((DbTopProcess) am, false, true);
+                    list.add(i);
+                }
+            }
+            // TOUS les autres, le plus récent en premier
+            {
+                final HqlQuery hq = new HqlQuery();
+                hq.from("DbTopProcess p");
+                hq.where("p.parent.id is null");// Process
+                hq.where(" and p.state NOT in :state", "state", Arrays.asList(ActivityState.ABORTED, ActivityState.FINISHED));
+                hq.order("creation desc");
+                ResultListWithCount<DbActivity> results = hq.getResultListWithCount(em, maxHits);
+                count += results.getCount();
+
+                for (DbActivity am : results.getResult()) {
+                    TipiTopProcessInfos i = getRunningProcessInfos((DbTopProcess) am, false, true);
+                    list.add((TipiTopProcessInfos) i);
+                }
+            }
+            return new ResultListWithCount<>(list, count);
+        });
+        return infos;
+    }
+
+    public int countActivitiesByState(final Long processId, final ActivityState state, final boolean subProcessOnly) {
+        final int infos = txTemplate.txWith((s) -> {
+            final HqlQuery hq = new HqlQuery("count(*)", "DbActivity a");
+            addSubProcessExpr(hq, processId, subProcessOnly);
+            if (state != null) {
+                hq.where(" and state = :state", "state", state);
+            }
+
+            final int result = ((Long) hq.getSingleResult(em)).intValue();
+            return result;
+        });
+        return infos;
+    }
+
+    public int countActivitiesRequestEndExecution(final Long processId, final boolean subProcessOnly) {
+        final int infos = txTemplate.txWith((s) -> {
+            final HqlQuery hq = new HqlQuery("count(*)", "DbActivity a");
+            addSubProcessExpr(hq, processId, subProcessOnly);
+            hq.where(" and a.requestEndExecution = true");
+            final int result = ((Long) hq.getSingleResult(em)).intValue();
+            return result;
+        });
+        return infos;
+    }
+
+    public int countActivitiesRetry(final Long processId, final boolean subProcessOnly) {
+        final int infos = txTemplate.txWith((s) -> {
+            final HqlQuery hq = new HqlQuery("count(*)", "DbActivity a");
+            addSubProcessExpr(hq, processId, subProcessOnly);
+            hq.where(" and a.nbRetryDone > 0");
+            final int result = ((Long) hq.getSingleResult(em)).intValue();
+            return result;
+        });
+        return infos;
+    }
 
     private HqlQuery addSubProcessExpr(HqlQuery hq, Long processId, boolean subProcessOnly) {
         if (subProcessOnly) {
@@ -239,114 +343,5 @@ public class ActivityQueryService {
                 aInfos.setDateEndExecute(aChildDate);
             }
         }
-    }
-
-    public List<ActivityThreadInfos> getThreadsInfos() {
-        return topProcessGroupManager.getThreadsInfos();
-    }
-
-    public List<ConnectionCapInfos> getAllConnectionCupInfos() {
-        List<ConnectionCapInfos> connCupInfos = new ArrayList<>();
-        for (ConnectionCap ct : connectionCapManager.getCaps()) {
-            connCupInfos.add(new ConnectionCapInfos(ct, connectionCapManager));
-        }
-        return connCupInfos;
-    }
-
-//    @SuppressWarnings("unchecked")
-//    public ResultListWithCount<TipiTopProcessInfos> getRunningProcesses(final int maxHits) {
-//        final DbTopProcessCriteria criteria = new DbTopProcessCriteria();
-//        criteria.addAndExpression(criteria.parent__Id().isNull()); // Process
-//        criteria.addAndExpression(criteria.state().in(ActivityState.INITIAL, ActivityState.EXECUTING,
-//                ActivityState.WAIT_ON_CHILDREN));
-//        criteria.addDescendingOrder(DbTopProcessProperty.CreationDate);
-//        final ResultListWithCount<DbActivity> results = hqlBuilder.getResultListWithCount(criteria, maxHits);
-//
-//        final List<TipiTopProcessInfos> list = new ArrayList<TipiTopProcessInfos>();
-//        for (DbActivity am : results) {
-//            TipiTopProcessInfos i = getRunningProcessInfos((DbTopProcess) am, false, false);
-//            list.add((TipiTopProcessInfos) i);
-//        }
-//        return new ResultListWithCount<TipiTopProcessInfos>(list, results.getCount());
-//    }
-
-//    @SuppressWarnings("unchecked")
-//    public ResultListWithCount<TipiTopProcessInfos> getAllProcesses(final int maxHits) {
-//        final ResultListWithCount<TipiTopProcessInfos> infos = txTemplate.txWith((s) -> {
-//            final List<TipiTopProcessInfos> list = new ArrayList<TipiTopProcessInfos>();
-//
-//            // On fait 2 requetes:
-//            // - D'abord maxHits des process ABORTED et FINISHED
-//            // - Ensuite maxHits de tous les processes
-//
-//            int count = 0;
-//            // ABORTED et FINISHED
-//            {
-//                final DbTopProcessCriteria criteria = new DbTopProcessCriteria();
-//                criteria.addAndExpression(criteria.parent__Id().isNull(), // Process
-//                        Expr.or(criteria.state().eq(ActivityState.ABORTED), criteria.state().eq(ActivityState.FINISHED)));
-//                criteria.addAscendingOrder(DbTopProcessProperty.CreationDate);
-//                ResultListWithCount<DbActivity> results = hqlBuilder.getResultListWithCount(criteria, maxHits);
-//                count += results.getCount();
-//
-//                for (DbActivity am : results.getResult()) {
-//                    TipiTopProcessInfos i = getRunningProcessInfos((DbTopProcess) am, false, true);
-//                    list.add((TipiTopProcessInfos) i);
-//                }
-//            }
-//            // TOUS les autres, le plus récent en premier
-//            {
-//                final DbTopProcessCriteria criteria = new DbTopProcessCriteria();
-//                criteria.addAndExpression(
-//                        criteria.parent__Id().isNull(), // Process
-//                        Expr.not(Expr.or(criteria.state().eq(ActivityState.ABORTED), criteria.state()
-//                                .eq(ActivityState.FINISHED))));
-//                criteria.addDescendingOrder(DbTopProcessProperty.CreationDate);
-//                ResultListWithCount<DbActivity> results = hqlBuilder.getResultListWithCount(criteria, maxHits);
-//                count += results.getCount();
-//
-//                for (DbActivity am : results.getResult()) {
-//                    TipiTopProcessInfos i = getRunningProcessInfos((DbTopProcess) am, false, true);
-//                    list.add((TipiTopProcessInfos) i);
-//                }
-//            }
-//            return new ResultListWithCount<TipiTopProcessInfos>(list, count);
-//        });
-//        return infos;
-//    }
-
-    public Long countActivitiesByState(final Long processId, final ActivityState state, final boolean subProcessOnly) {
-        final Long infos = txTemplate.txWith((s) -> {
-
-            final HqlQuery hq = new HqlQuery("count(*)", "DbActivity a");
-            addSubProcessExpr(hq, processId, subProcessOnly);
-            if (state != null) {
-                hq.where(" and state = :state", "state", state);
-            }
-
-            final Long result = hq.getSingleResult(em);
-            return result;
-        });
-        return infos;
-    }
-
-    public Long countActivitiesRequestEndExecution(final Long processId, final boolean subProcessOnly) {
-        final Long infos = txTemplate.txWith((s) -> {
-            final HqlQuery hq = new HqlQuery("count(*)", "DbActivity a");
-            addSubProcessExpr(hq, processId, subProcessOnly);
-            hq.where(" and a.requestEndExecution = true");
-            return hq.getSingleResult(em);
-        });
-        return infos;
-    }
-
-    public Long countActivitiesRetry(final Long processId, final boolean subProcessOnly) {
-        final Long infos = txTemplate.txWith((s) -> {
-            final HqlQuery hq = new HqlQuery("count(*)", "DbActivity a");
-            addSubProcessExpr(hq, processId, subProcessOnly);
-            hq.where(" and a.nbRetryDone > 0");
-            return hq.getSingleResult(em);
-        });
-        return infos;
     }
 }
