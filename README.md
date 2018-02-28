@@ -73,3 +73,16 @@ criteria.setNameOrProcessName("ExplDeplDeployTopProcess");
 TipiQueryFacade.searchActivities(criteria, 10)
 ```
 Returns only the 10 first found processes
+
+# Releasing to Maven central
+
+```
+mvn release:prepare
+mvn release:perform
+```
+
+Then to see errors:
+
+https://oss.sonatype.org/
+
+Login with Sonatype JIRA account
