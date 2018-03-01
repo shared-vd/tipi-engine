@@ -4,6 +4,8 @@ import ch.sharedvd.tipi.engine.action.*;
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
+import ch.sharedvd.tipi.engine.meta.VariableDescription;
+import ch.sharedvd.tipi.engine.meta.VariableType;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
 import org.junit.Assert;
@@ -16,7 +18,11 @@ import static org.junit.Assert.assertFalse;
 public class ActivityRunner_SubProcess_Test extends TipiEngineTest {
 
     public static class ProcTstSubProcess extends TopProcess {
-        public static final TopProcessMetaModel meta = new TopProcessMetaModel(ProcTstSubProcess.class, 2, -1, 10, null) {
+        public static final TopProcessMetaModel meta = new TopProcessMetaModel(ProcTstSubProcess.class,
+                new VariableDescription[]{
+                        new VariableDescription("mode", VariableType.Integer)
+                }, null,
+                2, -1, 10, null, true) {
             @Override
             protected void init() {
                 setDeleteWhenFinished(false);

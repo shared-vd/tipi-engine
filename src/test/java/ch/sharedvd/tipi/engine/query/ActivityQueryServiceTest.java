@@ -5,6 +5,8 @@ import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.common.AbstractTipiPersistenceTest;
 import ch.sharedvd.tipi.engine.infos.TipiActivityInfos;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
+import ch.sharedvd.tipi.engine.meta.VariableDescription;
+import ch.sharedvd.tipi.engine.meta.VariableType;
 import ch.sharedvd.tipi.engine.model.*;
 import ch.sharedvd.tipi.engine.utils.ResultListWithCount;
 import org.junit.Assert;
@@ -108,7 +110,11 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
 
     public static class SearchTopProcess extends TopProcess {
 
-        public final static TopProcessMetaModel meta = new TopProcessMetaModel(SearchTopProcess.class, 100, -1, 10, null) {
+        public final static TopProcessMetaModel meta = new TopProcessMetaModel(SearchTopProcess.class,
+                new VariableDescription[]{
+                        new VariableDescription("bla", VariableType.String)
+                }, null,
+                100, -1, 10, null, true) {
             @Override
             protected void init() {
                 setDeleteWhenFinished(false);

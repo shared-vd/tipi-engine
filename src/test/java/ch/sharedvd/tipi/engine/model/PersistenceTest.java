@@ -216,14 +216,14 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             em.persist(act);
             ID.set(act.getId());
 
-            activityPersisterService.putVariable(act, "UNE_CLE_REGDATE", LocalDate.of(2001, 2, 3));
-            activityPersisterService.putVariable(act, "UNE_CLE_ARRAY_LONG", new ArrayLong(1L, 2L, 3L));
-            activityPersisterService.putVariable(act, "UNE_CLE_SERIALIZABLE", new Exception("salut"));
-            activityPersisterService.putVariable(act, "UNE_CLE_TIMESTAMP", DATE);
-            activityPersisterService.putVariable(act, "UNE_CLE_STRING", "UN STRING");
-            activityPersisterService.putVariable(act, "UNE_CLE_LONG", 1L);
-            activityPersisterService.putVariable(act, "UNE_CLE_INT", 4);
-            activityPersisterService.putVariable(act, "UNE_CLE_BOOLEAN", Boolean.TRUE);
+            forcePutVariable(act, "UNE_CLE_REGDATE", LocalDate.of(2001, 2, 3));
+            forcePutVariable(act, "UNE_CLE_ARRAY_LONG", new ArrayLong(1L, 2L, 3L));
+            forcePutVariable(act, "UNE_CLE_SERIALIZABLE", new Exception("salut"));
+            forcePutVariable(act, "UNE_CLE_TIMESTAMP", DATE);
+            forcePutVariable(act, "UNE_CLE_STRING", "UN STRING");
+            forcePutVariable(act, "UNE_CLE_LONG", 1L);
+            forcePutVariable(act, "UNE_CLE_INT", 4);
+            forcePutVariable(act, "UNE_CLE_BOOLEAN", Boolean.TRUE);
         });
 
         txTemplate.txWithout((s) -> {
@@ -274,9 +274,9 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
             em.persist(p);
             P_ID.set(p.getId());
 
-            activityPersisterService.putVariable(p, "var1", 12L);
-            activityPersisterService.putVariable(p, "var2", 1);
-            activityPersisterService.putVariable(p, "var3", "Bla");
+            forcePutVariable(p, "var1", 12L);
+            forcePutVariable(p, "var2", 1);
+            forcePutVariable(p, "var3", "Bla");
 
             DbActivity a1;
             {
@@ -287,9 +287,9 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
                 em.persist(a);
                 a1 = a;
 
-                activityPersisterService.putVariable(a, "var1", 13L);
-                activityPersisterService.putVariable(a, "var2", 2);
-                activityPersisterService.putVariable(a, "var3", "Bli");
+                forcePutVariable(a, "var1", 13L);
+                forcePutVariable(a, "var2", 2);
+                forcePutVariable(a, "var3", "Bli");
             }
             A_ID.set(a1.getId());
             {

@@ -5,6 +5,8 @@ import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;
 import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
+import ch.sharedvd.tipi.engine.meta.VariableDescription;
+import ch.sharedvd.tipi.engine.meta.VariableType;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +21,11 @@ public class SessionClearTest extends TipiEngineTest {
         @Autowired
         private EntityManager em;
 
-        public static final TopProcessMetaModel meta = new TopProcessMetaModel(SessionClearProcess.class, 2, -1, 10, null) {
+        public static final TopProcessMetaModel meta = new TopProcessMetaModel(SessionClearProcess.class,
+                new VariableDescription[]{
+                        new VariableDescription("bla", VariableType.String)
+                }, null,
+                2, -1, 10, null, true) {
             @Override
             protected void init() {
                 setDeleteWhenFinished(false);
@@ -30,7 +36,7 @@ public class SessionClearTest extends TipiEngineTest {
         protected ActivityResultContext execute() throws Exception {
             em.clear();
 
-            facade.putVariable("bla", "bli");
+            putVariable("bla", "bli");
 
             return new FinishedActivityResultContext();
         }
@@ -45,7 +51,6 @@ public class SessionClearTest extends TipiEngineTest {
         txTemplate.txWithout(s -> {
             DbActivity model = activityRepository.findOne(pid);
             Assert.assertEquals("bli", model.getVariable("bla"));
-
         });
     }
 }

@@ -7,6 +7,8 @@ import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
+import ch.sharedvd.tipi.engine.meta.VariableDescription;
+import ch.sharedvd.tipi.engine.meta.VariableType;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import org.junit.Assert;
@@ -18,7 +20,11 @@ public class ResumingTest extends TipiEngineTest {
 
         public static int value = 0;
 
-        public static final TopProcessMetaModel meta = new TopProcessMetaModel(ResumingProcess.class, 6, -1, 10, null) {
+        public static final TopProcessMetaModel meta = new TopProcessMetaModel(ResumingProcess.class,
+                new VariableDescription[]{
+                        new VariableDescription("correl", VariableType.Integer)
+                }, null,
+                6, -1, 10, null, true) {
             @Override
             protected void init() {
                 setDeleteWhenFinished(false);

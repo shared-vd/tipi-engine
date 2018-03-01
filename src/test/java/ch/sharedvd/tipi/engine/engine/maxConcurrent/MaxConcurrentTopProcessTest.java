@@ -6,6 +6,8 @@ import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
+import ch.sharedvd.tipi.engine.meta.VariableDescription;
+import ch.sharedvd.tipi.engine.meta.VariableType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,7 +22,11 @@ public class MaxConcurrentTopProcessTest extends TipiEngineTest {
         public static AtomicInteger endStep = new AtomicInteger(0);
         public static AtomicInteger terminatedStep = new AtomicInteger(0);
 
-        public final static TopProcessMetaModel meta = new TopProcessMetaModel(MyProcess.class, 1, -1, 1, null);
+        public final static TopProcessMetaModel meta = new TopProcessMetaModel(MyProcess.class,
+                new VariableDescription[]{
+                        new VariableDescription("threshold", VariableType.Integer)
+                }, null,
+                1, -1, 1, null, true);
 
         @Override
         public ActivityResultContext execute() throws Exception {

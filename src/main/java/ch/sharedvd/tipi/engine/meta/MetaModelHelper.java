@@ -32,7 +32,7 @@ public class MetaModelHelper {
     @SuppressWarnings("unchecked")
     public static ActivityMetaModel createActivityMetaModel(String fqn) {
         try {
-            Class<? extends Activity> activity = (Class<? extends Activity>) Class.forName(fqn);
+            final Class<? extends Activity> activity = (Class<? extends Activity>) Class.forName(fqn);
             return createActivityMetaModel(activity);
         } catch (ClassNotFoundException e) {
             Class<? extends Activity> activity = UnknownProcess.class;
@@ -89,9 +89,9 @@ public class MetaModelHelper {
 
     public static TopProcessMetaModel createTopProcessMetaModel(Class<?> clazz) {
         final TipiTopProcess ann = clazz.getAnnotation(TipiTopProcess.class);
-        Assert.notNull(ann, "No annotation found on "+clazz);
+        Assert.notNull(ann, "No annotation found on " + clazz);
 
-        final List<VariableDescription> varsDesc = getVariableDescriptions(ann);
+        final VariableDescription[] varsDesc = getVariableDescriptions(ann);
 
         final TopProcessMetaModel metaModel = new TopProcessMetaModel(clazz, varsDesc, ann);
         metaModel.setDeleteWhenFinished(ann.deleteWhenFinished());
@@ -102,7 +102,7 @@ public class MetaModelHelper {
 
     static SubProcessMetaModel createSubProcessMetaModel(Class<?> clazz) {
         final TipiSubProcess ann = clazz.getAnnotation(TipiSubProcess.class);
-        Assert.notNull(ann, "No annotation found on "+clazz);
+        Assert.notNull(ann, "No annotation found on " + clazz);
 
         SubProcessMetaModel metaModel = new SubProcessMetaModel(clazz, ann.description());
         return metaModel;
@@ -110,19 +110,19 @@ public class MetaModelHelper {
 
     static ActivityMetaModel createActivityMetaModelFromAnnotation(Class<?> clazz) {
         final TipiActivity ann = clazz.getAnnotation(TipiActivity.class);
-        Assert.notNull(ann, "No annotation found on "+clazz);
+        Assert.notNull(ann, "No annotation found on " + clazz);
 
         final ActivityMetaModel metaModel = new ActivityMetaModel(clazz, ann.description());
         return metaModel;
     }
 
-    private static List<VariableDescription> getVariableDescriptions(TipiTopProcess topProcAnn) {
+    private static VariableDescription[] getVariableDescriptions(TipiTopProcess topProcAnn) {
         if (topProcAnn.variables() != null && topProcAnn.variables().length > 0) {
             List<VariableDescription> varsDesc = new ArrayList<VariableDescription>();
             for (TipiVariable var : topProcAnn.variables()) {
                 varsDesc.add(new VariableDescription(var.name(), var.type(), var.description(), StringUtils.trimToNull(var.defaultValue())));
             }
-            return varsDesc;
+            return varsDesc.toArray(new VariableDescription[varsDesc.size()]);
         }
         return null;
     }

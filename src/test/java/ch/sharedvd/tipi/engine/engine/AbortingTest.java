@@ -22,9 +22,12 @@ public class AbortingTest extends TipiEngineTest {
         // Démarrage et attente
         final long pid = tipiFacade.launch(AbortManagerProcess.meta, null);
         // On attends que la sub activity ait démarré et attende
-        while (AbortManagerActivity.count.get() == 0) {
+        int steps = 0;
+        while (AbortManagerActivity.count.get() == 0 && steps < 500) {
             Thread.sleep(10);
+            steps++;
         }
+        Assert.assertTrue(steps < 500);
 
         // On abort le process
         tipiFacade.abortProcess(pid, false);
@@ -54,9 +57,12 @@ public class AbortingTest extends TipiEngineTest {
         final long pid = tipiFacade.launch(AbortingProcess.meta, null);
 
         // On attends qu'il y ait au moins 10 activités créées
-        while (AbortingActivity.count.intValue() < 10) {
+        int steps = 0;
+        while (AbortingActivity.count.intValue() < 10 && steps < 500) {
             Thread.sleep(10);
+            steps++;
         }
+        Assert.assertTrue(steps < 500);
 
         // Abort
         tipiFacade.abortProcess(pid, false);

@@ -119,6 +119,7 @@ public class DbActivity extends DbBaseEntity {
     public String getProcessName() {
         return processName;
     }
+
     public void setProcessName(String processName) {
         this.processName = processName;
     }

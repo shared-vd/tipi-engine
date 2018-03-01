@@ -2,14 +2,18 @@ package ch.sharedvd.tipi.engine.common;
 
 import ch.sharedvd.tipi.engine.TipiTestingApplication;
 import ch.sharedvd.tipi.engine.client.TipiFacade;
+import ch.sharedvd.tipi.engine.model.*;
 import ch.sharedvd.tipi.engine.query.ActivityQueryService;
 import ch.sharedvd.tipi.engine.query.TipiQueryFacade;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.repository.TopProcessRepository;
 import ch.sharedvd.tipi.engine.runner.ActivityRunningService;
 import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
+import ch.sharedvd.tipi.engine.utils.BlobFactory;
+import ch.sharedvd.tipi.engine.utils.InputStreamHolder;
 import ch.sharedvd.tipi.engine.utils.QuantityFormatter;
 import ch.sharedvd.tipi.engine.utils.TixTemplate;
+import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -21,6 +25,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import tipiut.config.TipiUtTestingConfig;
 
 import javax.persistence.EntityManager;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {
@@ -74,5 +82,34 @@ public abstract class AbstractTipiPersistenceTest extends AbstractSpringBootTrun
             }
         }
         Assert.assertFalse("Aborting wait on process=" + pid + " after " + QuantityFormatter.formatMillis(maxWait), tipiFacade.isRunning(pid));
+    }
+
+    protected void forcePutVariable(DbActivity aDbActivity, String key, Serializable value) {
+        ch.sharedvd.tipi.engine.utils.Assert.notNull(key);
+        ch.sharedvd.tipi.engine.utils.Assert.notNull(value, "Missing value for key=" + key);
+
+        final DbVariable<?> variable;
+        if (value instanceof String) {
+            variable = new DbStringVariable(key, (String) value);
+        } else if (value instanceof LocalDate) {
+            final LocalDate date = (LocalDate) value;
+            final String str = DateTimeFormatter.ofPattern("YYYYMMdd").format(date);
+            Integer i = Integer.parseInt(str);
+            variable = new DbIntegerVariable(key, i);
+        } else if (value instanceof Integer) {
+            variable = new DbIntegerVariable(key, (Integer) value);
+        } else if (value instanceof Long) {
+            variable = new DbLongVariable(key, (Long) value);
+        } else if (value instanceof Boolean) {
+            variable = new DbBooleanVariable(key, (Boolean) value);
+        } else if (value instanceof Timestamp) {
+            variable = new DbTimestampVariable(key, (Timestamp) value);
+        } else if (value instanceof InputStreamHolder) {
+            variable = new DbInputStreamVariable(key, (InputStreamHolder) value, new BlobFactory((Session) em.getDelegate()));
+        } else {
+            variable = new DbSerializableVariable(key, (Serializable) value, new BlobFactory((Session) em.getDelegate()));
+        }
+        variable.setOwner(aDbActivity);
+        aDbActivity.putVariable(variable);
     }
 }

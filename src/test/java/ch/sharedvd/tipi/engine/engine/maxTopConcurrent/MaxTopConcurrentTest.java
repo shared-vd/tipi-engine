@@ -4,8 +4,10 @@ import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;
 import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.client.TipiTopProcess;
+import ch.sharedvd.tipi.engine.client.TipiVariable;
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
+import ch.sharedvd.tipi.engine.meta.VariableType;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,9 +25,12 @@ public class MaxTopConcurrentTest extends TipiEngineTest {
 
     private static final Map<String, Object> datastore = new HashMap<>();
 
-    @TipiTopProcess(description = "Job avec nbMaxTopConcurrent=1", nbMaxTopConcurrent = 1)
+    @TipiTopProcess(description = "Job avec nbMaxTopConcurrent=1", nbMaxTopConcurrent = 1,
+    variables = {
+            @TipiVariable(name = RESULTS_KEY, type = VariableType.String),
+            @TipiVariable(name = WAIT_LOCK_KEY, type = VariableType.String)
+    })
     public static class MaxTopOneJob extends TopProcess {
-
         @Override
         protected ActivityResultContext execute() throws Exception {
 

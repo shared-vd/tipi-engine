@@ -4,7 +4,7 @@ import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.client.TipiTopProcess;
 import org.springframework.util.Assert;
 
-import java.util.List;
+import java.util.Arrays;
 
 public class TopProcessMetaModel extends SubProcessMetaModel {
 
@@ -27,17 +27,17 @@ public class TopProcessMetaModel extends SubProcessMetaModel {
         this(clazz, null, null, priority, nbMaxTopConcurrent, nbMaxConcurrent, descr, false);
     }
 
-    public TopProcessMetaModel(Class<?> clazz, List<VariableDescription> variables, TipiTopProcess ann) {
+    public TopProcessMetaModel(Class<?> clazz, VariableDescription[] variables, TipiTopProcess ann) {
         this(clazz, variables, null, ann);
     }
 
-    public TopProcessMetaModel(Class<?> clazz, List<VariableDescription> vars, String[] usedConnections, final TipiTopProcess ann) {
+    public TopProcessMetaModel(Class<?> clazz, VariableDescription[] vars, String[] usedConnections, final TipiTopProcess ann) {
         this(clazz, vars, usedConnections, ann.priority(), ann.nbMaxTopConcurrent(), ann.nbMaxConcurrent(), ann.description(), false);
     }
 
-    public TopProcessMetaModel(Class<?> clazz, List<VariableDescription> vars, String[] usedConnections,
-                                int priority, int nbMaxTopConcurrent, int nbMaxConcurrent, String descr, boolean showInUI) {
-        super(clazz, vars, usedConnections, descr);
+    public TopProcessMetaModel(Class<?> clazz, VariableDescription[] vars, String[] usedConnections,
+                               int priority, int nbMaxTopConcurrent, int nbMaxConcurrent, String descr, boolean showInUI) {
+        super(clazz, vars != null ? Arrays.asList(vars) : null, usedConnections, descr);
         this.isShownInUI = showInUI;
         this.priority = priority;
         this.nbMaxTopConcurrent = nbMaxTopConcurrent;
@@ -48,6 +48,7 @@ public class TopProcessMetaModel extends SubProcessMetaModel {
     public boolean isShownInUI() {
         return isShownInUI == null || isShownInUI;
     }
+
     void setShownInUI(Boolean shownInUI) {
         isShownInUI = shownInUI;
     }
