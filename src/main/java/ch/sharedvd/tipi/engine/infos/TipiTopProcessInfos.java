@@ -1,7 +1,7 @@
 package ch.sharedvd.tipi.engine.infos;
 
 import ch.sharedvd.tipi.engine.action.UnknownProcess;
-import ch.sharedvd.tipi.engine.command.MetaModelHelper;
+import ch.sharedvd.tipi.engine.meta.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;

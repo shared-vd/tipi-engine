@@ -59,7 +59,7 @@ public class TixTemplate {
                     throw e;
                 }
                 catch (Exception e) {
-                    throw new TxCallbackException(e);
+                    throw new RuntimeException(e);
                 }
             }
         });
@@ -84,7 +84,7 @@ public class TixTemplate {
                 throw e;
             }
             catch (Exception e) {
-                throw new TxCallbackException(e);
+                throw new RuntimeException(e);
             }
         });
     }

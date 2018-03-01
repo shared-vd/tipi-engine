@@ -1,7 +1,7 @@
 package ch.sharedvd.tipi.engine.client;
 
 import ch.sharedvd.tipi.engine.action.TopProcess;
-import ch.sharedvd.tipi.engine.command.MetaModelHelper;
+import ch.sharedvd.tipi.engine.meta.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.registry.TipiRegistry;
 import ch.sharedvd.tipi.engine.utils.Assert;
@@ -26,13 +26,13 @@ public abstract class AbstractRegistrar {
         boolean registered = false;
         // Meta ?
         try {
-            TopProcessMetaModel meta = null;
+            final TopProcessMetaModel meta;
             if (c.getAnnotation(TipiTopProcess.class) != null) {
                 if (!TopProcess.class.isAssignableFrom(c)) {
                     throw new IllegalArgumentException("La classe " + c.getSimpleName()
                             + " est annotée avec @TipiTopProcess mais n'hérite pas de TopProcess");
                 }
-                meta = MetaModelHelper.getTopProcessMetaModel(c);
+                meta = MetaModelHelper.createTopProcessMetaModel(c);
             } else {
                 meta = (TopProcessMetaModel) MetaModelHelper.getMetaFromStaticField(c);
             }

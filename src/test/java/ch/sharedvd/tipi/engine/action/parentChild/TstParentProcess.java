@@ -14,10 +14,9 @@ public class TstParentProcess extends TopProcess {
     public static AtomicInteger beginStep = new AtomicInteger(0);
     public static AtomicInteger endStep = new AtomicInteger(0);
 
-    public static TopProcessMetaModel meta = new TopProcessMetaModel(TstParentProcess.class, 6, -1, 20, null) {
+    public static TopProcessMetaModel meta = new TopProcessMetaModel(TstParentProcess.class, 6, -1, 20, "Bla bla") {
         @Override
         protected void init() {
-            setDescription("Bla bla");
             setDeleteWhenFinished(false);
         }
     };

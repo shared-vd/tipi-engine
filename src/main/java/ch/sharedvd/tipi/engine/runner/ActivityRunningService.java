@@ -4,11 +4,11 @@ import ch.sharedvd.tipi.engine.action.ActivityFacade;
 import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.command.CommandService;
-import ch.sharedvd.tipi.engine.command.MetaModelHelper;
 import ch.sharedvd.tipi.engine.command.impl.ResumeActivityCommand;
 import ch.sharedvd.tipi.engine.command.impl.ResumeAllActivitiesCommand;
 import ch.sharedvd.tipi.engine.command.impl.RunExecutingActivitiesCommand;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
+import ch.sharedvd.tipi.engine.meta.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
@@ -77,7 +77,7 @@ public class ActivityRunningService {
 
     public long launch(final Class<? extends TopProcess> cls, final VariableMap vars) {
         final long id = txTemplate.txWith((status) -> {
-            TopProcessMetaModel meta = MetaModelHelper.getTopProcessMetaModel(cls);
+            TopProcessMetaModel meta = MetaModelHelper.createTopProcessMetaModel(cls);
 
             Assert.notNull(meta);
             Assert.notNull(meta, "Meta not found: " + meta);
@@ -103,8 +103,7 @@ public class ActivityRunningService {
         activityRepository.findOne(1L);
 
         Assert.notNull(meta);
-        DbActivity model = MetaModelHelper.createModelFromMeta(meta, true, vars, activityPersistenceService);
-        model = activityRepository.save(model);
+        DbActivity model = activityPersistenceService.persistModelFromMeta(meta, true, vars);
 
         // State
         ActivityStateChangeService.executingFirstActivity(model);

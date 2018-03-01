@@ -1,7 +1,7 @@
 package ch.sharedvd.tipi.engine.runner;
 
-import ch.sharedvd.tipi.engine.command.MetaModelHelper;
 import ch.sharedvd.tipi.engine.infos.ActivityThreadInfos;
+import ch.sharedvd.tipi.engine.meta.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;

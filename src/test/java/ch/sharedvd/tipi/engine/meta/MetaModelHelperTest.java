@@ -1,11 +1,8 @@
-package ch.sharedvd.tipi.engine.command;
+package ch.sharedvd.tipi.engine.meta;
 
 import ch.sharedvd.tipi.engine.action.parentChild.TstParentProcess;
 import ch.sharedvd.tipi.engine.command.annotated.AnnotatedSubProcess;
 import ch.sharedvd.tipi.engine.command.annotated.AnnotatedTopProcess;
-import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
-import ch.sharedvd.tipi.engine.meta.SubProcessMetaModel;
-import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,7 +32,7 @@ public class MetaModelHelperTest {
 
     @Test
     public void testGetTopProcessMetaFromAnnotationWithClass() {
-        TopProcessMetaModel meta = MetaModelHelper.getTopProcessMetaModel(AnnotatedTopProcess.class);
+        TopProcessMetaModel meta = MetaModelHelper.createTopProcessMetaModel(AnnotatedTopProcess.class);
         assertNotNull(meta);
         Assert.assertEquals("Test TopProcess", meta.getDescription());
         Assert.assertEquals(100, meta.getPriority());
@@ -45,7 +42,7 @@ public class MetaModelHelperTest {
 
     @Test
     public void testGetSubProcessMetaFromAnnotationWithClass() {
-        SubProcessMetaModel meta = MetaModelHelper.getSubProcessMetaModel(AnnotatedSubProcess.class);
+        SubProcessMetaModel meta = MetaModelHelper.createSubProcessMetaModel(AnnotatedSubProcess.class);
         assertNotNull(meta);
         Assert.assertEquals("Test SubProcess", meta.getDescription());
     }
@@ -54,17 +51,17 @@ public class MetaModelHelperTest {
     public void testGetActivityMetaModel() {
 
         // With static field
-        ActivityMetaModel meta = MetaModelHelper.getActivityMetaModel(TstParentProcess.class);
+        ActivityMetaModel meta = MetaModelHelper.createActivityMetaModel(TstParentProcess.class);
         assertNotNull(meta);
         Assert.assertTrue(TopProcessMetaModel.class.isAssignableFrom(meta.getClass()));
 
         // With annotation
-        meta = MetaModelHelper.getActivityMetaModel(AnnotatedTopProcess.class);
+        meta = MetaModelHelper.createActivityMetaModel(AnnotatedTopProcess.class);
         assertNotNull(meta);
         Assert.assertTrue(TopProcessMetaModel.class.isAssignableFrom(meta.getClass()));
 
         // With annotation subprocess
-        meta = MetaModelHelper.getActivityMetaModel(AnnotatedSubProcess.class);
+        meta = MetaModelHelper.createActivityMetaModel(AnnotatedSubProcess.class);
         assertNotNull(meta);
         Assert.assertTrue(SubProcessMetaModel.class.isAssignableFrom(meta.getClass()));
     }

@@ -1,8 +1,8 @@
 package ch.sharedvd.tipi.engine.command.impl;
 
 import ch.sharedvd.tipi.engine.command.Command;
-import ch.sharedvd.tipi.engine.command.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
+import ch.sharedvd.tipi.engine.meta.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.runner.TopProcessGroupLauncher;
@@ -90,7 +90,7 @@ public class RunExecutingActivitiesCommand extends Command {
 		int nbStarted = 0;
 		if (nexts.size() > 0) {
 			for (DbActivity act : nexts) {
-				final ActivityMetaModel meta = MetaModelHelper.getMeta(act.getFqn());
+				final ActivityMetaModel meta = MetaModelHelper.createActivityMetaModel(act.getFqn());
 				if (meta != null) {
 					// Ce cas peut arriver si on des activités en base alors qu'on a supprimé
 					// les process/activités dans le code

@@ -1,8 +1,8 @@
 package ch.sharedvd.tipi.engine.action;
 
 import ch.sharedvd.tipi.engine.client.VariableMap;
-import ch.sharedvd.tipi.engine.command.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
+import ch.sharedvd.tipi.engine.meta.MetaModelHelper;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;
@@ -60,12 +60,12 @@ public class ActivityFacade {
 
     public long addChildActivity(final Class<? extends Activity> clazz, Long previousId, VariableMap vars) {
         final DbSubProcess parent = (DbSubProcess) getModel();
-        return activityPersisterService.addChildActivity(MetaModelHelper.getActivityMetaModel(clazz), parent, previousId, vars, null);
+        return activityPersisterService.addChildActivity(MetaModelHelper.createActivityMetaModel(clazz), parent, previousId, vars, null);
     }
 
     public long addChildActivity(final Class<? extends Activity> clazz, Long previousId, VariableMap vars, String correlationId) {
         final DbSubProcess parent = (DbSubProcess) getModel();
-        final ActivityMetaModel meta = MetaModelHelper.getActivityMetaModel(clazz);
+        final ActivityMetaModel meta = MetaModelHelper.createActivityMetaModel(clazz);
         return activityPersisterService.addChildActivity(meta, parent, previousId, vars, correlationId);
     }
 

@@ -1,6 +1,7 @@
 package ch.sharedvd.tipi.engine.command;
 
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
+import ch.sharedvd.tipi.engine.meta.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
@@ -46,7 +47,7 @@ public abstract class Command {
 	}
 
 	protected boolean runActivity(DbActivity acti) {
-		ActivityMetaModel meta = MetaModelHelper.getMeta(acti.getFqn());
+		ActivityMetaModel meta = MetaModelHelper.createActivityMetaModel(acti.getFqn());
 		TopProcessMetaModel group = MetaModelHelper.getTopProcessMeta(acti.getProcessOrThis().getFqn());
 		return runActivity(acti, meta, group);
 	}

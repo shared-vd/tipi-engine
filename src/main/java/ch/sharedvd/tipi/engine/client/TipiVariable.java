@@ -16,20 +16,16 @@ import java.lang.annotation.Target;
 // Load all annotations at runtime
 public @interface TipiVariable {
 
-	String name();
+    String name();
 
-	String description() default "";
+    String description() default "";
 
-	VariableType type();
+    VariableType type();
 
-	/**
-	 * @return <b>vrai</b> si cette variable ne doit être utilisée que dans un environnement de test (et en tout cas pas en production). Note : le respect de cette limitation est laissé aux
-	 *         implémentations des processus Tipi.
-	 */
-	boolean testingOnly() default false;
+    /**
+     * La valeur par défaut de la variable qui sera utilisée si aucune valeur explicite n'est fournie. Une valeur vide signifie "pas de valeur par défaut".
+     */
+    String defaultValue() default "";
 
-	/**
-	 * La valeur par défaut de la variable qui sera utilisée si aucune valeur explicite n'est fournie. Une valeur vide signifie "pas de valeur par défaut".
-	 */
-	String defaultValue() default "";
+    boolean required() default false;
 }

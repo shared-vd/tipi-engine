@@ -12,6 +12,11 @@ public class SubProcessMetaModel extends ActivityMetaModel {
         Assert.isTrue(SubProcess.class.isAssignableFrom(clazz));
     }
 
+    public SubProcessMetaModel(Class<?> clazz, String descr) {
+        super(clazz, null, descr);
+        Assert.isTrue(SubProcess.class.isAssignableFrom(clazz));
+    }
+
     public SubProcessMetaModel(Class<?> clazz, String[] aUsedConnections, String descr) {
         super(clazz, aUsedConnections, descr);
         Assert.isTrue(SubProcess.class.isAssignableFrom(clazz));

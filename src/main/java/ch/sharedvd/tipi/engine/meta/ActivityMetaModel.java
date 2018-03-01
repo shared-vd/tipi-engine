@@ -7,7 +7,7 @@ import ch.sharedvd.tipi.engine.utils.Assert;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 public class ActivityMetaModel implements Serializable {
@@ -17,9 +17,13 @@ public class ActivityMetaModel implements Serializable {
     private final Class<?> clazz;
     private final Set<String> usedConnections = new HashSet<String>();
     private String description;
+    private List<VariableDescription> variablesDescription = null;
 
     public ActivityMetaModel(Class<?> clazz) {
         this(clazz, null, null);
+    }
+    public ActivityMetaModel(Class<?> clazz, String descr) {
+        this(clazz, null, descr);
     }
 
     public ActivityMetaModel(Class<?> clazz, String[] aUsedConnections, String descr) {
@@ -57,6 +61,16 @@ public class ActivityMetaModel implements Serializable {
     protected void init() {
     }
 
+    public List<VariableDescription> getVariables() {
+        return variablesDescription;
+    }
+    void setVariables(List<VariableDescription> variablesDescription) {
+        this.variablesDescription = variablesDescription;
+    }
+    public VariableDescription getVariable(String key) {
+        return variablesDescription.stream().filter(vd -> vd.getName().equals(key)).findFirst().orElse(null);
+    }
+
     /**
      * Retourne le Fully Qualified Name de la classe
      *
@@ -70,16 +84,8 @@ public class ActivityMetaModel implements Serializable {
         return usedConnections;
     }
 
-    public Map<String, String> getVariables() {
-        return null;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String aDescription) {
-        description = aDescription;
     }
 
     public Class<?> getClazz() {

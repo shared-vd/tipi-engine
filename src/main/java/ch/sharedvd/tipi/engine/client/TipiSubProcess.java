@@ -7,7 +7,6 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation utilisée pour décrire un SubProcess Tipi
- *
  */
 @Target(ElementType.TYPE)
 // Applies to classes, interfaces
@@ -15,6 +14,8 @@ import java.lang.annotation.Target;
 // Load all annotations at runtime
 public @interface TipiSubProcess {
 
-	String description() default "";
+    String description() default "";
+
+    TipiVariable[] variables() default {};
 
 }

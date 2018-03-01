@@ -1,7 +1,7 @@
 package ch.sharedvd.tipi.engine.runner;
 
-import ch.sharedvd.tipi.engine.command.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
+import ch.sharedvd.tipi.engine.meta.MetaModelHelper;
 import ch.sharedvd.tipi.engine.utils.Assert;
 
 import java.util.ArrayList;
@@ -94,7 +94,7 @@ public class ConnectionCapManager {
     public void add(String aActivityName, Long aActivityId) {
         Assert.notNull(aActivityName);
         Assert.notNull(aActivityId);
-        ActivityMetaModel amm = MetaModelHelper.getMeta(aActivityName);
+        ActivityMetaModel amm = MetaModelHelper.createActivityMetaModel(aActivityName);
         Assert.notNull(amm);
         currentActivities.put(aActivityId, amm);
         synchronized (nbCurrentConcurrents) {

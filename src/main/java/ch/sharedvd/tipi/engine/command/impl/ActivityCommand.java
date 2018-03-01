@@ -1,8 +1,8 @@
 package ch.sharedvd.tipi.engine.command.impl;
 
 import ch.sharedvd.tipi.engine.command.Command;
-import ch.sharedvd.tipi.engine.command.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
+import ch.sharedvd.tipi.engine.meta.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.runner.TopProcessGroupLauncher;
@@ -35,12 +35,12 @@ public abstract class ActivityCommand extends Command {
 		Assert.notNull(getModel(), "ActivityID: "+activityId);
 		Assert.notNull(getModel().getFqn(), "ActivityID: "+activityId);
 		Assert.isFalse(getModel().getFqn().isEmpty(), "ActivityID: "+activityId);
-		ActivityMetaModel mm = MetaModelHelper.getMeta(getModel().getFqn());
+		ActivityMetaModel mm = MetaModelHelper.createActivityMetaModel(getModel().getFqn());
 		Assert.notNull(mm);
 		return mm;
 	}
 	protected TopProcessMetaModel getTopProcMeta() {
-		ActivityMetaModel mm = MetaModelHelper.getMeta(getModel().getFqn());
+		ActivityMetaModel mm = MetaModelHelper.createActivityMetaModel(getModel().getFqn());
 		TopProcessMetaModel sub = null;
 		if (mm instanceof TopProcessMetaModel) {
 			sub = (TopProcessMetaModel)mm;

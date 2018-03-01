@@ -4,6 +4,7 @@ import ch.sharedvd.tipi.engine.action.Activity;
 import ch.sharedvd.tipi.engine.action.ActivityFacade;
 import ch.sharedvd.tipi.engine.action.SubProcess;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
+import ch.sharedvd.tipi.engine.meta.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.SubProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.repository.ActivityRepository;
@@ -26,7 +27,7 @@ public class CommandHelperService {
 		return createActivity(model);
 	}
 	public Activity createActivity(DbActivity model) {
-		ActivityMetaModel meta = MetaModelHelper.getMeta(model.getFqn());
+		ActivityMetaModel meta = MetaModelHelper.createActivityMetaModel(model.getFqn());
 		Activity act = meta.create();
 		autowirer.autowire(act);
 		act.setFacade(new ActivityFacade(model.getId(), activityHelper, activityRepository));

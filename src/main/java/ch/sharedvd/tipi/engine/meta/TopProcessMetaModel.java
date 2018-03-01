@@ -3,8 +3,6 @@ package ch.sharedvd.tipi.engine.meta;
 import ch.sharedvd.tipi.engine.action.TopProcess;
 import org.springframework.util.Assert;
 
-import java.util.List;
-
 public class TopProcessMetaModel extends SubProcessMetaModel {
 
     private static final long serialVersionUID = 1L;
@@ -16,10 +14,19 @@ public class TopProcessMetaModel extends SubProcessMetaModel {
     private final int nbMaxTopConcurrent;
     private final int nbMaxConcurrent;
 
-    private List<VariableDescription> variablesDescription = null;
-
     public TopProcessMetaModel(Class<?> clazz, int priority, int nbMaxConcurrent, String descr) {
         this(clazz, priority, Integer.MAX_VALUE, nbMaxConcurrent, descr);
+    }
+
+    public TopProcessMetaModel(Class<?> clazz, int priority,
+                               int nbMaxTopConcurrent,
+                               int nbMaxConcurrent, String descr, boolean showInUI) {
+        super(clazz, null, descr);
+        this.priority = priority;
+        this.nbMaxTopConcurrent = nbMaxTopConcurrent;
+        this.nbMaxConcurrent = nbMaxConcurrent;
+        this.isShownInUI = showInUI;
+        Assert.isTrue(TopProcess.class.isAssignableFrom(clazz));
     }
 
     public TopProcessMetaModel(Class<?> clazz, int priority,
@@ -40,20 +47,11 @@ public class TopProcessMetaModel extends SubProcessMetaModel {
         Assert.isTrue(TopProcess.class.isAssignableFrom(clazz));
     }
 
-    public List<VariableDescription> getVariablesDescription() {
-        return variablesDescription;
-    }
-
-    public void setVariablesDescription(List<VariableDescription> vars) {
-        variablesDescription = vars;
-    }
-
     public boolean isShownInUI() {
         return isShownInUI == null || isShownInUI;
     }
-
-    public void setShownInUI(boolean show) {
-        this.isShownInUI = show;
+    void setShownInUI(Boolean shownInUI) {
+        isShownInUI = shownInUI;
     }
 
     /**
@@ -65,7 +63,7 @@ public class TopProcessMetaModel extends SubProcessMetaModel {
         return startable == null || startable;
     }
 
-    public void setStartable(boolean startable) {
+    void setStartable(boolean startable) {
         this.startable = startable;
     }
 
