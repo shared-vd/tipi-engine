@@ -47,6 +47,7 @@ public class CommandConsumer implements Startable, Runnable {
 
         // Thread de consommation
         consumationThread = new Thread(this);
+        consumationThread.setDaemon(true); // so the whole system stop when main() exits
         consumationThread.setName("TiPi-Consumer");
         consumationThread.setPriority(Thread.NORM_PRIORITY + 1);
         LOGGER.info("Démarrage du Thread de CommandConsumer ...");
