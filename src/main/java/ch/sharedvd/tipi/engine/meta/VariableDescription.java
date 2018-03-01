@@ -16,9 +16,8 @@ public class VariableDescription implements Serializable {
 
 	private VariableType variableType;
 
-	public VariableDescription(String name, VariableType variableType, String descr) {
+	public VariableDescription(String name, VariableType variableType) {
 		this.name = name;
-		this.description = descr;
 		this.variableType = variableType;
 	}
 

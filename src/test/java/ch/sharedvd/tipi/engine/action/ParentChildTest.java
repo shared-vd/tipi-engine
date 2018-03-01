@@ -24,7 +24,7 @@ public class ParentChildTest extends TipiEngineTest {
 
         VariableMap vars = new VariableMap();
         vars.put("nbSubAct", 3);
-        final long pid = tipiFacade.launch(TstParentProcess.meta, vars);
+        final long pid = tipiFacade.launch(TstParentProcess.class, vars);
 
         // Attends sur le parent
         {
@@ -99,9 +99,6 @@ public class ParentChildTest extends TipiEngineTest {
 
         waitWhileRunning(pid, 5000);
 
-        String concat = tipiFacade.getStringVariable(pid, "concat");
-        Assert.assertEquals("10,8,6,4", concat);
-
         // Vérifie les pointeurs parent/process
         txTemplate.txWithout(s -> {
             // Process
@@ -110,6 +107,9 @@ public class ParentChildTest extends TipiEngineTest {
             assertNull(process.getProcess());
             assertNull(process.getParent());
             assertNull(process.getPrevious());
+
+            final String concat = (String)process.getVariable("concat");
+            Assert.assertEquals("10,8,6,4", concat);
 
             // Put number 1
             final Long id_nb1;

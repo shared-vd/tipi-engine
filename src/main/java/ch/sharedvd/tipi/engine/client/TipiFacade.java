@@ -66,9 +66,6 @@ public interface TipiFacade {
      */
     void abortProcess(long topPid, boolean delete);
 
-    // Les autres methodes getXXX sont a implémenter au besoin
-    String getStringVariable(final long id, final String key);
-
     void startTipi() throws Exception;
 
     void stopTipi() throws Exception;

@@ -3,23 +3,24 @@ package ch.sharedvd.tipi.engine.action.parentChild;
 import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;
 import ch.sharedvd.tipi.engine.action.TopProcess;
+import ch.sharedvd.tipi.engine.client.TipiTopProcess;
+import ch.sharedvd.tipi.engine.client.TipiVariable;
 import ch.sharedvd.tipi.engine.client.VariableMap;
-import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
+import ch.sharedvd.tipi.engine.meta.VariableType;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+@TipiTopProcess(priority = 6, nbMaxTopConcurrent = -1, nbMaxConcurrent = 20, description = "Bla bla", deleteWhenFinished = false,
+        variables = {
+                @TipiVariable(name = "nbSubAct", type = VariableType.Integer),
+                @TipiVariable(name = "listVarsId", type = VariableType.Long),
+                @TipiVariable(name = "concat", type = VariableType.String)
+        })
 public class TstParentProcess extends TopProcess {
 
     public static AtomicInteger globalStep = new AtomicInteger(0);
     public static AtomicInteger beginStep = new AtomicInteger(0);
     public static AtomicInteger endStep = new AtomicInteger(0);
-
-    public static TopProcessMetaModel meta = new TopProcessMetaModel(TstParentProcess.class, 6, -1, 20, "Bla bla") {
-        @Override
-        protected void init() {
-            setDeleteWhenFinished(false);
-        }
-    };
 
     @Override
     public ActivityResultContext execute() throws Exception {

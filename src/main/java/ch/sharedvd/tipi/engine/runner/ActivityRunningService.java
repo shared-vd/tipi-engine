@@ -1,6 +1,5 @@
 package ch.sharedvd.tipi.engine.runner;
 
-import ch.sharedvd.tipi.engine.action.ActivityFacade;
 import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.command.CommandService;
@@ -140,21 +139,13 @@ public class ActivityRunningService {
 
             // On mets les variables
             if (vars != null) {
+                final ActivityMetaModel meta = MetaModelHelper.createActivityMetaModel(aActivity.getFqn());
                 for (String key : vars.keySet()) {
-                    activityPersistenceService.putVariable(aActivity, key, vars.get(key));
+                    activityPersistenceService.putVariable(aActivity, meta, key, vars.get(key));
                 }
             }
 
             commandService.sendCommand(new ResumeActivityCommand(id, vars));
-        });
-    }
-
-    public String getStringVariable(final long id, final String key) {
-        return txTemplate.txWith((status) -> {
-            DbActivity act = activityRepository.findOne(id);
-            Assert.notNull(act);
-            ActivityFacade facade = new ActivityFacade(act.getId(), activityPersistenceService, activityRepository);
-            return (String) facade.getVariable(key);
         });
     }
 

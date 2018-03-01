@@ -3,6 +3,7 @@ package ch.sharedvd.tipi.engine.svc;
 import ch.sharedvd.tipi.engine.action.ActivityFacade;
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
+import ch.sharedvd.tipi.engine.meta.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.SubProcessMetaModel;
 import ch.sharedvd.tipi.engine.meta.VariableDescription;
 import ch.sharedvd.tipi.engine.model.*;
@@ -36,10 +37,8 @@ public class ActivityPersisterService {
             a = new DbTopProcess();
         } else if (meta instanceof SubProcessMetaModel) {
             a = new DbSubProcess();
-        } else if (meta instanceof ActivityMetaModel) {
-            a = new DbActivity();
         } else {
-            Assert.fail("Activity type not supported");
+            a = new DbActivity();
         }
         a.setFqn(meta.getFQN());
         a.setProcessName(meta.getFQN()); // sera overridé par setProcess() appelé sur Activity
@@ -92,25 +91,33 @@ public class ActivityPersisterService {
     public void putVariables(DbActivity aDbActivity, final ActivityMetaModel meta, VariableMap vars) {
         if (vars != null) {
             for (String key : vars.keySet()) {
-                final VariableDescription vd = meta.getVariable(key);
-                if (vd != null) {
-                    final Serializable value = vars.get(key);
-                    Assert.notNull(value, "Variable value for "+key+" is null");
-                    if (vd.getVariableType().isCompatible(value)){
-                        putVariable(aDbActivity, key, value);
-                    }
-                    else {
-                        throw new WrongTypeVariableException(key, vd.getVariableType().getClazz(), value.getClass());
-                    }
-                }
-                else {
-                    throw new UndefinedVariableException(key);
-                }
+                final Serializable value = vars.get(key);
+                this.putVariable(aDbActivity, meta, key, value);
             }
         }
     }
 
     public void putVariable(DbActivity aDbActivity, String key, Serializable value) {
+        final ActivityMetaModel meta = MetaModelHelper.createActivityMetaModel(aDbActivity.getFqn());
+        putVariable(aDbActivity, meta, key, value);
+    }
+    public void putVariable(DbActivity aDbActivity, final ActivityMetaModel meta, String key, Serializable value) {
+        Assert.notNull(key);
+        Assert.notNull(value, "Missing value for key=" + key);
+
+        final VariableDescription vd = meta.getVariable(key);
+        if (vd != null) {
+            if (vd.getVariableType().isCompatible(value)) {
+                reallyPutVariable(aDbActivity, key, value);
+            } else {
+                throw new WrongTypeVariableException(key, vd.getVariableType().getClazz(), value.getClass());
+            }
+        } else {
+            throw new UndefinedVariableException(key);
+        }
+    }
+
+    private void reallyPutVariable(DbActivity aDbActivity, String key, Serializable value) {
         Assert.notNull(key);
         Assert.notNull(value, "Missing value for key=" + key);
 

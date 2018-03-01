@@ -6,6 +6,7 @@ import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.utils.Assert;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,19 +21,27 @@ public class ActivityMetaModel implements Serializable {
     private List<VariableDescription> variablesDescription = null;
 
     public ActivityMetaModel(Class<?> clazz) {
-        this(clazz, null, null);
+        this(clazz, null, null, null);
+    }
+    public ActivityMetaModel(Class<?> clazz, VariableDescription[] variables) {
+        this(clazz, Arrays.asList(variables), null, null);
     }
     public ActivityMetaModel(Class<?> clazz, String descr) {
-        this(clazz, null, descr);
+        this(clazz, null, null, descr);
     }
 
     public ActivityMetaModel(Class<?> clazz, String[] aUsedConnections, String descr) {
+        this(clazz, null, aUsedConnections, descr);
+    }
+
+    public ActivityMetaModel(Class<?> clazz, List<VariableDescription> variables, String[] aUsedConnections, String descr) {
         Assert.notNull(clazz);
         Assert.isTrue(Activity.class.isAssignableFrom(clazz));
         this.clazz = clazz;
         this.description = descr;
+        this.variablesDescription = variables;
 
-        // Toute activité utilise la db Oracle.
+        // Every Activity uses the Database connection
         if (null != aUsedConnections) {
             for (String ct : aUsedConnections) {
                 this.usedConnections.add(ct);
@@ -64,11 +73,11 @@ public class ActivityMetaModel implements Serializable {
     public List<VariableDescription> getVariables() {
         return variablesDescription;
     }
-    void setVariables(List<VariableDescription> variablesDescription) {
-        this.variablesDescription = variablesDescription;
-    }
     public VariableDescription getVariable(String key) {
-        return variablesDescription.stream().filter(vd -> vd.getName().equals(key)).findFirst().orElse(null);
+        if (variablesDescription != null) {
+            return variablesDescription.stream().filter(vd -> vd.getName().equals(key)).findFirst().orElse(null);
+        }
+        return null;
     }
 
     /**

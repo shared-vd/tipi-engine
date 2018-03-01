@@ -6,6 +6,8 @@ import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;
 import ch.sharedvd.tipi.engine.action.SubProcess;
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.meta.SubProcessMetaModel;
+import ch.sharedvd.tipi.engine.meta.VariableDescription;
+import ch.sharedvd.tipi.engine.meta.VariableType;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,7 +19,12 @@ public class TstListVarsSubProcess extends SubProcess {
     public static AtomicInteger beginStep = new AtomicInteger(0);
     public static AtomicInteger endStep = new AtomicInteger(0);
 
-    public static final SubProcessMetaModel meta = new SubProcessMetaModel(TstListVarsSubProcess.class);
+    public static final SubProcessMetaModel meta = new SubProcessMetaModel(TstListVarsSubProcess.class,
+            new VariableDescription[]{
+                    new VariableDescription("in", VariableType.Integer),
+                    new VariableDescription("out", VariableType.Integer),
+                    new VariableDescription("concat", VariableType.String)
+            });
 
     @Override
     public ActivityResultContext execute() throws Exception {
@@ -85,5 +92,4 @@ public class TstListVarsSubProcess extends SubProcess {
         putVariable("concat", concat);
         return new FinishedActivityResultContext();
     }
-
 }

@@ -110,11 +110,6 @@ public class TipiFacadeImpl implements TipiFacade {
     }
 
     @Override
-    public String getStringVariable(final long id, final String key) {
-        return activityService.getStringVariable(id, key);
-    }
-
-    @Override
     public void restartGroup(String fqn, int nbMax, int priority) throws Exception {
         TopProcessMetaModel group = MetaModelHelper.getTopProcessMeta(fqn);
         groupManager.restart(group, nbMax, priority);

@@ -36,21 +36,13 @@ public class ActivityFacade {
         return getModel().getFqn();
     }
 
-    public Object getVariable(String key) {
-        return getVariable(getModel(), key);
-    }
-
-    public Object getVariable(long id, String key) {
-        DbActivity m = activityPersisterService.getModel(id);
-        return getVariable(m, key);
-    }
-
     public List<ActivityFacade> getChildren() {
-        return activityPersisterService.getChildren(getModel().getId());
+        return activityPersisterService.getChildren(activityId);
     }
 
     public void putVariable(String key, Serializable value) {
-        activityPersisterService.putVariable(activityPersisterService.getModel(activityId), key, value);
+        final DbActivity act = getModel();
+        activityPersisterService.putVariable(act, key, value);
     }
 
     public long addChildActivity(final ActivityMetaModel meta, Long previousId, VariableMap vars) {
@@ -85,12 +77,13 @@ public class ActivityFacade {
     }
 
 
-    // --- private ---
-
-    private DbActivity getModel() {
-        return activityPersisterService.getModel(activityId);
+    public Object getVariable(String key) {
+        return getVariable(getModel(), key);
     }
-
+    public Object getVariable(long id, String key) {
+        final DbActivity m = activityPersisterService.getModel(id);
+        return getVariable(m, key);
+    }
     private Object getVariable(DbActivity m, String key) {
         // D'abord chez soi
         Object o = m.getVariable(key);
@@ -118,4 +111,7 @@ public class ActivityFacade {
         return null;
     }
 
+    private DbActivity getModel() {
+        return activityPersisterService.getModel(activityId);
+    }
 }

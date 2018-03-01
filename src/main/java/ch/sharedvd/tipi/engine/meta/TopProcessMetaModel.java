@@ -1,7 +1,10 @@
 package ch.sharedvd.tipi.engine.meta;
 
 import ch.sharedvd.tipi.engine.action.TopProcess;
+import ch.sharedvd.tipi.engine.client.TipiTopProcess;
 import org.springframework.util.Assert;
+
+import java.util.List;
 
 public class TopProcessMetaModel extends SubProcessMetaModel {
 
@@ -15,32 +18,27 @@ public class TopProcessMetaModel extends SubProcessMetaModel {
     private final int nbMaxConcurrent;
 
     public TopProcessMetaModel(Class<?> clazz, int priority, int nbMaxConcurrent, String descr) {
-        this(clazz, priority, Integer.MAX_VALUE, nbMaxConcurrent, descr);
-    }
-
-    public TopProcessMetaModel(Class<?> clazz, int priority,
-                               int nbMaxTopConcurrent,
-                               int nbMaxConcurrent, String descr, boolean showInUI) {
-        super(clazz, null, descr);
-        this.priority = priority;
-        this.nbMaxTopConcurrent = nbMaxTopConcurrent;
-        this.nbMaxConcurrent = nbMaxConcurrent;
-        this.isShownInUI = showInUI;
-        Assert.isTrue(TopProcess.class.isAssignableFrom(clazz));
+        this(clazz, null, null, priority, Integer.MAX_VALUE, nbMaxConcurrent, descr, false);
     }
 
     public TopProcessMetaModel(Class<?> clazz, int priority,
                                int nbMaxTopConcurrent,
                                int nbMaxConcurrent, String descr) {
-        super(clazz, null, descr);
-        this.priority = priority;
-        this.nbMaxTopConcurrent = nbMaxTopConcurrent;
-        this.nbMaxConcurrent = nbMaxConcurrent;
-        Assert.isTrue(TopProcess.class.isAssignableFrom(clazz));
+        this(clazz, null, null, priority, nbMaxTopConcurrent, nbMaxConcurrent, descr, false);
     }
 
-    public TopProcessMetaModel(Class<?> clazz, String[] usedConnections, int priority, int nbMaxTopConcurrent, int nbMaxConcurrent, String descr) {
-        super(clazz, usedConnections, descr);
+    public TopProcessMetaModel(Class<?> clazz, List<VariableDescription> variables, TipiTopProcess ann) {
+        this(clazz, variables, null, ann);
+    }
+
+    public TopProcessMetaModel(Class<?> clazz, List<VariableDescription> vars, String[] usedConnections, final TipiTopProcess ann) {
+        this(clazz, vars, usedConnections, ann.priority(), ann.nbMaxTopConcurrent(), ann.nbMaxConcurrent(), ann.description(), false);
+    }
+
+    public TopProcessMetaModel(Class<?> clazz, List<VariableDescription> vars, String[] usedConnections,
+                                int priority, int nbMaxTopConcurrent, int nbMaxConcurrent, String descr, boolean showInUI) {
+        super(clazz, vars, usedConnections, descr);
+        this.isShownInUI = showInUI;
         this.priority = priority;
         this.nbMaxTopConcurrent = nbMaxTopConcurrent;
         this.nbMaxConcurrent = nbMaxConcurrent;

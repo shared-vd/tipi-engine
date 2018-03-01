@@ -48,5 +48,4 @@ public class SessionClearTest extends TipiEngineTest {
 
         });
     }
-
 }

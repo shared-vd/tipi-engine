@@ -83,7 +83,7 @@ public class MetaModelHelper {
 
 
     static TopProcessMetaModel createUnkonwnProcessMetaModel(Class<?> clazz) {
-        final TopProcessMetaModel metaModel = new TopProcessMetaModel(clazz, 1, 10, 10, "Unknown");
+        final TopProcessMetaModel metaModel = new TopProcessMetaModel(clazz, null, null, 1, 10, 10, "Unknown", true);
         return metaModel;
     }
 
@@ -93,10 +93,9 @@ public class MetaModelHelper {
 
         final List<VariableDescription> varsDesc = getVariableDescriptions(ann);
 
-        final TopProcessMetaModel metaModel = new TopProcessMetaModel(clazz, ann.priority(), ann.nbMaxTopConcurrent(), ann.nbMaxConcurrent(), ann.description());
+        final TopProcessMetaModel metaModel = new TopProcessMetaModel(clazz, varsDesc, ann);
         metaModel.setDeleteWhenFinished(ann.deleteWhenFinished());
         metaModel.setStartable(ann.startable());
-        metaModel.setVariables(varsDesc);
         metaModel.setShownInUI(ann.showInUi());
         return metaModel;
     }
