@@ -140,7 +140,7 @@
                 <version>2.5.3</version>
                 <configuration>
                     <!-- Tests were already ran during release:prepare phase -->
-                    <releaseProfiles>not</releaseProfiles>
+                    <releaseProfiles>not,gpgsign</releaseProfiles>
                     <tagNameFormat>@{project.version}</tagNameFormat>
                 </configuration>
             </plugin>

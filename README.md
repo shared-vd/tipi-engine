@@ -77,7 +77,7 @@ Returns only the 10 first found processes
 # Releasing to Maven central
 
 ```
-mvn -Pgpgsign release:prepare
+mvn release:prepare
 mvn release:perform
 ```
 
