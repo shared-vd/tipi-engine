@@ -16,10 +16,11 @@ public class TipiActivityInfos implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private long id;
-    private String type;
+    private String fqn;
     private String simpleName;
+    private String type;
+    private String processFqn;
     private long processId;
-    private String processName;
     private long parentId;
     private String parentName;
     private String description;
@@ -49,10 +50,11 @@ public class TipiActivityInfos implements Serializable {
         } else {
             type = "Inconnu";
         }
+        fqn = db.getFqn();
         simpleName = db.getSimpleName();
         this.description = description;
         processId = db.getProcessOrThis().getId();
-        processName = db.getProcessOrThis().getSimpleName();
+        processFqn = db.getProcessOrThis().getFqn();
         if (null != db.getParent()) {
             parentId = db.getParent().getId();
             parentName = db.getParent().getFqn();
@@ -81,12 +83,16 @@ public class TipiActivityInfos implements Serializable {
         return type;
     }
 
-    public String getProcessName() {
-        return processName;
+    public String getFqn() {
+        return fqn;
+    }
+
+    public String getProcessFqn() {
+        return processFqn;
     }
     // package
-    void setProcessName(String processName) {
-        this.processName = processName;
+    void setProcessFqn(String processFqn) {
+        this.processFqn = processFqn;
     }
 
     public String getSimpleName() {

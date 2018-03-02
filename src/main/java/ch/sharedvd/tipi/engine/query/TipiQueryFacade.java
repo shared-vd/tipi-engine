@@ -28,12 +28,20 @@ public interface TipiQueryFacade {
     TipiActivityInfos getActivityInfos(long id, boolean loadVariables);
 
     /**
-     * Retuens the running processes
+     * Returns the running processes
      *
      * @param maxHits
      * @return the running processes (those that are not FINISHED)
      */
     ResultListWithCount<TipiTopProcessInfos> getRunningProcesses(final int maxHits);
+
+    /**
+     * Returns all the processes
+     *
+     * @param maxHits
+     * @return all the processes
+     */
+    ResultListWithCount<TipiTopProcessInfos> getAllProcesses(final int maxHits);
 
     /**
      * Recherche les activités selon le criteria passé (recherche en HQL)

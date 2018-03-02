@@ -14,6 +14,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -41,8 +42,9 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         assertEquals(1, results.getResult().size());
         {
             final TipiTopProcessInfos tpi = results.getResult().get(0);
-            assertEquals("ActivityQueryServiceTest$ActivityPersisterServiceTopProcess", tpi.getProcessName());
+            assertEquals("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess", tpi.getFqn());
             assertEquals("ActivityQueryServiceTest$ActivityPersisterServiceTopProcess", tpi.getSimpleName());
+            assertEquals("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess", tpi.getProcessFqn());
             assertEquals("Un process de test de ActivityQueryServiceTest", tpi.getDescription());
 
             assertEquals("Process", tpi.getType());
@@ -59,6 +61,40 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
     }
 
     @Test
+    public void getAllProcesses() {
+        txTemplate.txWithout(s -> {
+            loadProcess();
+        });
+
+        final ResultListWithCount<TipiTopProcessInfos> results = activityQueryService.getAllProcesses(-1);
+        assertEquals(2, results.getResult().size());
+        {
+            final TipiTopProcessInfos tpi = results.getResult().get(0);
+            assertEquals("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess", tpi.getProcessFqn());
+            assertEquals("ActivityQueryServiceTest$ActivityPersisterServiceTopProcess", tpi.getSimpleName());
+            assertEquals("Un process de test de ActivityQueryServiceTest", tpi.getDescription());
+            assertEquals(ActivityState.WAIT_ON_CHILDREN, tpi.getState());
+
+            assertEquals("Process", tpi.getType());
+            assertEquals(11, tpi.getNbActivitesTotal());
+            assertEquals(1, tpi.getNbActivitesError());
+            assertEquals(2, tpi.getNbActivitesExecuting());
+            assertEquals(0, tpi.getNbActivitesAborted());
+            assertEquals(1, tpi.getNbActivitesFinished());
+            assertEquals(6, tpi.getNbActivitesInitial());
+            assertEquals(0, tpi.getNbActivitesRetry());
+            assertEquals(0, tpi.getNbActivitesSuspended());
+            assertEquals(1, tpi.getNbActivitesWaiting());
+        }
+        {
+            final TipiTopProcessInfos tpi = results.getResult().get(1);
+            assertEquals("Unknown: ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess2", tpi.getProcessFqn());
+            assertEquals("Unknown: ActivityQueryServiceTest$ActivityPersisterServiceTopProcess2", tpi.getSimpleName());
+            assertEquals(ActivityState.ERROR, tpi.getState());
+        }
+    }
+
+    @Test
     public void countProcesses() throws Exception {
         txTemplate.txWithout(s -> {
             loadProcess();
@@ -67,15 +103,21 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
         // On vérifie qu'on a 1 process
         txTemplate.txWithout(s -> {
             List<DbActivity> actis = activityRepository.findAll();
-            Assert.assertEquals(11, actis.size());
+            Assert.assertEquals(12, actis.size());
 
         });
 
         ResultListWithCount<TipiTopProcessInfos> infos = activityQueryService.getAllProcesses(50);
-        for (TipiTopProcessInfos ttpi : infos) {
+        assertEquals(2, infos.getResult().size());
+        {
+            TipiTopProcessInfos ttpi = infos.getResult().get(0);
             Assert.assertEquals(11L, ttpi.getNbActivitesTotal());
             Assert.assertEquals(1L, ttpi.getNbActivitesError());
             Assert.assertEquals(2L, ttpi.getNbActivitesExecuting());
+        }
+        {
+            TipiTopProcessInfos ttpi = infos.getResult().get(1);
+            Assert.assertEquals(1L, ttpi.getNbActivitesTotal());
         }
     }
 
@@ -83,7 +125,6 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
     public void searchByVariableName() throws Exception {
 
         txTemplate.txWithout(s -> {
-
             {
                 final DbTopProcess model = new DbTopProcess();
                 model.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$SearchTopProcess");
@@ -154,7 +195,17 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
     }
 
     private void loadProcess() throws Exception {
-
+        {
+            final DbTopProcess process2 = new DbTopProcess();
+            {
+                process2.setState(ActivityState.ERROR);
+                process2.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess2");
+                process2.setProcessName("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$ActivityPersisterServiceTopProcess2");
+                process2.setCreationDate(new Date());
+                activityRepository.save(process2);
+            }
+        }
+        Thread.sleep(20);
         final DbTopProcess process = new DbTopProcess();
         {
             process.setState(ActivityState.WAIT_ON_CHILDREN);
@@ -416,6 +467,7 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             public String getDescription() {
                 return "Un process de test de ActivityQueryServiceTest";
             }
+
             @Override
             protected void init() {
                 setDeleteWhenFinished(false);

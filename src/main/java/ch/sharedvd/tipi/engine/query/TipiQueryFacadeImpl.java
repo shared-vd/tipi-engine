@@ -30,6 +30,11 @@ public class TipiQueryFacadeImpl implements TipiQueryFacade {
     }
 
     @Override
+    public ResultListWithCount<TipiTopProcessInfos> getAllProcesses(int maxHits) {
+        return activityQueryService.getAllProcesses(maxHits);
+    }
+
+    @Override
     public ResultListWithCount<TipiActivityInfos> searchActivities(final TipiCriteria criteria, final int maxHits) {
         return activityQueryService.searchActivities(criteria, maxHits);
     }

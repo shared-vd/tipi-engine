@@ -221,7 +221,7 @@ public class ActivityQueryService {
             final HqlQuery hq = new HqlQuery();
             hq.from("DbTopProcess p");
 
-            hq.where("p.parent.id is null ");// Process
+            hq.where("p.parent.id is null "); // Process
             hq.where(" and p.state in :state", "state", Arrays.asList(ActivityState.INITIAL, ActivityState.EXECUTING, ActivityState.WAIT_ON_CHILDREN));
             hq.order("creation desc");
             final ResultListWithCount<DbTopProcess> results = hq.getResultListWithCount(em, maxHits);

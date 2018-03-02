@@ -40,7 +40,7 @@ public class TipiTopProcessInfos extends TipiActivityInfos {
             nbThreads = meta.getNbMaxConcurrent();
             if (meta.getClazz().equals(UnknownProcess.class)) {
                 setSimpleName("Unknown: " + getSimpleName());
-                setProcessName("Unknown: " + getProcessName());
+                setProcessFqn("Unknown: " + getProcessFqn());
             }
         }
     }
