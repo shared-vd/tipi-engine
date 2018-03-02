@@ -28,8 +28,8 @@ public class TipiTopProcessInfos extends TipiActivityInfos {
     public Date dateStartTerminate;
     public Date dateEndTerminate;
 
-    public TipiTopProcessInfos(DbSubProcess model, boolean loadVariables) {
-        super(model, loadVariables);
+    public TipiTopProcessInfos(DbSubProcess model, String description, boolean loadVariables) {
+        super(model, description, loadVariables);
 
         dateStartTerminate = model.getDateStartTerminate();
         dateEndTerminate = model.getDateEndTerminate();

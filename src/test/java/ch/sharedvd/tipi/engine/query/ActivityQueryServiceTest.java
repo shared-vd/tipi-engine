@@ -43,13 +43,15 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
             final TipiTopProcessInfos tpi = results.getResult().get(0);
             assertEquals("ActivityQueryServiceTest$ActivityPersisterServiceTopProcess", tpi.getProcessName());
             assertEquals("ActivityQueryServiceTest$ActivityPersisterServiceTopProcess", tpi.getSimpleName());
+            assertEquals("Un process de test de ActivityQueryServiceTest", tpi.getDescription());
+
             assertEquals("Process", tpi.getType());
-            assertEquals(15, tpi.getNbActivitesTotal());
+            assertEquals(11, tpi.getNbActivitesTotal());
             assertEquals(1, tpi.getNbActivitesError());
-            assertEquals(3, tpi.getNbActivitesExecuting());
+            assertEquals(2, tpi.getNbActivitesExecuting());
             assertEquals(0, tpi.getNbActivitesAborted());
-            assertEquals(2, tpi.getNbActivitesFinished());
-            assertEquals(8, tpi.getNbActivitesInitial());
+            assertEquals(1, tpi.getNbActivitesFinished());
+            assertEquals(6, tpi.getNbActivitesInitial());
             assertEquals(0, tpi.getNbActivitesRetry());
             assertEquals(0, tpi.getNbActivitesSuspended());
             assertEquals(1, tpi.getNbActivitesWaiting());
@@ -408,9 +410,12 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
     }
 
     public static class ActivityPersisterServiceTopProcess extends TopProcess {
-
         @SuppressWarnings("serial")
         public final static TopProcessMetaModel meta = new TopProcessMetaModel(ActivityPersisterServiceTopProcess.class, 100, -1, 10, null) {
+            @Override
+            public String getDescription() {
+                return "Un process de test de ActivityQueryServiceTest";
+            }
             @Override
             protected void init() {
                 setDeleteWhenFinished(false);

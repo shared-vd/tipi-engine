@@ -36,7 +36,7 @@ public class TipiActivityInfos implements Serializable {
     private Map<String, Object> variables;
     private String callstack;
 
-    public TipiActivityInfos(DbActivity db, boolean loadVariables) {
+    public TipiActivityInfos(DbActivity db, String description, boolean loadVariables) {
 
         // On doit résoudre tous les champs -> LazyInit
         id = db.getId();
@@ -50,9 +50,7 @@ public class TipiActivityInfos implements Serializable {
             type = "Inconnu";
         }
         simpleName = db.getSimpleName();
-        {
-            // a refaire ici la description de l'activity
-        }
+        this.description = description;
         processId = db.getProcessOrThis().getId();
         processName = db.getProcessOrThis().getSimpleName();
         if (null != db.getParent()) {

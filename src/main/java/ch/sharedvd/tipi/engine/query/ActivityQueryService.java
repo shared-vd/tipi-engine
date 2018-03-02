@@ -4,6 +4,8 @@ import ch.sharedvd.tipi.engine.infos.ActivityThreadInfos;
 import ch.sharedvd.tipi.engine.infos.ConnectionCapInfos;
 import ch.sharedvd.tipi.engine.infos.TipiActivityInfos;
 import ch.sharedvd.tipi.engine.infos.TipiTopProcessInfos;
+import ch.sharedvd.tipi.engine.meta.MetaModelHelper;
+import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;
@@ -137,46 +139,33 @@ public class ActivityQueryService {
         if (am instanceof DbSubProcess) {
             return getRunningProcessInfos((DbSubProcess) am, loadVariables, gatherChildActivities);
         } else {
-            return new TipiActivityInfos(am, loadVariables);
+            final TopProcessMetaModel meta = MetaModelHelper.getTopProcessMeta(am.getFqn());
+            return new TipiActivityInfos(am, meta.getDescription(), loadVariables);
         }
     }
 
     private TipiTopProcessInfos getRunningProcessInfos(DbSubProcess process, boolean loadVariables, boolean gatherChildActivities) {
-
-        final TipiTopProcessInfos infos = new TipiTopProcessInfos(process, loadVariables);
+        final TopProcessMetaModel meta = MetaModelHelper.getTopProcessMeta(process.getFqn());
+        final TipiTopProcessInfos infos = new TipiTopProcessInfos(process, meta.getDescription(), loadVariables);
         if (process instanceof DbTopProcess) {
             infos.incActivitiesFromState(process.getState(), process.isRequestEndExecution(), process.getNbRetryDone());
         }
 
         if (gatherChildActivities) {
-            // Tous les subProcess directs
-            final long pid = process.getId().longValue();
-            updateDateFinExecution(infos, getOlderProcessEndExecution(pid, true));
-            infos.incNbActivitesTotal(countActivitiesByState(pid, null, true));
-            infos.incNbActivitesInitial(countActivitiesByState(pid, ActivityState.INITIAL, true));
-            infos.incNbActivitesExecuting(countActivitiesByState(pid, ActivityState.EXECUTING, true));
-            infos.incNbActivitesRetry(countActivitiesRetry(pid, true));
-            infos.incNbActivitesAborted(countActivitiesByState(pid, ActivityState.ABORTED, true));
-            infos.incNbActivitesFinished(countActivitiesByState(pid, ActivityState.FINISHED, true));
-            infos.incNbActivitesError(countActivitiesByState(pid, ActivityState.ERROR, true));
-            infos.incNbActivitesWaiting(countActivitiesByState(pid, ActivityState.WAIT_ON_CHILDREN, true));
-            infos.incNbActivitesSuspended(countActivitiesByState(pid, ActivityState.SUSPENDED, true));
-            infos.incNbActivitesRequestEndExecution(countActivitiesRequestEndExecution(pid, true));
-
             // Toutes les activités de ce process
             if (process instanceof DbTopProcess) {
-                final TipiTopProcessInfos ttpi = infos;
+                final long pid = process.getId().longValue();
                 updateDateFinExecution(infos, getOlderProcessEndExecution(pid, false));
-                ttpi.incNbActivitesTotal(countActivitiesByState(pid, null, false));
-                ttpi.incNbActivitesInitial(countActivitiesByState(pid, ActivityState.INITIAL, false));
-                ttpi.incNbActivitesExecuting(countActivitiesByState(pid, ActivityState.EXECUTING, false));
-                ttpi.incNbActivitesRetry(countActivitiesRetry(pid, false));
-                ttpi.incNbActivitesAborted(countActivitiesByState(pid, ActivityState.ABORTED, false));
-                ttpi.incNbActivitesFinished(countActivitiesByState(pid, ActivityState.FINISHED, false));
-                ttpi.incNbActivitesError(countActivitiesByState(pid, ActivityState.ERROR, false));
-                ttpi.incNbActivitesWaiting(countActivitiesByState(pid, ActivityState.WAIT_ON_CHILDREN, false));
-                ttpi.incNbActivitesSuspended(countActivitiesByState(pid, ActivityState.SUSPENDED, false));
-                ttpi.incNbActivitesRequestEndExecution(countActivitiesRequestEndExecution(pid, false));
+                infos.incNbActivitesTotal(countActivitiesByState(pid, null, false));
+                infos.incNbActivitesInitial(countActivitiesByState(pid, ActivityState.INITIAL, false));
+                infos.incNbActivitesExecuting(countActivitiesByState(pid, ActivityState.EXECUTING, false));
+                infos.incNbActivitesRetry(countActivitiesRetry(pid, false));
+                infos.incNbActivitesAborted(countActivitiesByState(pid, ActivityState.ABORTED, false));
+                infos.incNbActivitesFinished(countActivitiesByState(pid, ActivityState.FINISHED, false));
+                infos.incNbActivitesError(countActivitiesByState(pid, ActivityState.ERROR, false));
+                infos.incNbActivitesWaiting(countActivitiesByState(pid, ActivityState.WAIT_ON_CHILDREN, false));
+                infos.incNbActivitesSuspended(countActivitiesByState(pid, ActivityState.SUSPENDED, false));
+                infos.incNbActivitesRequestEndExecution(countActivitiesRequestEndExecution(pid, false));
             }
         }
         return infos;

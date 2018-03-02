@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,7 +83,6 @@ public class ActivityRunningService {
             Assert.notNull(meta, "Meta not found: " + meta);
 
             return launch(activityRepository, meta, vars);
-
         });
 
         return id;
@@ -106,6 +106,8 @@ public class ActivityRunningService {
 
         // State
         ActivityStateChangeService.executingFirstActivity(model);
+
+        model.setDateStartExecute(new Date()); // else it will be set only at end of execute()
 
         // Start it
         // On démarre toutes les activités qui sont en EXECUTING

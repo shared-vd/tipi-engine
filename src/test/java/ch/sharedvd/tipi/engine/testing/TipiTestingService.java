@@ -3,6 +3,8 @@ package ch.sharedvd.tipi.engine.testing;
 import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.command.CommandConsumer;
 import ch.sharedvd.tipi.engine.infos.TipiTopProcessInfos;
+import ch.sharedvd.tipi.engine.meta.MetaModelHelper;
+import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbTopProcess;
@@ -37,7 +39,8 @@ public class TipiTestingService {
         txTemplate.txWithout((s) -> {
             final List<DbTopProcess> results = topProcessRepository.findProcessesByFqn(clazz.getName());
             for (DbTopProcess am : results) {
-                final TipiTopProcessInfos infos = new TipiTopProcessInfos(am, false);
+                final TopProcessMetaModel meta = MetaModelHelper.getTopProcessMeta(am.getFqn());
+                final TipiTopProcessInfos infos = new TipiTopProcessInfos(am, meta.getDescription(), false);
                 list.add(infos);
             }
         });
