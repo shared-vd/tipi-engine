@@ -14,11 +14,14 @@ import ch.sharedvd.tipi.engine.repository.ActivityRepository;
 import ch.sharedvd.tipi.engine.runner.*;
 import ch.sharedvd.tipi.engine.svc.ActivityPersisterService;
 import ch.sharedvd.tipi.engine.utils.BeanAutowirer;
+import ch.sharedvd.tipi.engine.utils.TipiProperties;
 import ch.sharedvd.tipi.engine.utils.TixTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -26,7 +29,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 @ComponentScan("ch.sharedvd.tipi.engine")
 @EntityScan(basePackageClasses = DbActivity.class)
 @EnableJpaRepositories(basePackageClasses = ActivityRepository.class)
+@Import(TipiProperties.class)
 public class TipiAutoConfiguration {
+
+    @Autowired
+    private TipiProperties tipiProperties;
 
     @Bean
     public TixTemplate tixTemplate(PlatformTransactionManager ptm) {
@@ -40,13 +47,16 @@ public class TipiAutoConfiguration {
 
     @Bean
     public TipiStarter tipiStarter() {
-        return new TipiStarterImpl();
+        final TipiStarterImpl ts = new TipiStarterImpl();
+        ts.setStartAtBoot(tipiProperties.isStartAtBoot());
+        return ts;
     }
 
     @Bean
     public TipiQueryFacade tipiQueryFacade() {
         return new TipiQueryFacadeImpl();
     }
+
     @Bean
     public TipiFacade tipiFacade() {
         return new TipiFacadeImpl();
@@ -61,6 +71,7 @@ public class TipiAutoConfiguration {
     public ActivityPersisterService activityPersistenceService() {
         return new ActivityPersisterService();
     }
+
     @Bean
     public ActivityQueryService activityQueryService() {
         return new ActivityQueryService();
@@ -80,6 +91,7 @@ public class TipiAutoConfiguration {
     public CommandConsumer commandConsumer() {
         return new CommandConsumer();
     }
+
     @Bean
     public CommandService commandService() {
         return new CommandServiceImpl();
