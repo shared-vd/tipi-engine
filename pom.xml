@@ -4,7 +4,7 @@
 
     <groupId>ch.sharedvd.tipi</groupId>
     <artifactId>tipi-engine</artifactId>
-    <version>1.1.6-SNAPSHOT</version>
+    <version>1.1.6</version>
     <packaging>jar</packaging>
 
     <name>TiPi - Engine</name>
@@ -22,7 +22,7 @@
         <connection>scm:git:git@github.com::/shared-vd/tipi-engine.git</connection>
         <developerConnection>scm:git:git@github.com::/shared-vd/tipi-engine.git</developerConnection>
         <url>https://github.com/shared-vd/tipi-engine.git</url>
-        <tag>HEAD</tag>
+        <tag>1.1.6</tag>
     </scm>
 
     <licenses>
