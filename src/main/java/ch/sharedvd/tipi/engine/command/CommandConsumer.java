@@ -50,15 +50,15 @@ public class CommandConsumer implements Startable, Runnable {
         consumationThread.setDaemon(true); // so the whole system stop when main() exits
         consumationThread.setName("TiPi-Consumer");
         consumationThread.setPriority(Thread.NORM_PRIORITY + 1);
-        LOGGER.info("Démarrage du Thread de CommandConsumer ...");
+        LOGGER.info("Starting CommandConsumer Thread ...");
         consumationThread.start();
 
         if (resumeTipiAtBoot) {
             // Reveille les taches tout de suite
-            LOGGER.info("Cold restart TiPi ...");
+            LOGGER.info("Cold restarting TiPi ...");
             addCommand(new ColdRestartCommand());
         } else {
-            LOGGER.info("Pas de Cold restart de TiPi");
+            LOGGER.info("No Cold restart of TiPi");
         }
     }
 

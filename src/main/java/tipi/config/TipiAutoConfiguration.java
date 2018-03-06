@@ -89,7 +89,9 @@ public class TipiAutoConfiguration {
 
     @Bean
     public CommandConsumer commandConsumer() {
-        return new CommandConsumer();
+        final CommandConsumer cc = new CommandConsumer();
+        cc.setResumeTipiAtBoot(tipiProperties.isResumeAtBoot());
+        return cc;
     }
 
     @Bean
