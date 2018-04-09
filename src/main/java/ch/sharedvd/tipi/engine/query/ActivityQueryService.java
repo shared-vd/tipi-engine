@@ -76,6 +76,7 @@ public class ActivityQueryService {
 
     private HqlQuery generateCriteria(final TipiCriteria criteria) {
         final HqlQuery hq = new HqlQuery();
+        hq.select("a");
         hq.from("DbActivity a");
         hq.where("1 = 1 ");
 
@@ -111,20 +112,18 @@ public class ActivityQueryService {
         }
 
         if (StringUtils.isNotBlank(criteria.getVariableName()) && criteria.getVariableValue() != null) {
-            Assert.fail("TODO");
-//            hq.append(" and a.correlationId = :correlationId ", "correlationId", criteria.getIdCorrelation());
-//            VariableCriteria varCrit = hq.newVariablesCriteria(JoinType.INNER);
-//
-//            EqualsExpr eq = null;
-//            if (criteria.getVariableValue() instanceof Long) {
-//                eq = varCrit.inheritedLongVariableLongValue().eq(criteria.getVariableValue());
-//            }
-//            else {
-//                Assert.fail("Les autres types : a implementer");
-//            }
-//            if (null != eq) {
-//                varCrit.addAndExpression(eq);
-//            }
+            hq.from("join a.variables vars");
+            hq.where("and vars.key = :varkey", "varkey", criteria.getVariableName());
+            if (criteria.getVariableValue() instanceof Long) {
+                hq.where("and vars.longValue = :varvalue", "varvalue", criteria.getVariableValue());
+            } else if (criteria.getVariableValue() instanceof String) {
+                hq.where("and vars.stringValue = :varvalue", "varvalue", criteria.getVariableValue());
+            } else {
+                Assert.fail("Other variable types to implement");
+            }
+        } else if (StringUtils.isNotBlank(criteria.getVariableName())) {
+            hq.from("join a.variables vars");
+            hq.where("and vars.key = :varkey", "varkey", criteria.getVariableName());
         }
 
         // On met un ordre par défaut pour être sûr d'avoir à peu près toujours la même liste et on choisit
@@ -133,7 +132,8 @@ public class ActivityQueryService {
         return hq;
     }
 
-    private TipiActivityInfos buildActivityOrProcessInfos(DbActivity am, boolean loadVariables, boolean gatherChildActivities) {
+    private TipiActivityInfos buildActivityOrProcessInfos(DbActivity am, boolean loadVariables,
+                                                          boolean gatherChildActivities) {
         if (null == am)
             return null;
         if (am instanceof DbSubProcess) {
@@ -144,7 +144,8 @@ public class ActivityQueryService {
         }
     }
 
-    private TipiTopProcessInfos getRunningProcessInfos(DbSubProcess process, boolean loadVariables, boolean gatherChildActivities) {
+    private TipiTopProcessInfos getRunningProcessInfos(DbSubProcess process, boolean loadVariables,
+                                                       boolean gatherChildActivities) {
         final TopProcessMetaModel meta = MetaModelHelper.getTopProcessMeta(process.getFqn());
         final TipiTopProcessInfos infos = new TipiTopProcessInfos(process, meta.getDescription(), loadVariables);
         if (process instanceof DbTopProcess) {
@@ -281,7 +282,8 @@ public class ActivityQueryService {
         return infos;
     }
 
-    public int countActivitiesByState(final Long processId, final ActivityState state, final boolean subProcessOnly) {
+    public int countActivitiesByState(final Long processId, final ActivityState state,
+                                      final boolean subProcessOnly) {
         final int infos = txTemplate.txWith((s) -> {
             final HqlQuery hq = new HqlQuery("count(*)", "DbActivity a");
             addSubProcessExpr(hq, processId, subProcessOnly);

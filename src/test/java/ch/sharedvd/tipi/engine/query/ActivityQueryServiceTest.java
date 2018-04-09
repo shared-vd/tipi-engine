@@ -123,7 +123,6 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
 
     @Test
     public void searchByVariableName() throws Exception {
-
         txTemplate.txWithout(s -> {
             {
                 final DbTopProcess model = new DbTopProcess();
@@ -140,24 +139,105 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
                 activityPersisterService.putVariable(model, "bla", "blo");
                 em.persist(model);
             }
+            Thread.sleep(100); // Pour que Creation date soit plus grande
+            {
+                final DbTopProcess model = new DbTopProcess();
+                model.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$SearchTopProcess");
+                model.setProcessName("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$SearchTopProcess");
+                activityPersisterService.putVariable(model, "bli", 1234L);
+                em.persist(model);
+            }
 
         });
 
         {
-            TipiCriteria criteria = new TipiCriteria();
+            final TipiCriteria criteria = new TipiCriteria();
             criteria.setVariableName("bla");
-            ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
+            final ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
             Assert.assertEquals(2L, results.getCount());
             Assert.assertEquals(2, results.getResult().size());
         }
         {
-            TipiCriteria criteria = new TipiCriteria();
+            final TipiCriteria criteria = new TipiCriteria();
             criteria.setVariableName("bla");
-            ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, 1);
+            final ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, 1);
             Assert.assertEquals(2L, results.getCount());
             Assert.assertEquals(1, results.getResult().size());
-            TipiActivityInfos infos = results.getResult().get(0);
+            final TipiActivityInfos infos = results.getResult().get(0);
             Assert.assertEquals("ActivityQueryServiceTest$SearchTopProcess", infos.getSimpleName());
+        }
+        {
+            final TipiCriteria criteria = new TipiCriteria();
+            criteria.setVariableName("bli");
+            final ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, 10);
+            Assert.assertEquals(1L, results.getCount());
+            Assert.assertEquals(1, results.getResult().size());
+        }
+    }
+
+    @Test
+    public void searchByVariableNameAndValue() throws Exception {
+        txTemplate.txWithout(s -> {
+            {
+                final DbTopProcess model = new DbTopProcess();
+                model.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$SearchTopProcess");
+                model.setProcessName("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$SearchTopProcess");
+                activityPersisterService.putVariable(model, "bla", "bli");
+                em.persist(model);
+            }
+            Thread.sleep(100); // Pour que Creation date soit plus grande
+            {
+                final DbTopProcess model = new DbTopProcess();
+                model.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$SearchTopProcess");
+                model.setProcessName("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$SearchTopProcess");
+                activityPersisterService.putVariable(model, "bla", "blo");
+                em.persist(model);
+            }
+            Thread.sleep(100); // Pour que Creation date soit plus grande
+            {
+                final DbTopProcess model = new DbTopProcess();
+                model.setFqn("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$SearchTopProcess");
+                model.setProcessName("ch.sharedvd.tipi.engine.query.ActivityQueryServiceTest$SearchTopProcess");
+                activityPersisterService.putVariable(model, "bli", 1234L);
+                em.persist(model);
+            }
+
+        });
+
+        {
+            final TipiCriteria criteria = new TipiCriteria();
+            criteria.setVariableName("bla");
+            criteria.setVariableValue("bli");
+            final ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
+            Assert.assertEquals(1, results.getResult().size());
+        }
+        {
+            final TipiCriteria criteria = new TipiCriteria();
+            criteria.setVariableName("bla");
+            criteria.setVariableValue("blo");
+            final ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
+            Assert.assertEquals(1, results.getResult().size());
+        }
+        {
+            final TipiCriteria criteria = new TipiCriteria();
+            criteria.setVariableName("bla");
+            criteria.setVariableValue("turlu");
+            final ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
+            Assert.assertEquals(0, results.getResult().size());
+        }
+        {
+            final TipiCriteria criteria = new TipiCriteria();
+            criteria.setVariableName("bli");
+            criteria.setVariableValue(1234L);
+            final ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
+            Assert.assertEquals(1, results.getResult().size());
+        }
+        {
+            final TipiCriteria criteria = new TipiCriteria();
+            criteria.setVariableName("bli");
+            criteria.setVariableValue(4567L);
+            final ResultListWithCount<TipiActivityInfos> results = activityQueryService.searchActivities(criteria, -1);
+            Assert.assertEquals(0, results.getResult().size());
         }
     }
 
@@ -165,7 +245,8 @@ public class ActivityQueryServiceTest extends AbstractTipiPersistenceTest {
 
         public final static TopProcessMetaModel meta = new TopProcessMetaModel(SearchTopProcess.class,
                 new VariableDescription[]{
-                        new VariableDescription("bla", VariableType.String)
+                        new VariableDescription("bla", VariableType.String),
+                        new VariableDescription("bli", VariableType.Long)
                 }, null,
                 100, -1, 10, null, true) {
             @Override

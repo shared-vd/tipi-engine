@@ -24,27 +24,27 @@ public class HqlQuery {
     }
 
     public HqlQuery select(String hql) {
-        this.select.append(hql);
+        this.select.append(" ").append(hql);
         return this;
     }
 
     public HqlQuery from(String hql) {
-        this.from.append(hql);
+        this.from.append(" ").append(hql);
         return this;
     }
 
     public HqlQuery where(String hql) {
-        this.where.append(hql);
+        this.where.append(" ").append(hql);
         return this;
     }
     public HqlQuery where(String hql, String paramName, Object paramValue) {
-        this.where.append(hql);
+        this.where.append(" ").append(hql);
         this.params.put(paramName, paramValue);
         return this;
     }
 
     public HqlQuery order(String hql) {
-        this.order.append(hql);
+        this.order.append(" ").append(hql);
         return this;
     }
 
