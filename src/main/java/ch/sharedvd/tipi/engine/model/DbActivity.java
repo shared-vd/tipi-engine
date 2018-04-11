@@ -361,8 +361,10 @@ public class DbActivity extends DbBaseEntity {
                     "  and a.state = (?1)";
 
     static final String FIND_GROUP_STATE =
-            "select a from DbActivity a join a.process p " +
-                    "where p in (select pi from DbTopProcess pi where pi.fqn = (?1)) " +
+            "select a from DbActivity a left join a.process p " +
+                    "where (    p in (select pi from DbTopProcess pi where pi.fqn = (?1)) " +
+                    "           or a.fqn = (?1)" +
+                    "       )" +
                     "  and a.requestEndExecution = false " +
                     "  and a.state = (?2)";
 
