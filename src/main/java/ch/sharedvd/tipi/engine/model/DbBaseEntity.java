@@ -9,7 +9,8 @@ import java.util.Date;
 public class DbBaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipiEntitySeqGen")
+    @SequenceGenerator(name = "tipiEntitySeqGen", sequenceName = "TP_SEQ")
     @Column(name = "ID")
     private Long id;
 

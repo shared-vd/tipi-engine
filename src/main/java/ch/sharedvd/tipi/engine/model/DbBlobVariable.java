@@ -14,9 +14,9 @@ public abstract class DbBlobVariable<T> extends DbVariable<T> {
         super(key);
     }
 
+    @Column(name = "BLOB_VALUE")
     private Blob blob;
 
-    @Column(name = "BLOB_VALUE")
     public Blob getBlob() {
         return blob;
     }
