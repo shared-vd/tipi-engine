@@ -48,8 +48,11 @@ public class ActivityPersisterService {
     }
 
     public DbActivity persistModelFromMeta(final ActivityMetaModel meta, final boolean isProcess, final VariableMap vars) {
-        DbActivity model = createModelFromMeta(meta, isProcess, vars);
-        return activityRepository.save(model);
+        final DbActivity model = createModelFromMeta(meta, isProcess, vars);
+        final DbActivity a = activityRepository.save(model);
+        // flush so the insert fail fast if bad
+        activityRepository.flush();
+        return a;
     }
 
     public long addChildActivity(final ActivityMetaModel meta, final DbSubProcess parent, final Long previousId,
