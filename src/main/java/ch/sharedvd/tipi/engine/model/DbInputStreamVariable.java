@@ -3,24 +3,22 @@ package ch.sharedvd.tipi.engine.model;
 import ch.sharedvd.tipi.engine.utils.BlobFactory;
 import ch.sharedvd.tipi.engine.utils.InputStreamHolder;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 import java.io.InputStream;
+import java.sql.Blob;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.InflaterInputStream;
 
 @Entity
 @DiscriminatorValue("file")
-public class DbInputStreamVariable extends DbBlobVariable<InputStreamHolder> {
+public class DbInputStreamVariable extends DbVariable<InputStreamHolder> {
 
-    private static final long serialVersionUID = -9135399754284748931L;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DbSerializableVariable.class);
-
+    @Column(name = "BLOB_VALUE")
+    private Blob blob;
 
     protected DbInputStreamVariable() {
     }
@@ -29,6 +27,15 @@ public class DbInputStreamVariable extends DbBlobVariable<InputStreamHolder> {
         super(key);
         setValue(value, aBlobFactory);
     }
+
+    public Blob getBlob() {
+        return blob;
+    }
+
+    public void setBlob(Blob b) {
+        blob = b;
+    }
+
 
     private transient InputStreamHolder deserialBlob = null;
 

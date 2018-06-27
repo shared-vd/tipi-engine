@@ -2,8 +2,6 @@ package ch.sharedvd.tipi.engine.model;
 
 import ch.sharedvd.tipi.engine.utils.BlobFactory;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -18,10 +16,7 @@ import java.util.zip.InflaterInputStream;
 @DiscriminatorValue("serializable")
 public class DbSerializableVariable extends DbVariable<Serializable> {
 
-    private static final long serialVersionUID = -7115434484742577133L;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DbSerializableVariable.class);
-
+    @Column(name = "BLOB_VALUE")
     private Blob blob;
 
     protected DbSerializableVariable() {
@@ -32,7 +27,6 @@ public class DbSerializableVariable extends DbVariable<Serializable> {
         setValue(value, aBlobFactory);
     }
 
-    @Column(name = "BLOB_VALUE")
     public Blob getBlob() {
         return blob;
     }
@@ -95,5 +89,4 @@ public class DbSerializableVariable extends DbVariable<Serializable> {
             IOUtils.closeQuietly(oos);
         }
     }
-
 }
