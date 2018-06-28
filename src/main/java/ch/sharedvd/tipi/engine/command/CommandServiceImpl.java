@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 public class CommandServiceImpl implements CommandService {
@@ -14,40 +15,12 @@ public class CommandServiceImpl implements CommandService {
     @Autowired
     private CommandConsumer consumer;
 
-    private class CommandSynchronization implements TransactionSynchronization {
+    private class CommandSynchronization extends TransactionSynchronizationAdapter {
         private final Command command;
 
         CommandSynchronization(Command c) {
             Assert.notNull(c, "Command can't be null");
             this.command = c;
-        }
-
-        @Override
-        public void suspend() {
-        }
-
-        @Override
-        public void resume() {
-        }
-
-        @Override
-        public void flush() {
-            toString();
-        }
-
-        @Override
-        public void beforeCommit(boolean readOnly) {
-            toString();
-        }
-
-        @Override
-        public void beforeCompletion() {
-            toString();
-        }
-
-        @Override
-        public void afterCommit() {
-            toString();
         }
 
         @Override
