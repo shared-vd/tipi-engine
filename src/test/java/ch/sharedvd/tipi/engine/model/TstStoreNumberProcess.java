@@ -42,7 +42,7 @@ public class TstStoreNumberProcess extends TopProcess {
         putVariable("result", "TheResult");
 
         Long pid = getLongVariable("id");
-        DbActivity model = activityRepository.findOne(pid);
+        DbActivity model = activityRepository.findById(pid).orElse(null);
         putVariable("name", model.getFqn());
 
         return new FinishedActivityResultContext();

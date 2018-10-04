@@ -68,7 +68,7 @@ public class ActivityPersisterService {
 
         // Previous?
         if (previousId != null) {
-            final DbActivity previous = activityRepository.findOne(previousId);
+            final DbActivity previous = activityRepository.findById(previousId).orElse(null);
             Assert.notNull(previous);
             Assert.isEqual(parent, previous.getParent());
             act.setPrevious(previous);
@@ -88,7 +88,7 @@ public class ActivityPersisterService {
     }
 
     public DbActivity getModel(long id) {
-        return activityRepository.findOne(id);
+        return activityRepository.findById(id).orElse(null);
     }
 
     public void putVariables(DbActivity aDbActivity, final ActivityMetaModel meta, VariableMap vars) {

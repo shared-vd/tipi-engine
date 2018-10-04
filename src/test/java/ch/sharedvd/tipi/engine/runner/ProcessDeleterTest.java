@@ -25,7 +25,7 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
         });
 
         txTemplate.txWithout((s) -> {
-            final DbTopProcess process = topProcessRepository.findOne(PID);
+            final DbTopProcess process = topProcessRepository.findById(PID).orElse(null);
             final ProcessDeleter deleter = new ProcessDeleter(process, em, topProcessRepository);
             deleter.delete();
         });
@@ -52,7 +52,7 @@ public class ProcessDeleterTest extends AbstractTipiPersistenceTest {
         });
 
         txTemplate.txWithout((s) -> {
-            final DbTopProcess process = topProcessRepository.findOne(PID);
+            final DbTopProcess process = topProcessRepository.findById(PID).orElse(null);
             final ProcessDeleter deleter = new ProcessDeleter(process, em, topProcessRepository);
             deleter.delete();
         });

@@ -99,7 +99,7 @@ public class ActivityRunningService {
      */
     public long launch(ActivityRepository activityRepository, ActivityMetaModel meta, VariableMap vars) {
         // RCPERS-352 Workaround: just to have the connection at the beginning of the transaction...
-        activityRepository.findOne(1L);
+        activityRepository.findById(1L).orElse(null);;
 
         Assert.notNull(meta);
         DbActivity model = activityPersistenceService.persistModelFromMeta(meta, true, vars);
@@ -130,14 +130,14 @@ public class ActivityRunningService {
 
     public boolean isResumable(final long id) {
         return txTemplate.txWith((status) -> {
-            DbActivity activity = activityRepository.findOne(id);
+            DbActivity activity = activityRepository.findById(id).orElse(null);
             return null != activity && activity.isResumable();
         });
     }
 
     public void resume(final long id, final VariableMap vars) {
         txTemplate.txWithout((status) -> {
-            DbActivity aActivity = activityRepository.findOne(id);
+            DbActivity aActivity = activityRepository.findById(id).orElse(null);
 
             // On mets les variables
             if (vars != null) {
@@ -153,7 +153,7 @@ public class ActivityRunningService {
 
     public boolean isRunning(final long aid) {
         return txTemplate.txWith((status) -> {
-            DbActivity act = activityRepository.findOne(aid);
+            DbActivity act = activityRepository.findById(aid).orElse(null);
             return ((act != null) && !act.isTerminated() && !act.isAborted() && !act.isTerminatedWithError()
                     && !act.isTerminatedSuspended());
         });
@@ -161,7 +161,7 @@ public class ActivityRunningService {
 
     public boolean isProcessRunning(final long id) {
         return txTemplate.txWith((status) -> {
-            DbActivity act = activityRepository.findOne(id);
+            DbActivity act = activityRepository.findById(id).orElse(null);
             return ((null != act) && isRunning(act.getProcessOrThis().getId()));
         });
     }
@@ -176,7 +176,7 @@ public class ActivityRunningService {
     public boolean isProcessScheduled(final long aid) {
         return txTemplate.txWith((status) -> {
 
-            final DbActivity act = activityRepository.findOne(aid);
+            final DbActivity act = activityRepository.findById(aid).orElse(null);
             if (act == null) {
                 return false;
 
@@ -195,7 +195,7 @@ public class ActivityRunningService {
 
     public boolean deleteProcess(final long processId) {
         return txTemplate.txWith((status) -> {
-            DbActivity model = activityRepository.findOne(processId);
+            DbActivity model = activityRepository.findById(processId).orElse(null);
             if ((null != model) && (model instanceof DbTopProcess)) {
                 return deleteProcess((DbTopProcess) model);
             }
@@ -213,7 +213,7 @@ public class ActivityRunningService {
         // D'abord le processus lui-même
         txTemplate.txWithout((status) -> {
             LOGGER.info("Aborting process " + processId);
-            DbActivity act = topProcessRepository.findOne(processId);
+            DbActivity act = topProcessRepository.findById(processId).orElse(null);
             LOGGER.debug("Process " + act.getId() + "/" + act.getFqn() + " -> state=ABORTED");
             act.setState(ActivityState.ABORTED);
         });

@@ -46,13 +46,13 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         });
 
         txTemplate.txWithout((s) -> {
-            DbActivity activite1 = activityRepository.findOne(ACT_1.get());
+            DbActivity activite1 = activityRepository.findById(ACT_1.get()).orElse(null);
             Assert.assertEquals("Process1", activite1.getProcessName());
 
-            DbActivity activite2 = activityRepository.findOne(ACT_2.get());
+            DbActivity activite2 = activityRepository.findById(ACT_2.get()).orElse(null);
             Assert.assertEquals("Process1", activite2.getProcessName());
 
-            DbActivity topProcess = activityRepository.findOne(TOP_PROCESS.get());
+            DbActivity topProcess = activityRepository.findById(TOP_PROCESS.get()).orElse(null);
             Assert.assertEquals("Process1", topProcess.getProcessName());
         });
     }
@@ -79,7 +79,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         });
 
         txTemplate.txWithout((s) -> {
-            DbActivity activite1 = activityRepository.findOne(ID.get());
+            DbActivity activite1 = activityRepository.findById(ID.get()).orElse(null);
 
             Assert.assertEquals(callstack.length(), activite1.getCallstack().length());
             Assert.assertEquals(callstack.toString(), activite1.getCallstack());
@@ -109,7 +109,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         });
 
         txTemplate.txWithout((s) -> {
-            DbActivity activite1 = activityRepository.findOne(ID.get());
+            DbActivity activite1 = activityRepository.findById(ID.get()).orElse(null);
 
             Assert.assertEquals(2000, activite1.getCallstack().length());
         });
@@ -171,11 +171,11 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         });
 
         txTemplate.txWithout((s) -> {
-            DbTopProcess parent = topProcessRepository.findOne(P_ID.get());
-            DbActivity child1 = activityRepository.findOne(C1_ID.get());
-            DbActivity child2 = activityRepository.findOne(C2_ID.get());
-            DbTopProcess parent2 = topProcessRepository.findOne(P2_ID.get());
-            DbActivity child2_1 = activityRepository.findOne(C2_1_ID.get());
+            DbTopProcess parent = topProcessRepository.findById(P_ID.get()).orElse(null);
+            DbActivity child1 = activityRepository.findById(C1_ID.get()).orElse(null);
+            DbActivity child2 = activityRepository.findById(C2_ID.get()).orElse(null);
+            DbTopProcess parent2 = topProcessRepository.findById(P2_ID.get()).orElse(null);
+            DbActivity child2_1 = activityRepository.findById(C2_1_ID.get()).orElse(null);
 
             DbTopProcess process = parent;
 
@@ -227,7 +227,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         });
 
         txTemplate.txWithout((s) -> {
-            DbActivity activite1 = activityRepository.findOne(ID.get());
+            DbActivity activite1 = activityRepository.findById(ID.get()).orElse(null);
 
             // RegDate
             Assert.assertTrue(activite1.containsVariable("UNE_CLE_REGDATE"));
@@ -304,14 +304,14 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
 
         // re-get vars
         txTemplate.txWithout((s) -> {
-            DbTopProcess p = topProcessRepository.findOne(P_ID.get());
+            DbTopProcess p = topProcessRepository.findById(P_ID.get()).orElse(null);
             Assert.assertNotNull(p);
             Assert.assertEquals(12L, p.getVariable("var1"));
             Assert.assertEquals(1, p.getVariable("var2"));
             Assert.assertEquals("Bla", p.getVariable("var3"));
             Assert.assertNull(p.getVariable("var4"));
 
-            DbActivity a = activityRepository.findOne(A_ID.get());
+            DbActivity a = activityRepository.findById(A_ID.get()).orElse(null);
             Assert.assertNotNull(a);
 
             Assert.assertEquals(13L, a.getVariable("var1"));
@@ -322,24 +322,24 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
 
         // delete vars
         txTemplate.txWithout((s) -> {
-            DbTopProcess p = topProcessRepository.findOne(P_ID.get());
+            DbTopProcess p = topProcessRepository.findById(P_ID.get()).orElse(null);
             Assert.assertNotNull(p);
             p.removeVariable("var2");
 
-            DbActivity a = activityRepository.findOne(A_ID.get());
+            DbActivity a = activityRepository.findById(A_ID.get()).orElse(null);
             Assert.assertNotNull(a);
             a.removeVariable("var3");
         });
 
         // re-get vars
         txTemplate.txWithout((s) -> {
-            DbTopProcess p = topProcessRepository.findOne(P_ID.get());
+            DbTopProcess p = topProcessRepository.findById(P_ID.get()).orElse(null);
             Assert.assertNotNull(p);
             Assert.assertEquals(12L, p.getVariable("var1"));
             Assert.assertNull(p.getVariable("var2"));
             Assert.assertEquals("Bla", p.getVariable("var3"));
 
-            DbActivity a = activityRepository.findOne(A_ID.get());
+            DbActivity a = activityRepository.findById(A_ID.get()).orElse(null);
             Assert.assertNotNull(a);
 
             Assert.assertEquals(13L, a.getVariable("var1"));
@@ -379,7 +379,7 @@ public class PersistenceTest extends AbstractTipiPersistenceTest {
         });
 
         txTemplate.txWithout((s) -> {
-            DbTopProcess p = topProcessRepository.findOne(ID);
+            DbTopProcess p = topProcessRepository.findById(ID).orElse(null);
             Assert.assertNotNull(p);
         });
     }

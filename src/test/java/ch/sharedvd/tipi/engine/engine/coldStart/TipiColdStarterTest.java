@@ -5,15 +5,16 @@ import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.model.ActivityState;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.runner.TopProcessGroupLauncher;
-import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TipiColdStarterTest extends TipiEngineTest {
 
-    private static final Logger log = Logger.getLogger(TipiColdStarterTest.class);
+    private static final Logger log = LoggerFactory.getLogger(TipiColdStarterTest.class);
 
     @Test
     public void testRunThenRestart() throws Exception {
@@ -36,14 +37,14 @@ public class TipiColdStarterTest extends TipiEngineTest {
             while (!end) {
                 Thread.sleep(100);
                 end = txTemplate.txWith(s -> {
-                    DbActivity g1a1 = activityRepository.findOne(ColdGroup1Activity1.id);
+                    DbActivity g1a1 = activityRepository.findById(ColdGroup1Activity1.id).orElse(null);
                     if ((g1a1 != null)
                             &&
                             g1a1.getState() == ActivityState.FINISHED
                             &&
                             !g1a1.isRequestEndExecution()) {
 
-                        log.info(g1a1);
+                        log.info(g1a1.toString());
                         return Boolean.TRUE;
                     }
                     return Boolean.FALSE;
@@ -57,14 +58,14 @@ public class TipiColdStarterTest extends TipiEngineTest {
             while (!end) {
                 Thread.sleep(100);
                 end = txTemplate.txWith(s -> {
-                    DbActivity g1a2 = activityRepository.findOne(ColdGroup1Activity2.id);
+                    DbActivity g1a2 = activityRepository.findById(ColdGroup1Activity2.id).orElse(null);
                     if ((g1a2 != null)
                             &&
                             g1a2.getState() == ActivityState.ERROR
                             &&
                             !g1a2.isRequestEndExecution()) {
 
-                        log.info(g1a2);
+                        log.info(g1a2.toString());
                         return Boolean.TRUE;
                     }
                     return Boolean.FALSE;
@@ -85,11 +86,11 @@ public class TipiColdStarterTest extends TipiEngineTest {
 
         // On remet les activités a pas terminées
         txTemplate.txWithout(s -> {
-            final DbActivity g1a1 = activityRepository.findOne(ColdGroup1Activity1.id);
+            final DbActivity g1a1 = activityRepository.findById(ColdGroup1Activity1.id).orElse(null);
             g1a1.setState(ActivityState.FINISHED);
             g1a1.setRequestEndExecution(true);
 
-            final DbActivity g1a2 = activityRepository.findOne(ColdGroup1Activity2.id);
+            final DbActivity g1a2 = activityRepository.findById(ColdGroup1Activity2.id).orElse(null);
             g1a2.setState(ActivityState.EXECUTING);
             g1a2.setRequestEndExecution(false);
         });
@@ -113,7 +114,7 @@ public class TipiColdStarterTest extends TipiEngineTest {
             boolean end = false;
             while (!end) {
                 em.clear();
-                final DbActivity g1a1 = activityRepository.findOne(ColdGroup1Activity1.id);
+                final DbActivity g1a1 = activityRepository.findById(ColdGroup1Activity1.id).orElse(null);
                 end = !g1a1.isRequestEndExecution();
 
             }

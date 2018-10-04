@@ -186,7 +186,7 @@ public class ThreadLimitationTest extends TipiEngineTest {
                     do {
                         Thread.sleep(10);
                         model = txTemplate.txWith(s -> {
-                            return activityRepository.findOne(actId);
+                            return activityRepository.findById(actId).orElse(null);
                         });
                     } while ((null != model)
                             && ((ActivityState.EXECUTING == model.getState()) || model.isRequestEndExecution()));

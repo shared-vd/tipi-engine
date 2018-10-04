@@ -41,7 +41,7 @@ public class ProcessDeleter {
 		}
 
 		// Delete du process en cascade
-		DbTopProcess p = topProcessRepository.findOne(pid);
+		DbTopProcess p = topProcessRepository.findById(pid).orElse(null);
 		log.info("Deleting process " + p.getProcessName() + " [id:" + pid + "]");
 		topProcessRepository.delete(p);
 

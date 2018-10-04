@@ -123,7 +123,7 @@ public class VariableScopeTest extends AbstractTipiPersistenceTest {
                 }
             }
 
-            DbActivity child3 = activityRepository.findOne(P2_C3_ID.get());
+            DbActivity child3 = activityRepository.findById(P2_C3_ID.get()).orElse(null);
 
             VariableGetter getter = new VariableGetter(new ActivityFacade(child3.getId(), activityPersisterService, activityRepository));
             getter.execute();

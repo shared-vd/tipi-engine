@@ -6,9 +6,12 @@ import org.hibernate.boot.spi.MetadataImplementor;
 import org.hibernate.dialect.Oracle10gDialect;
 import org.hibernate.dialect.PostgreSQL9Dialect;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.hibernate.tool.schema.TargetType;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.EnumSet;
 
 public class TipiDDLGeneratorTest {
 
@@ -34,21 +37,21 @@ public class TipiDDLGeneratorTest {
 
     private void generateDDL() throws Exception {
         final MetadataImplementor md = createMetaData();
-        final SchemaExport export = new SchemaExport(md);
+        final SchemaExport export = new SchemaExport();
 
         // drop
         {
             export.setDelimiter(";");
             export.setOutputFile(getRefPath() + "/db-drop.sql");
             export.setFormat(true);
-            export.execute(true, false, true, false);
+            export.execute(EnumSet.of(TargetType.SCRIPT), SchemaExport.Action.DROP, md);
         }
         // create
         {
             export.setDelimiter(";");
             export.setOutputFile(getRefPath() + "/db-create.sql");
             export.setFormat(true);
-            export.execute(true, false, false, true);
+            export.execute(EnumSet.of(TargetType.SCRIPT), SchemaExport.Action.CREATE, md);
         }
     }
 

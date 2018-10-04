@@ -14,7 +14,7 @@ public class DateDebutFinExecutionTest extends TipiEngineTest {
         waitWhileRunning(pid, 5000);
 
         txTemplate.txWithout(s -> {
-            DbTopProcess process = topProcessRepository.findOne(pid);
+            DbTopProcess process = topProcessRepository.findById(pid).orElse(null);
             long diff = process.getDateEndActivity().getTime() - process.getCreationDate().getTime();
             Assert.assertTrue("Diff trop petit: " + diff, diff > 500);
 

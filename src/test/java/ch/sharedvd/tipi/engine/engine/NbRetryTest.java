@@ -34,7 +34,7 @@ public class NbRetryTest extends TipiEngineTest {
         });
 
         txTemplate.txWithout(s -> {
-            DbActivity model = activityRepository.findOne(pid);
+            DbActivity model = activityRepository.findById(pid).orElse(null);
             Assert.assertEquals(6, model.getNbRetryDone());
             Assert.assertEquals(ActivityState.ERROR, model.getState());
 

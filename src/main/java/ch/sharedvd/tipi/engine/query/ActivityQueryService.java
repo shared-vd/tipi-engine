@@ -51,7 +51,7 @@ public class ActivityQueryService {
 
     public TipiActivityInfos getActivityInfos(final long id, final boolean loadVariables) {
         final TipiActivityInfos infos = txTemplate.txWith((s) -> {
-            final DbActivity am = activityRepository.findOne(id);
+            final DbActivity am = activityRepository.findById(id).orElse(null);
             return buildActivityOrProcessInfos(am, loadVariables, true);
         });
         return infos;

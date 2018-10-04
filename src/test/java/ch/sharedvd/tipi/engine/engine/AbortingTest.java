@@ -70,7 +70,7 @@ public class AbortingTest extends TipiEngineTest {
 
         // Vérification
         txTemplate.txWithout(s -> {
-            DbTopProcess tp = topProcessRepository.findOne(pid);
+            DbTopProcess tp = topProcessRepository.findById(pid).orElse(null);
             Assert.assertEquals(ActivityState.ABORTED, tp.getState());
 
         });

@@ -23,7 +23,7 @@ public class CommandHelperService {
 	private ActivityPersisterService activityHelper;
 
 	public Activity createActivity(long actId) {
-		DbActivity model = activityRepository.findOne(actId);
+		DbActivity model = activityRepository.findById(actId).orElse(null);
 		return createActivity(model);
 	}
 	public Activity createActivity(DbActivity model) {

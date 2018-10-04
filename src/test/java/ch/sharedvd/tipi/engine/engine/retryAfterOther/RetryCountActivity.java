@@ -5,11 +5,12 @@ import ch.sharedvd.tipi.engine.action.ActivityResultContext;
 import ch.sharedvd.tipi.engine.action.FinishedActivityResultContext;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
 import ch.sharedvd.tipi.engine.utils.Assert;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RetryCountActivity extends Activity {
 
-    private static final Logger LOGGER = Logger.getLogger(RetryCountActivity.class);
+    private static final Logger log = LoggerFactory.getLogger(RetryCountActivity.class);
 
     public static final ActivityMetaModel meta = new ActivityMetaModel(RetryCountActivity.class);
 
@@ -38,7 +39,7 @@ public class RetryCountActivity extends Activity {
             Assert.isEqual(3, passages);
         }
 
-        LOGGER.info("Passage");
+        log.info("Passage");
 
         return new FinishedActivityResultContext();
     }

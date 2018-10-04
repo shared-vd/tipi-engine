@@ -209,7 +209,7 @@ public class ActivityRunner implements Runnable {
                 LOGGER.error(ignored.getMessage(), ignored);
             }
 
-            DbActivity model = activityRepository.findOne(activityId);
+            DbActivity model = activityRepository.findById(activityId).orElse(null);
             if (model != null) { // model peut etre null si le process a été supprimé
                 Assert.isEqual(ActivityState.EXECUTING, model.getState(), "L'etat du process Id: " + model.getId()
                         + " est impossible: " + model.getState());
@@ -251,7 +251,7 @@ public class ActivityRunner implements Runnable {
         // On incrémente le nb de retry
         try {
             return tt.txWith((status) -> {
-                DbActivity activity = activityRepository.findOne(activityId);
+                DbActivity activity = activityRepository.findById(activityId).orElse(null);
                 if (activity != null) {
                     activity.setNbRetryDone(activity.getNbRetryDone() + 1);
                     return activity.getNbRetryDone();
@@ -271,7 +271,7 @@ public class ActivityRunner implements Runnable {
         final AtomicLong timeBeforeCommit = new AtomicLong();
 
         final Activity finishedActivity = tt.txWith((status) -> {
-            DbActivity model = activityRepository.findOne(activityId);
+            DbActivity model = activityRepository.findById(activityId).orElse(null);
             Assert.notNull(model, "Impossible de récupérer le model pour l'activité " + activityId);
 
             final Activity activity;
@@ -341,7 +341,7 @@ public class ActivityRunner implements Runnable {
                 }
 
                 // On récupère le model après le terminate() de l'activité
-                model = activityRepository.findOne(activityId);
+                model = activityRepository.findById(activityId).orElse(null);
 
                 ActivityStateChangeService.runnerFinished(model, resultContext);
 

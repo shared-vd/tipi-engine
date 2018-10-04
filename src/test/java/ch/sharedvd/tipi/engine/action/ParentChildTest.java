@@ -102,7 +102,7 @@ public class ParentChildTest extends TipiEngineTest {
         // Vérifie les pointeurs parent/process
         txTemplate.txWithout(s -> {
             // Process
-            DbTopProcess process = topProcessRepository.findOne(pid);
+            DbTopProcess process = topProcessRepository.findById(pid).orElse(null);
             assertNotNull(process);
             assertNull(process.getProcess());
             assertNull(process.getParent());

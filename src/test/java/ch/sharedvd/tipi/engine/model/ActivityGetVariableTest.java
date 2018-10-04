@@ -25,7 +25,7 @@ public class ActivityGetVariableTest extends TipiEngineTest {
         Assert.assertEquals(42, TstStoreNumberProcess.number);
 
         txTemplate.txWithout((s) -> {
-            DbTopProcess p = topProcessRepository.findOne(pid);
+            DbTopProcess p = topProcessRepository.findById(pid).orElse(null);
             Assert.assertEquals("TheResult", p.getVariable("result"));
             Assert.assertEquals("act1", p.getVariable("name"));
         });

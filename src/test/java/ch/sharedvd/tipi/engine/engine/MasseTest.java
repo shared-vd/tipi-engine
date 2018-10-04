@@ -7,15 +7,16 @@ import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.common.TipiEngineTest;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
-import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MasseTest extends TipiEngineTest {
 
-    private static final Logger log = Logger.getLogger(MasseTest.class);
+    private static final Logger log = LoggerFactory.getLogger(MasseTest.class);
 
     public static class MasseTestProcess extends TopProcess {
 

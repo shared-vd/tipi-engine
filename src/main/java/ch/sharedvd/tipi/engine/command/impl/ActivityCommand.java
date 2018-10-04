@@ -50,7 +50,7 @@ public abstract class ActivityCommand extends Command {
 
 	protected DbActivity getModel() {
 		if (model == null) {
-			model = activityRepository.findOne(getActivityId());
+			model = activityRepository.findById(getActivityId()).orElse(null);
 		}
 		return model;
 	}

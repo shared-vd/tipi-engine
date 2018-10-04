@@ -71,7 +71,7 @@ public class ActivityFacade {
             p = (DbTopProcess) m;
         }
         Assert.notNull(p);
-        DbActivity db = activityRepository.findOne(activityId);
+        DbActivity db = activityRepository.findById(activityId).orElse(null);
         ActivityState dbState = db.getState();
         return dbState == ActivityState.ABORTED;
     }
