@@ -80,8 +80,13 @@ public class TipiFacadeImpl implements TipiFacade {
     }
 
     @Override
-    public void resume(final long id, final VariableMap vars) {
-        activityService.resume(id, vars);
+    public void unsuspendActivity(final long id, final VariableMap vars) {
+        activityService.unsuspendActivity(id, vars);
+    }
+
+    @Override
+    public void restartInErrorProcess(final long id) {
+        activityService.restartInErrorProcess(id);
     }
 
     @Override

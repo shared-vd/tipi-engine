@@ -16,7 +16,9 @@ public interface TipiFacade {
 
     long launch(Class<? extends TopProcess> cls, VariableMap vars);
 
-    void resume(final long id, final VariableMap vars);
+    void unsuspendActivity(final long id, final VariableMap vars);
+
+    void restartInErrorProcess(final long id);
 
     void resumeAllError();
 

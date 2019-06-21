@@ -48,7 +48,7 @@ public class ResumingTest extends TipiEngineTest {
     }
 
     @Test
-    public void resume() throws Exception {
+    public void unsuspendActivity() throws Exception {
         final long pid = tipiFacade.launch(ResumingProcess.meta, null);
         waitWhileRunning(pid, 5000);
         Assert.assertEquals(1, ResumingProcess.value);
@@ -61,7 +61,7 @@ public class ResumingTest extends TipiEngineTest {
 
         final VariableMap vars = new VariableMap();
         vars.put("correl", 42);
-        tipiFacade.resume(pid, vars);
+        tipiFacade.unsuspendActivity(pid, vars);
         while (!tipiFacade.isRunning(pid)) {
             Thread.sleep(10);
         }

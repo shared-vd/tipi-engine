@@ -1,6 +1,5 @@
 package ch.sharedvd.tipi.engine.command.impl;
 
-import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.model.DbActivity;
 import ch.sharedvd.tipi.engine.model.DbSubProcess;
 import ch.sharedvd.tipi.engine.runner.ActivityStateChangeService;
@@ -9,19 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class ResumeActivityCommand extends ActivityCommand {
+public class RestartInErrorProcessCommand extends ActivityCommand {
 
-    private Logger LOGGER = LoggerFactory.getLogger(ResumeActivityCommand.class);
+    private Logger LOGGER = LoggerFactory.getLogger(RestartInErrorProcessCommand.class);
 
-    private VariableMap vars;
-
-    public ResumeActivityCommand(final long id, final VariableMap vars) {
+    public RestartInErrorProcessCommand(final long id) {
         super(id);
-        this.vars = vars;
-    }
-
-    public VariableMap getVars() {
-        return vars;
     }
 
     @Override

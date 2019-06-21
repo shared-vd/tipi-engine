@@ -3,9 +3,10 @@ package ch.sharedvd.tipi.engine.runner;
 import ch.sharedvd.tipi.engine.action.TopProcess;
 import ch.sharedvd.tipi.engine.client.VariableMap;
 import ch.sharedvd.tipi.engine.command.CommandService;
-import ch.sharedvd.tipi.engine.command.impl.ResumeActivityCommand;
+import ch.sharedvd.tipi.engine.command.impl.RestartInErrorProcessCommand;
 import ch.sharedvd.tipi.engine.command.impl.ResumeAllActivitiesCommand;
 import ch.sharedvd.tipi.engine.command.impl.RunExecutingActivitiesCommand;
+import ch.sharedvd.tipi.engine.command.impl.UnsuspendActivityCommand;
 import ch.sharedvd.tipi.engine.meta.ActivityMetaModel;
 import ch.sharedvd.tipi.engine.meta.MetaModelHelper;
 import ch.sharedvd.tipi.engine.meta.TopProcessMetaModel;
@@ -99,7 +100,7 @@ public class ActivityRunningService {
      */
     public long launch(ActivityRepository activityRepository, ActivityMetaModel meta, VariableMap vars) {
         // RCPERS-352 Workaround: just to have the connection at the beginning of the transaction...
-        activityRepository.findById(1L).orElse(null);;
+        activityRepository.findById(1L).orElse(null);
 
         Assert.notNull(meta);
         DbActivity model = activityPersistenceService.persistModelFromMeta(meta, true, vars);
@@ -135,9 +136,10 @@ public class ActivityRunningService {
         });
     }
 
-    public void resume(final long id, final VariableMap vars) {
+    public void unsuspendActivity(final long aid, final VariableMap vars) {
         txTemplate.txWithout((status) -> {
-            DbActivity aActivity = activityRepository.findById(id).orElse(null);
+            DbActivity aActivity = activityRepository.findById(aid).orElse(null);
+            Assert.notNull(aActivity, "Activity with pid=" + aid + " doesn't exists");
 
             // On mets les variables
             if (vars != null) {
@@ -147,7 +149,16 @@ public class ActivityRunningService {
                 }
             }
 
-            commandService.sendCommand(new ResumeActivityCommand(id, vars));
+            commandService.sendCommand(new UnsuspendActivityCommand(aid));
+        });
+    }
+
+    public void restartInErrorProcess(final long pid) {
+        txTemplate.txWithout((status) -> {
+            final DbTopProcess aProc = topProcessRepository.findById(pid).orElse(null);
+            Assert.notNull(aProc, "Process with pid=" + pid + " doesn't exists");
+
+            commandService.sendCommand(new RestartInErrorProcessCommand(pid));
         });
     }
 
